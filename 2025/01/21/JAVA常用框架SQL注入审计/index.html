@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>JAVA常用框架SQL注入审计 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="SQL注入代码审计一、JDBC拼接不当造成sql注入 JDBC存在两种方法执行SQL语句，分别为PreparedStatement和Statement，相比Statement ，PreparedStatement会对SQL语句进行预编译，Statement会直接拼接sql语句造成SQL注入漏洞 1.Statement 示例代码中直接使用statement.executeQuery(sql)，存在s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA常用框架SQL注入审计">
+<meta property="og:url" content="http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="SQL注入代码审计一、JDBC拼接不当造成sql注入 JDBC存在两种方法执行SQL语句，分别为PreparedStatement和Statement，相比Statement ，PreparedStatement会对SQL语句进行预编译，Statement会直接拼接sql语句造成SQL注入漏洞 1.Statement 示例代码中直接使用statement.executeQuery(sql)，存在s">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121230904491.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121231545361.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121230929368.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121231630705.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121234932797.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121235016991.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122001540688.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122001623342.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122001652386.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122001729332.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122001741124.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122003526489.png">
+<meta property="article:published_time" content="2025-01-21T14:51:12.000Z">
+<meta property="article:modified_time" content="2025-01-21T16:36:16.307Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="java安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121230904491.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-JAVA常用框架SQL注入审计" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/" class="article-date">
+  <time datetime="2025-01-21T14:51:12.000Z" itemprop="datePublished">2025-01-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JAVA常用框架SQL注入审计
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="SQL注入代码审计"><a href="#SQL注入代码审计" class="headerlink" title="SQL注入代码审计"></a>SQL注入代码审计</h1><h2 id="一、JDBC拼接不当造成sql注入"><a href="#一、JDBC拼接不当造成sql注入" class="headerlink" title="一、JDBC拼接不当造成sql注入"></a>一、JDBC拼接不当造成sql注入</h2><p> JDBC存在两种方法执行SQL语句，分别为PreparedStatement和Statement，相比Statement ，PreparedStatement会对SQL语句进行预编译，Statement会直接拼接sql语句造成SQL注入漏洞</p>
+<h3 id="1-Statement"><a href="#1-Statement" class="headerlink" title="1.Statement"></a>1.Statement</h3><p> 示例代码中直接使用statement.executeQuery(sql)，存在sql注入漏洞</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JdbcSQLInjectionTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 数据库连接参数</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">url</span> <span class="operator">=</span> <span class="string">&quot;jdbc:mysql://localhost:3306/yourdatabase&quot;</span>; <span class="comment">// 修改为你的数据库地址</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">user</span> <span class="operator">=</span> <span class="string">&quot;root&quot;</span>; <span class="comment">// 修改为你的数据库用户名</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">password</span> <span class="operator">=</span> <span class="string">&quot;root&quot;</span>; <span class="comment">// 修改为你的数据库密码</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建 Scanner 对象以接收用户输入</span></span><br><span class="line">        <span class="type">Scanner</span> <span class="variable">scanner</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Scanner</span>(System.in);</span><br><span class="line">        System.out.println(<span class="string">&quot;请输入用户名进行测试（例如 admin&#x27; OR &#x27;1&#x27;=&#x27;1）：&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> scanner.nextLine();  <span class="comment">// 读取用户输入的 SQL 注入 payload</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 加载 JDBC 驱动</span></span><br><span class="line">            Class.forName(<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 创建数据库连接</span></span><br><span class="line">            <span class="type">Connection</span> <span class="variable">conn</span> <span class="operator">=</span> DriverManager.getConnection(url, user, password);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 创建 Statement 对象</span></span><br><span class="line">            <span class="type">Statement</span> <span class="variable">stmt</span> <span class="operator">=</span> conn.createStatement();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 拼接用户输入的 SQL 查询</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;SELECT * FROM users WHERE username = &#x27;&quot;</span> + username + <span class="string">&quot;&#x27;&quot;</span>;</span><br><span class="line">            System.out.println(<span class="string">&quot;执行的 SQL 查询: &quot;</span> + sql);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 执行查询</span></span><br><span class="line">            <span class="type">ResultSet</span> <span class="variable">rs</span> <span class="operator">=</span> stmt.executeQuery(sql);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 处理查询结果</span></span><br><span class="line">            <span class="type">boolean</span> <span class="variable">resultFound</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">while</span> (rs.next()) &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">res_name</span> <span class="operator">=</span> rs.getString(<span class="string">&quot;username&quot;</span>);</span><br><span class="line">                <span class="type">String</span> <span class="variable">res_pwd</span> <span class="operator">=</span> rs.getString(<span class="string">&quot;password&quot;</span>);</span><br><span class="line">                System.out.println(<span class="string">&quot;用户: &quot;</span> + res_name + <span class="string">&quot;, 密码: &quot;</span> + res_pwd);</span><br><span class="line">                resultFound = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 如果没有找到匹配的用户</span></span><br><span class="line">            <span class="keyword">if</span> (!resultFound) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;未找到匹配的用户.&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 关闭数据库连接</span></span><br><span class="line">            rs.close();</span><br><span class="line">            stmt.close();</span><br><span class="line">            conn.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 关闭扫描器</span></span><br><span class="line">            scanner.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>正常下</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121230904491.png" alt="image-20250121230904491"></p>
+<p>数据库监控</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121231545361.png" alt="image-20250121231545361"></p>
+<p>sql注入下</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121230929368.png" alt="image-20250121230929368"></p>
+<p>监控</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121231630705.png" alt="image-20250121231630705"></p>
+<h3 id="2-PreparedStatement"><a href="#2-PreparedStatement" class="headerlink" title="2.PreparedStatement"></a>2.PreparedStatement</h3><p> 与Statement的区别在于PrepareStatement会对SQL语句进行预编译，预编译的好处不仅在于在一定程度上防止了sql注入，还减少了sql语句的编译次数，提高了性能，其原理是先去编译sql语句，无论最后输入为何，预编译的语句只是作为字符串来执行，而SQL注入只对编译过程有破坏作用，执行阶段只是把输入串作为数据处理，不需要再对SQL语句进行解析，因此解决了注入问题。</p>
+<p> PrepareStatement防御预编译的写法是使用?作为占位符然后将SQL语句进行预编译，由于”?”作为占位符已经告诉数据库整个SQL语句的结构，即?处传入的是参数，而不会是sql语句，所以即使攻击者传入sql语句也不会被数据库解析。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JdbcSQLInjectionPreparedStatementTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 数据库连接参数</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">url</span> <span class="operator">=</span> <span class="string">&quot;jdbc:mysql://localhost:3306/yourdatabase&quot;</span>; <span class="comment">// 修改为你的数据库地址</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">user</span> <span class="operator">=</span> <span class="string">&quot;root&quot;</span>; <span class="comment">// 修改为你的数据库用户名</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">password</span> <span class="operator">=</span> <span class="string">&quot;root&quot;</span>; <span class="comment">// 修改为你的数据库密码</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建 Scanner 对象以接收用户输入</span></span><br><span class="line">        <span class="type">Scanner</span> <span class="variable">scanner</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Scanner</span>(System.in);</span><br><span class="line">        System.out.println(<span class="string">&quot;请输入用户名进行测试：&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> scanner.nextLine();  <span class="comment">// 读取用户输入的用户名</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 加载 JDBC 驱动</span></span><br><span class="line">            Class.forName(<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 创建数据库连接</span></span><br><span class="line">            <span class="type">Connection</span> <span class="variable">conn</span> <span class="operator">=</span> DriverManager.getConnection(url, user, password);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 使用 PreparedStatement 创建查询</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;SELECT * FROM users WHERE username = ?&quot;</span>;</span><br><span class="line">            <span class="type">PreparedStatement</span> <span class="variable">pstmt</span> <span class="operator">=</span> conn.prepareStatement(sql);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 设置查询参数</span></span><br><span class="line">            pstmt.setString(<span class="number">1</span>, username);  <span class="comment">// 将用户输入的用户名设置到 SQL 查询中</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// 执行查询</span></span><br><span class="line">            <span class="type">ResultSet</span> <span class="variable">rs</span> <span class="operator">=</span> pstmt.executeQuery();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 处理查询结果</span></span><br><span class="line">            <span class="type">boolean</span> <span class="variable">resultFound</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">while</span> (rs.next()) &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">res_name</span> <span class="operator">=</span> rs.getString(<span class="string">&quot;username&quot;</span>);</span><br><span class="line">                <span class="type">String</span> <span class="variable">res_pwd</span> <span class="operator">=</span> rs.getString(<span class="string">&quot;password&quot;</span>);</span><br><span class="line">                System.out.println(<span class="string">&quot;用户: &quot;</span> + res_name + <span class="string">&quot;, 密码: &quot;</span> + res_pwd);</span><br><span class="line">                resultFound = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 如果没有找到匹配的用户</span></span><br><span class="line">            <span class="keyword">if</span> (!resultFound) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;未找到匹配的用户.&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 关闭数据库连接</span></span><br><span class="line">            rs.close();</span><br><span class="line">            pstmt.close();</span><br><span class="line">            conn.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 关闭扫描器</span></span><br><span class="line">            scanner.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121234932797.png" alt="image-20250121234932797"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121235016991.png" alt="image-20250121235016991"></p>
+<h3 id="3-JDBC易产生漏洞点"><a href="#3-JDBC易产生漏洞点" class="headerlink" title="3.JDBC易产生漏洞点"></a>3.JDBC易产生漏洞点</h3><h4 id="3-1-未使用占位符"><a href="#3-1-未使用占位符" class="headerlink" title="3.1.未使用占位符"></a>3.1.未使用占位符</h4><p> PreparedStatement只有在使用”?”作为占位符才能预防sql注入，直接拼接仍会存在sql注入漏洞</p>
+<h4 id="3-2-使用in语句"><a href="#3-2-使用in语句" class="headerlink" title="3.2.使用in语句"></a>3.2.使用in语句</h4><p> 删除语句中可能会存在此类语句,由于无法确定delIds含有对象个数而直接拼接sql语句，造成sql注入。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String sql = &quot;delete from users where id in(&quot;+delIds+&quot;); //存在sql注入</span><br></pre></td></tr></table></figure>
+
+<p> 解决方法为遍历传入的 对象个数，使用“?”占位符。</p>
+<h4 id="3-3-使用like语句"><a href="#3-3-使用like语句" class="headerlink" title="3.3.使用like语句"></a>3.3.使用like语句</h4><p> 使用like语句直接拼接会造成sql注入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String sql = &quot;select * from users where password like &#x27;%&quot; + con + &quot;%&#x27;&quot;; //存在sql注入</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-4-和"><a href="#3-4-和" class="headerlink" title="3.4.%和_"></a>3.4.%和_</h4><p> 没有手动过滤%。预编译是不能处理这个符号的， 所以需要手动过滤，否则会造成慢查询，造成 dos。</p>
+<h4 id="3-5-Order-by、from等无法预编译"><a href="#3-5-Order-by、from等无法预编译" class="headerlink" title="3.5.Order by、from等无法预编译"></a>3.5.Order by、from等无法预编译</h4><p> 通过上面对使用in关键字和like关键字发现，只需要对要传参的位置使用占位符进行预编译时似乎就可以完全防止SQL注入，然而事实并非如此，当使用order by语句时是无法使用预编译的，原因是order by子句后面需要加字段名或者字段位置，而字段名是不能带引号的，否则就会被认为是一个字符串而不是字段名，然而使用PreapareStatement将会强制给参数加上’，所以，在使用order by语句时就必须得使用拼接的Statement，所以就会造成SQL注入，需要进行手动过滤，否则存在sql注入。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`String sql = &quot;Select * from news where title =?&quot; + &quot;order by &#x27;&quot; + time + &quot;&#x27; asc&quot;`</span><br></pre></td></tr></table></figure>
+
+<h2 id="二-Mybatis框架下的sql注入"><a href="#二-Mybatis框架下的sql注入" class="headerlink" title="二.Mybatis框架下的sql注入"></a>二.Mybatis框架下的sql注入</h2><p> Mybatis使用parameterType向sql语句传参，在sql引用传参可以使用#{Parameter}和${Parameter}两种方式</p>
+<h3 id="1-Parameter-方式"><a href="#1-Parameter-方式" class="headerlink" title="1 .${Parameter}方式"></a>1 .${Parameter}方式</h3><p> ${Parameter}采用拼接的方式构造SQL语句，在对用户输入过滤不严格的前提下，存在sql注入漏洞</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122001540688.png" alt="image-20250122001540688"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122001623342.png" alt="image-20250122001623342"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122001652386.png" alt="image-20250122001652386"></p>
+<p>安全写法</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122001729332.png" alt="image-20250122001729332"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122001741124.png" alt="image-20250122001741124"></p>
+<h3 id="3-MyBatis易产生SQL注入的三种情况"><a href="#3-MyBatis易产生SQL注入的三种情况" class="headerlink" title="3.MyBatis易产生SQL注入的三种情况"></a>3.MyBatis易产生SQL注入的三种情况</h3><h4 id="3-1-模糊查询"><a href="#3-1-模糊查询" class="headerlink" title="3.1 模糊查询"></a>3.1 模糊查询</h4><p> 在这种情况下使用#{}程序会报错，新手程序员就把#号改成了$,这样如果java代码层面没有对用户输入的内容做处理势必会产生SQL注入漏洞。</p>
+<h4 id="3-2-使用in语句-1"><a href="#3-2-使用in语句-1" class="headerlink" title="3.2 使用in语句"></a>3.2 使用in语句</h4><p> 使用in语句时直接使用#{}会报错，可能会存在使用${}直接拼接，造成sql注入</p>
+<h4 id="3-3使用order-by-语句"><a href="#3-3使用order-by-语句" class="headerlink" title="3.3使用order by 语句"></a>3.3使用order by 语句</h4><p> 和JDBC同理，使用#{}方式传参会导致order by语句失效，所以使用order by语句的时候还是需要做好过滤</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250122003526489.png" alt="image-20250122003526489"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/" data-id="cm66p6fin0000j4h99908e91h" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">java安全-CC1链全分析</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%88%E4%BA%8E%E8%83%BD%E7%9D%A1%E8%A7%89%E4%BA%86/" rel="tag">终于能睡觉了</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/java%E5%AE%89%E5%85%A8/" style="font-size: 20px;">java安全</a> <a href="/tags/%E7%BB%88%E4%BA%8E%E8%83%BD%E7%9D%A1%E8%A7%89%E4%BA%86/" style="font-size: 10px;">终于能睡觉了</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">January 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/">JAVA常用框架SQL注入审计</a>
+          </li>
+        
+          <li>
+            <a href="/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/">java安全-CC1链全分析</a>
+          </li>
+        
+          <li>
+            <a href="/2025/01/19/%E5%8D%9A%E5%AE%A2%E7%BB%88%E4%BA%8E%E6%90%AD%E5%BB%BA%E5%A5%BD%E4%BA%86/">博客终于搭建好了</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2025 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
