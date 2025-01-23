@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang=en>
 <head>
-  <meta charset="utf-8">
-  
-
-  
-  <title>java安全-CC1链全分析 | Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="写在开篇Commons Collections简介Commons Collections是Apache软件基金会的一个开源项目，它提供了一组可复用的数据结构和算法的实现，旨在扩展和增强Java集合框架，以便更好地满足不同类型应用的需求。该项目包含了多种不同类型的集合类、迭代器、队列、堆栈、映射、列表、集等数据结构实现，以及许多实用程序类和算法实现。它的代码质量较高，被广泛应用于Java应用程序开发">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="写在开篇Commons Collections简介Commons Collections是Apache软件基金会的一个开源项目，它提供了一组可复用的数据结构和算法的实现，旨在扩展和增强Java集合框架，以便更好地满足不同类型应用的需求。该项目包含了多种不同类型的集合类、迭代器、队列、堆栈、映射、列表、集等数据结构实现，以及许多实用程序类和算法实现。它的代码质量较高，被广泛应用于Java应用程序开发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java安全-CC1链全分析">
 <meta property="og:url" content="http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/index.html">
@@ -42,77 +41,149 @@
 <meta property="article:tag" content="java安全">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/20230707102502-7a896676-1c6d-1.png">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>java安全-CC1链全分析</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
 <link rel="stylesheet" href="/css/style.css">
 
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
 <meta name="generator" content="Hexo 5.4.2"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/01/19/%E5%8D%9A%E5%AE%A2%E7%BB%88%E4%BA%8E%E6%90%AD%E5%BB%BA%E5%A5%BD%E4%BA%86/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&text=java安全-CC1链全分析"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&title=java安全-CC1链全分析"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&is_video=false&description=java安全-CC1链全分析"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=java安全-CC1链全分析&body=Check out this article: http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&title=java安全-CC1链全分析"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&title=java安全-CC1链全分析"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&title=java安全-CC1链全分析"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&title=java安全-CC1链全分析"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&name=java安全-CC1链全分析&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&t=java安全-CC1链全分析"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%BC%80%E7%AF%87"><span class="toc-number">1.</span> <span class="toc-text">写在开篇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Commons-Collections%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">Commons Collections简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-%E5%BC%80%E5%A7%8B%E5%89%8D%E7%9A%84%E5%87%86%E5%A4%87"><span class="toc-number">1.2.</span> <span class="toc-text">(一)开始前的准备</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%8B%E8%BD%BD%E5%B9%B6%E9%85%8D%E7%BD%AE-JDK-8u65"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.下载并配置:JDK-8u65</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E9%85%8D%E7%BD%AEMaven%E4%BE%9D%E8%B5%96%E4%B8%8B%E8%BD%BDCommonsCollections3-2-1%E7%89%88%E6%9C%AC"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.配置Maven依赖下载CommonsCollections3.2.1版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%B8%8B%E8%BD%BD%E5%B9%B6%E4%B8%94%E9%85%8D%E7%BD%AE%E7%9B%B8%E5%BA%94%E6%BA%90%E7%A0%81"><span class="toc-number">1.2.3.</span> <span class="toc-text">3.下载并且配置相应源码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-CC1%E9%93%BE%E5%88%86%E6%9E%90"><span class="toc-number">1.3.</span> <span class="toc-text">(二)CC1链分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%BB%88%E7%82%B9-%E5%88%A9%E7%94%A8%E7%82%B9%E5%88%86%E6%9E%90"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.终点(利用点分析)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%BD%92%E9%80%94-%E6%BC%8F%E6%B4%9E%E9%93%BE%E5%88%86%E6%9E%90"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.归途(漏洞链分析)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#A-%E7%AC%AC%E4%B8%80%E7%AB%99-%E5%AF%BB%E6%89%BE%E6%9F%90%E4%B8%AA%E7%B1%BB%E4%B8%AD%E7%9A%84%E6%9F%90%E4%B8%AA%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E4%BA%86transform%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">A.第一站(寻找某个类中的某个方法调用了transform方法)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#B-%E7%AC%AC%E4%BA%8C%E7%AB%99-%E5%AF%BB%E6%89%BE%E5%90%88%E9%80%82%E7%9A%84%E8%B0%83%E7%94%A8%E4%BA%86checkSetValue%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">B.第二站(寻找合适的调用了checkSetValue的方法)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#C-%E7%AC%AC%E4%B8%89%E7%AB%99-%E8%BF%BD%E5%AF%BBsetValue"><span class="toc-number">1.3.2.3.</span> <span class="toc-text">C.第三站(追寻setValue)</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E8%B5%B7%E7%82%B9-%E5%85%A5%E5%8F%A3%E7%B1%BB%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.起点(入口类问题分析)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#A-%E9%97%AE%E9%A2%98%E4%B8%80"><span class="toc-number">1.3.3.1.</span> <span class="toc-text">A.问题一</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#B-%E9%97%AE%E9%A2%98%E4%BA%8C"><span class="toc-number">1.3.3.2.</span> <span class="toc-text">B.问题二</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#C-%E9%97%AE%E9%A2%98%E4%B8%89"><span class="toc-number">1.3.3.3.</span> <span class="toc-text">C.问题三</span></a></li></ol></li></ol></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        java安全-CC1链全分析
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-01-20T03:34:42.000Z" class="dt-published" itemprop="datePublished">2025-01-20</time>
+        
       
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a>
     </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-java安全-CC1链全分析" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/" class="article-date">
-  <time datetime="2025-01-20T03:34:42.000Z" itemprop="datePublished">2025-01-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      java安全-CC1链全分析
-    </h1>
+
+
+    </div>
+  </header>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="写在开篇"><a href="#写在开篇" class="headerlink" title="写在开篇"></a>写在开篇</h2><h3 id="Commons-Collections简介"><a href="#Commons-Collections简介" class="headerlink" title="Commons Collections简介"></a>Commons Collections简介</h3><p><strong>Commons Collections</strong>是Apache软件基金会的一个开源项目，它提供了一组可复用的数据结构和算法的实现，旨在扩展和增强Java集合框架，以便更好地满足不同类型应用的需求。该项目包含了多种不同类型的集合类、迭代器、队列、堆栈、映射、列表、集等数据结构实现，以及许多实用程序类和算法实现。它的代码质量较高，被广泛应用于Java应用程序开发中。本文分析Commons Collections3.2.1版本下的一条最好用的反序列化漏洞链，这条攻击链被称为CC1链(国内版本的)。</p>
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="写在开篇"><a href="#写在开篇" class="headerlink" title="写在开篇"></a>写在开篇</h2><h3 id="Commons-Collections简介"><a href="#Commons-Collections简介" class="headerlink" title="Commons Collections简介"></a>Commons Collections简介</h3><p><strong>Commons Collections</strong>是Apache软件基金会的一个开源项目，它提供了一组可复用的数据结构和算法的实现，旨在扩展和增强Java集合框架，以便更好地满足不同类型应用的需求。该项目包含了多种不同类型的集合类、迭代器、队列、堆栈、映射、列表、集等数据结构实现，以及许多实用程序类和算法实现。它的代码质量较高，被广泛应用于Java应用程序开发中。本文分析Commons Collections3.2.1版本下的一条最好用的反序列化漏洞链，这条攻击链被称为CC1链(国内版本的)。</p>
 <h3 id="一-开始前的准备"><a href="#一-开始前的准备" class="headerlink" title="(一)开始前的准备"></a>(一)开始前的准备</h3><h4 id="1-下载并配置-JDK-8u65"><a href="#1-下载并配置-JDK-8u65" class="headerlink" title="1.下载并配置:JDK-8u65"></a>1.下载并配置:JDK-8u65</h4><p>可以直接去官网下载，但是官网下载比较慢，于是我找到了下面这个地方可以快速下载:</p>
 <p><strong>快速</strong>:<a target="_blank" rel="noopener" href="https://blog.lupf.cn/articles/2022/02/19/1645283454543.html">https://blog.lupf.cn/articles/2022/02/19/1645283454543.html</a></p>
 <p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/20230707102502-7a896676-1c6d-1.png" alt="img"></p>
@@ -222,146 +293,143 @@
 
 <p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250120173723189.png" alt="image-20250120173723189"></p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/" data-id="cm64pyzdp0000i4h913gmftpt" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li></ul>
-
-    </footer>
   </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          JAVA常用框架SQL注入审计
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2025/01/19/%E5%8D%9A%E5%AE%A2%E7%BB%88%E4%BA%8E%E6%90%AD%E5%BB%BA%E5%A5%BD%E4%BA%86/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">博客终于搭建好了</div>
-    </a>
-  
-</nav>
-
-  
 </article>
 
-</section>
+
+
         
-          <aside id="sidebar">
-  
-    
+          <div id="footer-post-container">
+  <div id="footer-post">
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" rel="tag">成长故事碎碎念</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/java%E5%AE%89%E5%85%A8/" style="font-size: 20px;">java安全</a> <a href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" style="font-size: 10px;">成长故事碎碎念</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">January 2025</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
+    <div id="nav-footer" style="display: none">
       <ul>
         
-          <li>
-            <a href="/2025/01/24/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-jfinal/">JAVA代码审计-jfinal</a>
-          </li>
+          <li><a href="/">Home</a></li>
         
-          <li>
-            <a href="/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/">JAVA代码审计-StudentManager</a>
-          </li>
+          <li><a href="/about/">About</a></li>
         
-          <li>
-            <a href="/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/">JAVA常用框架SQL注入审计</a>
-          </li>
+          <li><a href="/archives/">Writing</a></li>
         
-          <li>
-            <a href="/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/">java安全-CC1链全分析</a>
-          </li>
-        
-          <li>
-            <a href="/2025/01/19/%E5%8D%9A%E5%AE%A2%E7%BB%88%E4%BA%8E%E6%90%AD%E5%BB%BA%E5%A5%BD%E4%BA%86/">博客终于搭建好了</a>
-          </li>
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
         
       </ul>
     </div>
-  </div>
 
-  
-</aside>
-        
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%BC%80%E7%AF%87"><span class="toc-number">1.</span> <span class="toc-text">写在开篇</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Commons-Collections%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">Commons Collections简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-%E5%BC%80%E5%A7%8B%E5%89%8D%E7%9A%84%E5%87%86%E5%A4%87"><span class="toc-number">1.2.</span> <span class="toc-text">(一)开始前的准备</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%8B%E8%BD%BD%E5%B9%B6%E9%85%8D%E7%BD%AE-JDK-8u65"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.下载并配置:JDK-8u65</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E9%85%8D%E7%BD%AEMaven%E4%BE%9D%E8%B5%96%E4%B8%8B%E8%BD%BDCommonsCollections3-2-1%E7%89%88%E6%9C%AC"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.配置Maven依赖下载CommonsCollections3.2.1版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%B8%8B%E8%BD%BD%E5%B9%B6%E4%B8%94%E9%85%8D%E7%BD%AE%E7%9B%B8%E5%BA%94%E6%BA%90%E7%A0%81"><span class="toc-number">1.2.3.</span> <span class="toc-text">3.下载并且配置相应源码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-CC1%E9%93%BE%E5%88%86%E6%9E%90"><span class="toc-number">1.3.</span> <span class="toc-text">(二)CC1链分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%BB%88%E7%82%B9-%E5%88%A9%E7%94%A8%E7%82%B9%E5%88%86%E6%9E%90"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.终点(利用点分析)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%BD%92%E9%80%94-%E6%BC%8F%E6%B4%9E%E9%93%BE%E5%88%86%E6%9E%90"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.归途(漏洞链分析)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#A-%E7%AC%AC%E4%B8%80%E7%AB%99-%E5%AF%BB%E6%89%BE%E6%9F%90%E4%B8%AA%E7%B1%BB%E4%B8%AD%E7%9A%84%E6%9F%90%E4%B8%AA%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E4%BA%86transform%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">A.第一站(寻找某个类中的某个方法调用了transform方法)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#B-%E7%AC%AC%E4%BA%8C%E7%AB%99-%E5%AF%BB%E6%89%BE%E5%90%88%E9%80%82%E7%9A%84%E8%B0%83%E7%94%A8%E4%BA%86checkSetValue%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">B.第二站(寻找合适的调用了checkSetValue的方法)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#C-%E7%AC%AC%E4%B8%89%E7%AB%99-%E8%BF%BD%E5%AF%BBsetValue"><span class="toc-number">1.3.2.3.</span> <span class="toc-text">C.第三站(追寻setValue)</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E8%B5%B7%E7%82%B9-%E5%85%A5%E5%8F%A3%E7%B1%BB%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.起点(入口类问题分析)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#A-%E9%97%AE%E9%A2%98%E4%B8%80"><span class="toc-number">1.3.3.1.</span> <span class="toc-text">A.问题一</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#B-%E9%97%AE%E9%A2%98%E4%BA%8C"><span class="toc-number">1.3.3.2.</span> <span class="toc-text">B.问题二</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#C-%E9%97%AE%E9%A2%98%E4%B8%89"><span class="toc-number">1.3.3.3.</span> <span class="toc-text">C.问题三</span></a></li></ol></li></ol></li></ol></li></ol>
       </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2025 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
     
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&text=java安全-CC1链全分析"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&title=java安全-CC1链全分析"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&is_video=false&description=java安全-CC1链全分析"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=java安全-CC1链全分析&body=Check out this article: http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&title=java安全-CC1链全分析"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&title=java安全-CC1链全分析"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&title=java安全-CC1链全分析"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&title=java安全-CC1链全分析"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&name=java安全-CC1链全分析&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/&t=java安全-CC1链全分析"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
 
+    </div>
 
-  
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-
-  
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
 
   </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
 </body>
 </html>
