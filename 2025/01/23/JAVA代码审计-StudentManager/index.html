@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>JAVA代码审计-StudentManager | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一、环境搭建123456StudentManagerhttps:&#x2F;&#x2F;github.com&#x2F;Hui4401&#x2F;StudentManageridea IntelliJ IDEA 2022.2.3jdk1.8 mysql 5.7.26apache-tomcat-9.0.68    三、审计StudentManager审计思路找一个功能点 例如登录系统 跟踪观察整个登录过程。关注点 SQL是否采用预编译处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA代码审计-StudentManager">
+<meta property="og:url" content="http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、环境搭建123456StudentManagerhttps:&#x2F;&#x2F;github.com&#x2F;Hui4401&#x2F;StudentManageridea IntelliJ IDEA 2022.2.3jdk1.8 mysql 5.7.26apache-tomcat-9.0.68    三、审计StudentManager审计思路找一个功能点 例如登录系统 跟踪观察整个登录过程。关注点 SQL是否采用预编译处理">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123182752218.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123182801976.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123184018511.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123184038664.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123191330640.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123191618734.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123191633595.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123191645937.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123214749057.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123214702611.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123214852073.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123221943657.png">
+<meta property="article:published_time" content="2025-01-23T03:59:55.000Z">
+<meta property="article:modified_time" content="2025-01-23T14:58:06.357Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="java安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123182752218.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-JAVA代码审计-StudentManager" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/" class="article-date">
+  <time datetime="2025-01-23T03:59:55.000Z" itemprop="datePublished">2025-01-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JAVA代码审计-StudentManager
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、环境搭建"><a href="#一、环境搭建" class="headerlink" title="一、环境搭建"></a>一、环境搭建</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">StudentManager</span><br><span class="line">https://github.com/Hui4401/StudentManager</span><br><span class="line">idea IntelliJ IDEA 2022.2.3</span><br><span class="line">jdk1.8 </span><br><span class="line">mysql 5.7.26</span><br><span class="line">apache-tomcat-9.0.68</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123182752218.png" alt="image-20250123182752218"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123182801976.png" alt="image-20250123182801976"></p>
+<h1 id="三、审计StudentManager"><a href="#三、审计StudentManager" class="headerlink" title="三、审计StudentManager"></a>三、审计StudentManager</h1><h2 id="审计思路"><a href="#审计思路" class="headerlink" title="审计思路"></a>审计思路</h2><p>找一个功能点 例如登录系统 跟踪观察整个登录过程。<br>关注点 SQL是否采用预编译处理，输入的参数是否被过滤。 严重是否存在逻辑漏洞</p>
+<h2 id="SQL注入漏洞"><a href="#SQL注入漏洞" class="headerlink" title="SQL注入漏洞"></a>SQL注入漏洞</h2><h2 id="分析登录点"><a href="#分析登录点" class="headerlink" title="分析登录点"></a>分析登录点</h2><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123184018511.png" alt="image-20250123184018511"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123184038664.png" alt="image-20250123184038664"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doGet</span> <span class="params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line"></span><br><span class="line">        response.setContentType(<span class="string">&quot;text/html;charset=utf-8&quot;</span>);</span><br><span class="line">        response.setCharacterEncoding(<span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line">        request.setCharacterEncoding(<span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">PrintWriter</span> <span class="variable">out</span> <span class="operator">=</span> response.getWriter();</span><br><span class="line">        <span class="type">HttpSession</span> <span class="variable">session</span> <span class="operator">=</span> request.getSession();</span><br><span class="line"></span><br><span class="line">        <span class="type">String</span> <span class="variable">user</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;user&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">password</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;password&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">remember</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;remember&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">TeacherD</span> <span class="variable">teacherD</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TeacherD</span>();</span><br><span class="line">        <span class="type">StudentD</span> <span class="variable">studentD</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StudentD</span>();</span><br><span class="line">        <span class="type">Teacher</span> <span class="variable">teacher</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="type">Student</span> <span class="variable">student</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 判断用户身份</span></span><br><span class="line">            teacher = teacherD.checkAccount(user, password);</span><br><span class="line">            student = studentD.checkAccount(user, password);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            out.print(e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (teacher != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">//向session中添加用户信息</span></span><br><span class="line">            session.setAttribute(<span class="string">&quot;info&quot;</span>, teacher);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//检查用户是否需要保持登录状态</span></span><br><span class="line">            <span class="keyword">if</span> (remember != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="comment">//发送cookie到客户端</span></span><br><span class="line">                <span class="type">Cookie</span> <span class="variable">userCookie</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Cookie</span>(<span class="string">&quot;name&quot;</span>, user);</span><br><span class="line">                userCookie.setMaxAge(<span class="number">10</span>);</span><br><span class="line">                response.addCookie(userCookie);</span><br><span class="line">            &#125;</span><br><span class="line">            response.sendRedirect(<span class="string">&quot;one_page_student&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (student != <span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="comment">//向session中添加用户信息</span></span><br><span class="line">            session.setAttribute(<span class="string">&quot;info&quot;</span>, student);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//检查用户是否需要保持登录状态</span></span><br><span class="line">            <span class="keyword">if</span> (remember != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="comment">//发送cookie到客户端</span></span><br><span class="line">                <span class="type">Cookie</span> <span class="variable">userCookie</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Cookie</span>(<span class="string">&quot;name&quot;</span>, user);</span><br><span class="line">                userCookie.setMaxAge(<span class="number">10</span>);</span><br><span class="line">                response.addCookie(userCookie);</span><br><span class="line">            &#125;</span><br><span class="line">            response.sendRedirect(<span class="string">&quot;student/main.jsp&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            out.print(<span class="string">&quot;&lt;script&gt;alert(\&quot;用户名或密码错误！\&quot;);&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Teacher <span class="title function_">checkAccount</span><span class="params">(String id, String password)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    initConnection();</span><br><span class="line">    <span class="type">Statement</span> <span class="variable">stat</span> <span class="operator">=</span> conn.createStatement();</span><br><span class="line">    <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;select * from teacher where id = &#x27;&quot;</span> + id + <span class="string">&quot;&#x27; and password = &#x27;&quot;</span> + password + <span class="string">&quot;&#x27;&quot;</span>;</span><br><span class="line">    <span class="type">ResultSet</span> <span class="variable">rs</span> <span class="operator">=</span> stat.executeQuery(sql);</span><br><span class="line">    <span class="type">Teacher</span> <span class="variable">tea</span> <span class="operator">=</span> getTeacher(rs);</span><br><span class="line">    closeConnection();</span><br><span class="line">    <span class="keyword">return</span> tea;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Student <span class="title function_">checkAccount</span><span class="params">(String user, String password)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    initConnection();</span><br><span class="line">    <span class="type">Statement</span> <span class="variable">stat</span> <span class="operator">=</span> conn.createStatement();</span><br><span class="line">    <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;select * from student where id = &#x27;&quot;</span> + user + <span class="string">&quot;&#x27; and password = &#x27;&quot;</span> + password + <span class="string">&quot;&#x27;&quot;</span>;</span><br><span class="line">    <span class="type">ResultSet</span> <span class="variable">rs</span> <span class="operator">=</span> stat.executeQuery(sql);</span><br><span class="line">    <span class="type">Student</span> <span class="variable">stu</span> <span class="operator">=</span> getStudent(rs);</span><br><span class="line">    closeConnection();</span><br><span class="line">    <span class="keyword">return</span> stu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到sql语句直接拼接，没有使用预编译，存在sql注入。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123191330640.png" alt="image-20250123191330640"></p>
+<p>其实这三个文件里面，都是有问题的，全是直接拼接，直接找谁调用的即可，如果参数可控，漏洞成立。</p>
+<p>比如<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123191618734.png" alt="image-20250123191618734"></p>
+<p>查找用法</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123191633595.png" alt="image-20250123191633595"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123191645937.png" alt="image-20250123191645937"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line"></span><br><span class="line">        response.setContentType(<span class="string">&quot;text/html;charset=utf-8&quot;</span>);</span><br><span class="line">        response.setCharacterEncoding(<span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line">        request.setCharacterEncoding(<span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">PrintWriter</span> <span class="variable">out</span> <span class="operator">=</span> response.getWriter();</span><br><span class="line">        <span class="type">HttpSession</span> <span class="variable">session</span> <span class="operator">=</span> request.getSession();</span><br><span class="line"></span><br><span class="line">        <span class="type">String</span> <span class="variable">key</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;id&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (key == <span class="literal">null</span>) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="type">int</span> currentIndex, count, size = <span class="number">10</span>;</span><br><span class="line">            <span class="type">String</span> <span class="variable">index</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (index == <span class="literal">null</span>)</span><br><span class="line">                index = <span class="string">&quot;1&quot;</span>;</span><br><span class="line">            currentIndex = Integer.parseInt(index);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="type">ScoreD</span> <span class="variable">scoD</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ScoreD</span>();</span><br><span class="line">                count = scoD.getScoreCount();</span><br><span class="line">                ArrayList&lt;Score&gt; stus = scoD.getOnePage(currentIndex, size);</span><br><span class="line">                <span class="type">int</span> <span class="variable">sumIndex</span> <span class="operator">=</span> count % size == <span class="number">0</span> ? count / size : count / size + <span class="number">1</span>;</span><br><span class="line">                session.setAttribute(<span class="string">&quot;onePageScore&quot;</span>, stus);</span><br><span class="line">                session.setAttribute(<span class="string">&quot;sumScoreIndex&quot;</span>, sumIndex);</span><br><span class="line">                response.sendRedirect(<span class="string">&quot;teacher/score.jsp&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                out.print(e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">ScoreD</span> <span class="variable">scoreD</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ScoreD</span>();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="type">Score</span> <span class="variable">score</span> <span class="operator">=</span> scoreD.findWithId(key);</span><br><span class="line">                    ArrayList&lt;Score&gt; scores = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">                    scores.add(score);</span><br><span class="line">                    session.setAttribute(<span class="string">&quot;onePageScore&quot;</span>, scores);</span><br><span class="line">                    session.setAttribute(<span class="string">&quot;sumScoreIndex&quot;</span>, <span class="number">1</span>);</span><br><span class="line">                    response.sendRedirect(<span class="string">&quot;teacher/score.jsp&quot;</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    out.print(e);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发现参数可控喂，key的定义如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">key</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;id&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123214749057.png" alt="image-20250123214749057"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123214702611.png" alt="image-20250123214702611"></p>
+<p>报错注入</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123214852073.png" alt="image-20250123214852073"></p>
+<p>sqlmap直接跑</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123221943657.png" alt="image-20250123221943657"></p>
+<p>太简单了这个期末作业 能学到的东西不多。</p>
+<p>期待下一个文章吧</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/" data-id="cm69gl58k0000okh90somfd42" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JAVA常用框架SQL注入审计</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%88%E4%BA%8E%E8%83%BD%E7%9D%A1%E8%A7%89%E4%BA%86/" rel="tag">终于能睡觉了</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/java%E5%AE%89%E5%85%A8/" style="font-size: 20px;">java安全</a> <a href="/tags/%E7%BB%88%E4%BA%8E%E8%83%BD%E7%9D%A1%E8%A7%89%E4%BA%86/" style="font-size: 10px;">终于能睡觉了</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">January 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/">JAVA代码审计-StudentManager</a>
+          </li>
+        
+          <li>
+            <a href="/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/">JAVA常用框架SQL注入审计</a>
+          </li>
+        
+          <li>
+            <a href="/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/">java安全-CC1链全分析</a>
+          </li>
+        
+          <li>
+            <a href="/2025/01/19/%E5%8D%9A%E5%AE%A2%E7%BB%88%E4%BA%8E%E6%90%AD%E5%BB%BA%E5%A5%BD%E4%BA%86/">博客终于搭建好了</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2025 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
