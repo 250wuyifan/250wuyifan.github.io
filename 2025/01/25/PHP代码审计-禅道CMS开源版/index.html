@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="官网：https:&#x2F;&#x2F;www.zentao.net&#x2F;影响版本：开源版21.1及以下版本漏洞类型：SQL注入漏洞url：http:&#x2F;&#x2F;192.168.88.9&#x2F;&#x2F;index.php?m&#x3D;search&amp;f&#x3D;index&amp;words&#x3D;2&amp;type&#x3D;all&amp;zin&#x3D;1漏洞数据包（请手动抓包验证漏洞）： 1234567891011121314GET &#x2F;index.php?m&#x3D;s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP代码审计-禅道CMS开源版">
+<meta property="og:url" content="http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="官网：https:&#x2F;&#x2F;www.zentao.net&#x2F;影响版本：开源版21.1及以下版本漏洞类型：SQL注入漏洞url：http:&#x2F;&#x2F;192.168.88.9&#x2F;&#x2F;index.php?m&#x3D;search&amp;f&#x3D;index&amp;words&#x3D;2&amp;type&#x3D;all&amp;zin&#x3D;1漏洞数据包（请手动抓包验证漏洞）： 1234567891011121314GET &#x2F;index.php?m&#x3D;s">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125153148666.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125153741376.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125153935686.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125154336740.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125180229860.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125180304930.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125180352851.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125180407651.png">
+<meta property="og:image" content="c:/Users/20174/AppData/Roaming/Typora/typora-user-images/image-20250125180448924.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125180702909.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125190402138.png">
+<meta property="article:published_time" content="2025-01-25T03:44:46.000Z">
+<meta property="article:modified_time" content="2025-01-25T11:04:12.004Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="PHP安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125153148666.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>PHP代码审计-禅道CMS开源版</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/01/24/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-jfinal/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&text=PHP代码审计-禅道CMS开源版"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&title=PHP代码审计-禅道CMS开源版"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&is_video=false&description=PHP代码审计-禅道CMS开源版"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=PHP代码审计-禅道CMS开源版&body=Check out this article: http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&title=PHP代码审计-禅道CMS开源版"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&title=PHP代码审计-禅道CMS开源版"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&title=PHP代码审计-禅道CMS开源版"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&title=PHP代码审计-禅道CMS开源版"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&name=PHP代码审计-禅道CMS开源版&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&t=PHP代码审计-禅道CMS开源版"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        PHP代码审计-禅道CMS开源版
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-01-25T03:44:46.000Z" class="dt-published" itemprop="datePublished">2025-01-25</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/PHP%E5%AE%89%E5%85%A8/" rel="tag">PHP安全</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><strong>官网：</strong><a target="_blank" rel="noopener" href="https://www.zentao.net/">https://www.zentao.net/</a><br><strong>影响版本：</strong>开源版21.1及以下版本<br><strong>漏洞类型：</strong>SQL注入<br><strong>漏洞url：</strong><a target="_blank" rel="noopener" href="http://192.168.88.9//index.php?m=search&amp;f=index&amp;words=2&amp;type=all&amp;zin=1">http://192.168.88.9//index.php?m=search&amp;f=index&amp;words=2&amp;type=all&amp;zin=1</a><br><strong>漏洞数据包（请手动抓包验证漏洞）：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">GET /index.php?m=search&amp;f=index&amp;words=1*&amp;type=all&amp;zin=1 HTTP/1.1</span><br><span class="line">Host: 192.168.88.6</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0</span><br><span class="line">Accept:* /*</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Referer: http://192.168.88.6/</span><br><span class="line">X-ZIN-Options: &#123;&quot;selector&quot;:[&quot;#configJS&quot;,&quot;title&gt;*&quot;,&quot;body&gt;*&quot;],&quot;type&quot;:&quot;list&quot;&#125;</span><br><span class="line">X-ZIN-App: search</span><br><span class="line">X-Zin-Cache-Time: 0</span><br><span class="line">X-Requested-With: XMLHttpRequest</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Cookie: zentaosid=d5ikdmm295l1ca5ec4an8p4f7u; lang=zh-cn; vision=rnd; device=desktop; theme=default; keepLogin=on; za=admin; zp=abd630d8e942046184fb94d4e591e66cd011665a; hideMenu=false; tab=search</span><br><span class="line">Priority: u=4</span><br></pre></td></tr></table></figure>
+
+<p><strong>漏洞复现过程：</strong></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125153148666.png" alt="image-20250125153148666"></p>
+<p>最终发现是这个地方的sql注入</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125153741376.png" alt="image-20250125153741376"></p>
+<p>mvc其实很好理解，如下图，我们做的动作是搜索，所以m=search，范围是全部所以tpye是控制范围的，words是我们输入的内容</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125153935686.png" alt="image-20250125153935686"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125154336740.png" alt="image-20250125154336740"></p>
+<p>根据路由找到对应文件</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125180229860.png" alt="image-20250125180229860"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125180304930.png" alt="image-20250125180304930"></p>
+<p>听名字就知道类似控制器的东西</p>
+<p>根据路由猜测f就对应的这个里面的函数</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125180352851.png" alt="image-20250125180352851"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125180407651.png" alt="image-20250125180407651"></p>
+<p><img src="C:/Users/20174/AppData/Roaming/Typora/typora-user-images/image-20250125180448924.png" alt="image-20250125180448924"></p>
+<p>很清晰的看出参数怎么传输的，并且查询的结果是在results里面，调用了getList($words, $type, $pager); 去model搜索这个函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getList</span>(<span class="params"><span class="variable">$keywords</span>, <span class="variable">$type</span>, <span class="variable">$pager</span> = <span class="literal">null</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">list</span>(<span class="variable">$words</span>, <span class="variable">$againstCond</span>, <span class="variable">$likeCondition</span>) = <span class="variable language_">$this</span>-&gt;searchTao-&gt;<span class="title function_ invoke__">getSqlParams</span>(<span class="variable">$keywords</span>);</span><br><span class="line">    <span class="variable">$allowedObjects</span> = <span class="variable language_">$this</span>-&gt;searchTao-&gt;<span class="title function_ invoke__">getAllowedObjects</span>(<span class="variable">$type</span>);</span><br><span class="line"></span><br><span class="line">    <span class="variable">$filterObjects</span> = <span class="keyword">array</span>();</span><br><span class="line">    <span class="keyword">foreach</span>(<span class="variable">$allowedObjects</span> <span class="keyword">as</span> <span class="variable">$index</span> =&gt; <span class="variable">$object</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="title function_ invoke__">strpos</span>(<span class="string">&#x27;,feedback,ticket,&#x27;</span>, <span class="string">&quot;,<span class="subst">$object</span>,&quot;</span>) === <span class="literal">false</span>) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">unset</span>(<span class="variable">$allowedObjects</span>[<span class="variable">$index</span>]);</span><br><span class="line">        <span class="variable">$filterObjects</span>[] = <span class="variable">$object</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable">$scoreColumn</span> = <span class="string">&quot;(MATCH(title, content) AGAINST(&#x27;<span class="subst">&#123;$againstCond&#125;</span>&#x27; IN BOOLEAN MODE))&quot;</span>;</span><br><span class="line">    <span class="variable">$stmt</span> = <span class="variable language_">$this</span>-&gt;dao-&gt;<span class="title function_ invoke__">select</span>(<span class="string">&quot;*, <span class="subst">&#123;$scoreColumn&#125;</span> as score&quot;</span>)-&gt;<span class="keyword">from</span>(TABLE_SEARCHINDEX)</span><br><span class="line">        -&gt;<span class="title function_ invoke__">where</span>(<span class="string">&quot;(MATCH(title,content) AGAINST(&#x27;<span class="subst">&#123;$againstCond&#125;</span>&#x27; IN BOOLEAN MODE) &gt;= 1 <span class="subst">&#123;$likeCondition&#125;</span>)&quot;</span>)</span><br><span class="line">        -&gt;<span class="title function_ invoke__">andWhere</span>(<span class="string">&#x27;((vision&#x27;</span>)-&gt;<span class="title function_ invoke__">eq</span>(<span class="variable">$this</span>-&gt;config-&gt;vision)</span><br><span class="line">        -&gt;<span class="title function_ invoke__">andWhere</span>(<span class="string">&#x27;objectType&#x27;</span>)-&gt;<span class="title function_ invoke__">in</span>(<span class="variable">$allowedObjects</span>)</span><br><span class="line">        -&gt;<span class="title function_ invoke__">markRight</span>(<span class="number">1</span>)</span><br><span class="line">        -&gt;<span class="title function_ invoke__">orWhere</span>(<span class="string">&#x27;(objectType&#x27;</span>)-&gt;<span class="title function_ invoke__">in</span>(<span class="variable">$filterObjects</span>)</span><br><span class="line">        -&gt;<span class="title function_ invoke__">markRight</span>(<span class="number">2</span>)</span><br><span class="line">        -&gt;<span class="title function_ invoke__">andWhere</span>(<span class="string">&#x27;addedDate&#x27;</span>)-&gt;<span class="title function_ invoke__">le</span>(helper::<span class="title function_ invoke__">now</span>())</span><br><span class="line">        -&gt;<span class="title function_ invoke__">orderBy</span>(<span class="string">&#x27;score_desc, editedDate_desc&#x27;</span>)</span><br><span class="line">        -&gt;<span class="title function_ invoke__">query</span>();</span><br><span class="line"></span><br><span class="line">    <span class="variable">$results</span>     = <span class="keyword">array</span>();</span><br><span class="line">    <span class="variable">$idListGroup</span> = <span class="keyword">array</span>();</span><br><span class="line">    <span class="keyword">while</span>(<span class="variable">$record</span> = <span class="variable">$stmt</span>-&gt;<span class="title function_ invoke__">fetch</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="variable">$results</span>[<span class="variable">$record</span>-&gt;id] = <span class="variable">$record</span>;</span><br><span class="line"></span><br><span class="line">        <span class="variable">$module</span> = <span class="variable">$record</span>-&gt;objectType == <span class="string">&#x27;case&#x27;</span> ? <span class="string">&#x27;testcase&#x27;</span> : <span class="variable">$record</span>-&gt;objectType;</span><br><span class="line">        <span class="variable">$idListGroup</span>[<span class="variable">$module</span>][<span class="variable">$record</span>-&gt;objectID] = <span class="variable">$record</span>-&gt;objectID;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable">$results</span> = <span class="variable language_">$this</span>-&gt;searchTao-&gt;<span class="title function_ invoke__">checkPriv</span>(<span class="variable">$results</span>, <span class="variable">$idListGroup</span>);</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">empty</span>(<span class="variable">$results</span>)) <span class="keyword">return</span> <span class="variable">$results</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Reset pager total and get this page data. */</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$pager</span>) <span class="variable">$results</span> = <span class="variable language_">$this</span>-&gt;searchTao-&gt;<span class="title function_ invoke__">setResultsInPage</span>(<span class="variable">$results</span>, <span class="variable">$pager</span>);</span><br><span class="line"></span><br><span class="line">    <span class="variable">$objectList</span> = <span class="variable language_">$this</span>-&gt;searchTao-&gt;<span class="title function_ invoke__">getobjectList</span>(<span class="variable">$idListGroup</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">processResults</span>(<span class="variable">$results</span>, <span class="variable">$objectList</span>, <span class="variable">$words</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125180702909.png" alt="image-20250125180702909"></p>
+<p>getSqlParams($keywords)</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">getSqlParams</span>(<span class="params"><span class="variable">$keywords</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$spliter</span> = <span class="variable language_">$this</span>-&gt;app-&gt;<span class="title function_ invoke__">loadClass</span>(<span class="string">&#x27;spliter&#x27;</span>);</span><br><span class="line">    <span class="variable">$words</span>   = <span class="title function_ invoke__">explode</span>(<span class="string">&#x27; &#x27;</span>, <span class="variable">$this</span>-&gt;<span class="title function_ invoke__">unify</span>(<span class="variable">$keywords</span>, <span class="string">&#x27; &#x27;</span>));</span><br><span class="line"></span><br><span class="line">    <span class="variable">$against</span>     = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">    <span class="variable">$againstCond</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">    <span class="keyword">foreach</span>(<span class="variable">$words</span> <span class="keyword">as</span> <span class="variable">$word</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">/* 将 utf-8 字符串拆分为单词，为每个单词计算 unicode. */</span></span><br><span class="line">        <span class="variable">$splitedWords</span> = <span class="variable">$spliter</span>-&gt;<span class="title function_ invoke__">utf8Split</span>(<span class="variable">$word</span>);</span><br><span class="line">        <span class="variable">$trimmedWord</span>  = <span class="title function_ invoke__">trim</span>(<span class="variable">$splitedWords</span>[<span class="string">&#x27;words&#x27;</span>]);</span><br><span class="line">        <span class="variable">$against</span>     .= <span class="string">&#x27;&quot;&#x27;</span> . <span class="variable">$trimmedWord</span> . <span class="string">&#x27;&quot; &#x27;</span>;</span><br><span class="line">        <span class="variable">$againstCond</span> .= <span class="string">&#x27;(+&quot;&#x27;</span> . <span class="variable">$trimmedWord</span> . <span class="string">&#x27;&quot;) &#x27;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(<span class="title function_ invoke__">is_numeric</span>(<span class="variable">$word</span>) &amp;&amp; <span class="title function_ invoke__">strpos</span>(<span class="variable">$word</span>, <span class="string">&#x27;.&#x27;</span>) === <span class="literal">false</span> &amp;&amp; <span class="title function_ invoke__">strlen</span>(<span class="variable">$word</span>) == <span class="number">5</span>) <span class="variable">$againstCond</span> .= <span class="string">&quot;(-\&quot; <span class="subst">$word</span> \&quot;) &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable">$likeCondition</span> = <span class="title function_ invoke__">trim</span>(<span class="variable">$keywords</span>) ? <span class="string">&quot;OR title like &#x27;%<span class="subst">&#123;$keywords&#125;</span>%&#x27; OR content like &#x27;%<span class="subst">&#123;$keywords&#125;</span>%&#x27;&quot;</span> : <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="variable">$words</span> = <span class="title function_ invoke__">str_replace</span>(<span class="string">&#x27;&quot;&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="variable">$against</span>);</span><br><span class="line">    <span class="variable">$words</span> = <span class="title function_ invoke__">str_pad</span>(<span class="variable">$words</span>, <span class="number">5</span>, <span class="string">&#x27;_&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">array</span>(<span class="variable">$words</span>, <span class="variable">$againstCond</span>, <span class="variable">$likeCondition</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看到这里是直接拼接导致sql注入。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125190402138.png" alt="image-20250125190402138"></p>
+<p>延时成功</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/categories/">categories</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&text=PHP代码审计-禅道CMS开源版"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&title=PHP代码审计-禅道CMS开源版"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&is_video=false&description=PHP代码审计-禅道CMS开源版"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=PHP代码审计-禅道CMS开源版&body=Check out this article: http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&title=PHP代码审计-禅道CMS开源版"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&title=PHP代码审计-禅道CMS开源版"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&title=PHP代码审计-禅道CMS开源版"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&title=PHP代码审计-禅道CMS开源版"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&name=PHP代码审计-禅道CMS开源版&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/&t=PHP代码审计-禅道CMS开源版"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
