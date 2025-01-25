@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>动态调试技术-phpStudy+PhpStorm+XDebug</title>
+      <link href="/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/"/>
+      <url>/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/</url>
+      
+        <content type="html"><![CDATA[<p>动态调试技术就是为了解决代码审计中变量函数调用过多的情况下，分析从而变的十分复杂。<br>当你使用浏览器访问的时候，就能利用这个技术看到对应脚本的代码执行逻辑。</p><h2 id="1-phpstudy"><a href="#1-phpstudy" class="headerlink" title="1.phpstudy"></a>1.phpstudy</h2><p>phpstudy下载地址：<br><a href="https://www.xp.cn/download.html">https://www.xp.cn/download.html</a></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/147dec2d67a63d8c660e1a270b3c4ccd.png" alt="在这里插入图片描述"></p><p>phpstudy演示版本：phpstudy V8.1</p><h3 id="phpstudy配置"><a href="#phpstudy配置" class="headerlink" title="phpstudy配置"></a>phpstudy配置</h3><p>PHPStudy自带了XDebug的扩展，不需要下载。<br>需要先知道目标源码使用什么php版本运行，就针对性选择对应版本的php。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/52856a83d745515e2402d0cb69bcf1df.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/ef54ea0a5932399f862c04b969199cf1.png" alt="在这里插入图片描述"></p><p>2.打开php.ini文件</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/4e78a7d7acc028a72c15bcb0a1aa42fb.png" alt="在这里插入图片描述"></p><p>搜索关键字xdebug</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/27f267dcb57ca1a7b84dc79b53696c14.png" alt="在这里插入图片描述"></p><p>phpstudy到这里就配置完毕了，非常简单。</p><h2 id="2-phpstorm-重点"><a href="#2-phpstorm-重点" class="headerlink" title="2.phpstorm(重点)"></a>2.phpstorm(重点)</h2><p>一、选择PHP版本</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/44891427ecdbd6c9ecd373e9c22416c7.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/7fe7e4eb77866baad35ed561bbdaa07d.png" alt="在这里插入图片描述"></p><p>二、配置Debug</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/88ddf321015593dced2dfebc1df17717.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/f3106feca30e1b76303cb81aa5985346.png" alt="在这里插入图片描述"></p><p>三、设置服务器(phpstudy的地址)</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/f9b06a22ea8363863dc07f314616304d.png" alt="在这里插入图片描述"></p><p>四、编辑配置</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/0fe837c8f5477e5178f142249bee1f39.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/ea7e50913bf182ce4f0d91a73b506adf.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/68dd73126cbc02ccad541e7abe449e5d.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/a1d207075ec1c6c9d8fe241c09283dd0.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/13aa2f496b240105e735d53cecf82fd0.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/e77b39fe56af8f602ed7263d9646865e.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/52d3f412bb480c031350820bbe712870.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/2640ee8ee638cbaf3ea0cb508f67acfc.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/ec9315e0d29f154e377ac0c5c6d014f5.png" alt="在这里插入图片描述"></p><p>到这步phpstorm配置完毕了。</p><p>3.PhpStorm开启监听并运行断点访问</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/3c415ed1f6ec7853ba4a68b8a097ec07.png" alt="在这里插入图片描述"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/019a50bfdf262e3629bc71ffab0ef162.png" alt="在这里插入图片描述"></p><p>————————————————</p><pre><code>版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。</code></pre><p>原文链接：<a href="https://blog.csdn.net/m0_60571842/article/details/133246064">https://blog.csdn.net/m0_60571842/article/details/133246064</a></p><h2 id="实战上篇项目"><a href="#实战上篇项目" class="headerlink" title="实战上篇项目"></a>实战上篇项目</h2><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125225108821.png" alt="image-20250125225108821"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125225112199.png" alt="image-20250125225112199"></p><p>现在方便多了，动态调试yyds</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> PHP安全 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>PHP代码审计-禅道CMS开源版</title>
       <link href="/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/"/>
       <url>/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/</url>

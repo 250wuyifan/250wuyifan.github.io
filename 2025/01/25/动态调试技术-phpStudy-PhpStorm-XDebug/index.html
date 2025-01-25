@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="动态调试技术就是为了解决代码审计中变量函数调用过多的情况下，分析从而变的十分复杂。当你使用浏览器访问的时候，就能利用这个技术看到对应脚本的代码执行逻辑。 1.phpstudyphpstudy下载地址：https:&#x2F;&#x2F;www.xp.cn&#x2F;download.html  phpstudy演示版本：phpstudy V8.1 phpstudy配置PHPStudy自带了XDebug的扩展，不需要下载。需要先">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态调试技术-phpStudy+PhpStorm+XDebug">
+<meta property="og:url" content="http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="动态调试技术就是为了解决代码审计中变量函数调用过多的情况下，分析从而变的十分复杂。当你使用浏览器访问的时候，就能利用这个技术看到对应脚本的代码执行逻辑。 1.phpstudyphpstudy下载地址：https:&#x2F;&#x2F;www.xp.cn&#x2F;download.html  phpstudy演示版本：phpstudy V8.1 phpstudy配置PHPStudy自带了XDebug的扩展，不需要下载。需要先">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/147dec2d67a63d8c660e1a270b3c4ccd.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/52856a83d745515e2402d0cb69bcf1df.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/ef54ea0a5932399f862c04b969199cf1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/4e78a7d7acc028a72c15bcb0a1aa42fb.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/27f267dcb57ca1a7b84dc79b53696c14.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/44891427ecdbd6c9ecd373e9c22416c7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/7fe7e4eb77866baad35ed561bbdaa07d.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/88ddf321015593dced2dfebc1df17717.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/f3106feca30e1b76303cb81aa5985346.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/f9b06a22ea8363863dc07f314616304d.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/0fe837c8f5477e5178f142249bee1f39.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/ea7e50913bf182ce4f0d91a73b506adf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/68dd73126cbc02ccad541e7abe449e5d.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/a1d207075ec1c6c9d8fe241c09283dd0.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/13aa2f496b240105e735d53cecf82fd0.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/e77b39fe56af8f602ed7263d9646865e.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/52d3f412bb480c031350820bbe712870.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/2640ee8ee638cbaf3ea0cb508f67acfc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/ec9315e0d29f154e377ac0c5c6d014f5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/3c415ed1f6ec7853ba4a68b8a097ec07.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/019a50bfdf262e3629bc71ffab0ef162.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125225108821.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125225112199.png">
+<meta property="article:published_time" content="2025-01-25T13:03:55.000Z">
+<meta property="article:modified_time" content="2025-01-25T14:52:11.161Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="PHP安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/147dec2d67a63d8c660e1a270b3c4ccd.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>动态调试技术-phpStudy+PhpStorm+XDebug</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/01/25/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E7%A6%85%E9%81%93CMS%E5%BC%80%E6%BA%90%E7%89%88/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&text=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&title=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&is_video=false&description=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=动态调试技术-phpStudy+PhpStorm+XDebug&body=Check out this article: http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&title=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&title=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&title=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&title=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&name=动态调试技术-phpStudy+PhpStorm+XDebug&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&t=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-phpstudy"><span class="toc-number">1.</span> <span class="toc-text">1.phpstudy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpstudy%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">phpstudy配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-phpstorm-%E9%87%8D%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">2.phpstorm(重点)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E4%B8%8A%E7%AF%87%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.</span> <span class="toc-text">实战上篇项目</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        动态调试技术-phpStudy+PhpStorm+XDebug
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-01-25T13:03:55.000Z" class="dt-published" itemprop="datePublished">2025-01-25</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/PHP%E5%AE%89%E5%85%A8/" rel="tag">PHP安全</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>动态调试技术就是为了解决代码审计中变量函数调用过多的情况下，分析从而变的十分复杂。<br>当你使用浏览器访问的时候，就能利用这个技术看到对应脚本的代码执行逻辑。</p>
+<h2 id="1-phpstudy"><a href="#1-phpstudy" class="headerlink" title="1.phpstudy"></a>1.phpstudy</h2><p>phpstudy下载地址：<br><a target="_blank" rel="noopener" href="https://www.xp.cn/download.html">https://www.xp.cn/download.html</a></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/147dec2d67a63d8c660e1a270b3c4ccd.png" alt="在这里插入图片描述"></p>
+<p>phpstudy演示版本：phpstudy V8.1</p>
+<h3 id="phpstudy配置"><a href="#phpstudy配置" class="headerlink" title="phpstudy配置"></a>phpstudy配置</h3><p>PHPStudy自带了XDebug的扩展，不需要下载。<br>需要先知道目标源码使用什么php版本运行，就针对性选择对应版本的php。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/52856a83d745515e2402d0cb69bcf1df.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/ef54ea0a5932399f862c04b969199cf1.png" alt="在这里插入图片描述"></p>
+<p>2.打开php.ini文件</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/4e78a7d7acc028a72c15bcb0a1aa42fb.png" alt="在这里插入图片描述"></p>
+<p>搜索关键字xdebug</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/27f267dcb57ca1a7b84dc79b53696c14.png" alt="在这里插入图片描述"></p>
+<p>phpstudy到这里就配置完毕了，非常简单。</p>
+<h2 id="2-phpstorm-重点"><a href="#2-phpstorm-重点" class="headerlink" title="2.phpstorm(重点)"></a>2.phpstorm(重点)</h2><p>一、选择PHP版本</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/44891427ecdbd6c9ecd373e9c22416c7.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/7fe7e4eb77866baad35ed561bbdaa07d.png" alt="在这里插入图片描述"></p>
+<p>二、配置Debug</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/88ddf321015593dced2dfebc1df17717.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/f3106feca30e1b76303cb81aa5985346.png" alt="在这里插入图片描述"></p>
+<p>三、设置服务器(phpstudy的地址)</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/f9b06a22ea8363863dc07f314616304d.png" alt="在这里插入图片描述"></p>
+<p>四、编辑配置</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/0fe837c8f5477e5178f142249bee1f39.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/ea7e50913bf182ce4f0d91a73b506adf.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/68dd73126cbc02ccad541e7abe449e5d.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/a1d207075ec1c6c9d8fe241c09283dd0.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/13aa2f496b240105e735d53cecf82fd0.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/e77b39fe56af8f602ed7263d9646865e.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/52d3f412bb480c031350820bbe712870.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/2640ee8ee638cbaf3ea0cb508f67acfc.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/ec9315e0d29f154e377ac0c5c6d014f5.png" alt="在这里插入图片描述"></p>
+<p>到这步phpstorm配置完毕了。</p>
+<p>3.PhpStorm开启监听并运行断点访问</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/3c415ed1f6ec7853ba4a68b8a097ec07.png" alt="在这里插入图片描述"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/019a50bfdf262e3629bc71ffab0ef162.png" alt="在这里插入图片描述"></p>
+<p>————————————————</p>
+<pre><code>版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。
+</code></pre>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_60571842/article/details/133246064">https://blog.csdn.net/m0_60571842/article/details/133246064</a></p>
+<h2 id="实战上篇项目"><a href="#实战上篇项目" class="headerlink" title="实战上篇项目"></a>实战上篇项目</h2><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125225108821.png" alt="image-20250125225108821"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125225112199.png" alt="image-20250125225112199"></p>
+<p>现在方便多了，动态调试yyds</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/categories/">categories</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-phpstudy"><span class="toc-number">1.</span> <span class="toc-text">1.phpstudy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpstudy%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">phpstudy配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-phpstorm-%E9%87%8D%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">2.phpstorm(重点)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E4%B8%8A%E7%AF%87%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.</span> <span class="toc-text">实战上篇项目</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&text=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&title=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&is_video=false&description=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=动态调试技术-phpStudy+PhpStorm+XDebug&body=Check out this article: http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&title=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&title=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&title=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&title=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&name=动态调试技术-phpStudy+PhpStorm+XDebug&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/25/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF-phpStudy-PhpStorm-XDebug/&t=动态调试技术-phpStudy+PhpStorm+XDebug"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
