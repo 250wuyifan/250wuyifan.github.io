@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125225108821.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125225112199.png">
 <meta property="article:published_time" content="2025-01-25T13:03:55.000Z">
-<meta property="article:modified_time" content="2025-01-25T14:52:11.161Z">
+<meta property="article:modified_time" content="2025-01-25T15:02:08.323Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="PHP安全">
 <meta name="twitter:card" content="summary">
@@ -139,7 +139,7 @@
     
     
       <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-phpstudy"><span class="toc-number">1.</span> <span class="toc-text">1.phpstudy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpstudy%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">phpstudy配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-phpstorm-%E9%87%8D%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">2.phpstorm(重点)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E4%B8%8A%E7%AF%87%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.</span> <span class="toc-text">实战上篇项目</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-phpstudy"><span class="toc-number">1.</span> <span class="toc-text">1.phpstudy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpstudy%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">phpstudy配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-phpstorm-%E9%87%8D%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">2.phpstorm(重点)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Xdebug%E5%BB%B6%E9%95%BF%E8%B0%83%E8%AF%95%E6%97%B6%E9%97%B4"><span class="toc-number">3.</span> <span class="toc-text">Xdebug延长调试时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E4%B8%8A%E7%AF%87%E9%A1%B9%E7%9B%AE"><span class="toc-number">4.</span> <span class="toc-text">实战上篇项目</span></a></li></ol>
       </div>
     
   </span>
@@ -219,9 +219,33 @@
 <p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/3c415ed1f6ec7853ba4a68b8a097ec07.png" alt="在这里插入图片描述"></p>
 <p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/019a50bfdf262e3629bc71ffab0ef162.png" alt="在这里插入图片描述"></p>
 <p>————————————————</p>
-<pre><code>版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。
-</code></pre>
 <p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_60571842/article/details/133246064">https://blog.csdn.net/m0_60571842/article/details/133246064</a></p>
+<h2 id="Xdebug延长调试时间"><a href="#Xdebug延长调试时间" class="headerlink" title="Xdebug延长调试时间"></a>Xdebug延长调试时间</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43888304/article/details/120802226">https://blog.csdn.net/weixin_43888304/article/details/120802226</a></p>
+<p> 因为我在phpstorm用xdebug调试时，没过多久就断掉然后出现500服务器错误的现象</p>
+<p>解决办法</p>
+<ol>
+<li>打开apache的配置文件，在apache\conf\httpd.conf里修改</li>
+</ol>
+<p>找到这一行并且把前面的注释去掉</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Include conf/extra/httpd-default.conf</span><br></pre></td></tr></table></figure>
+
+<p>添加这一行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Include conf/extra/httpd-fcgid.conf</span><br></pre></td></tr></table></figure>
+
+<p> 2.在apache\conf\extra\httpd-default.conf里修改</p>
+<p>直接在文档末尾处加上下面这段文字，具体时间可以自己修改</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">#xdebug:</span><br><span class="line"></span><br><span class="line"># Timeout: The number of seconds before receives and sends time out.</span><br><span class="line"></span><br><span class="line">#</span><br><span class="line">Timeout 7200</span><br><span class="line"></span><br><span class="line">#</span><br><span class="line"></span><br><span class="line"># KeepAlive: Whether or not to allow persistent connections (more than</span><br><span class="line"></span><br><span class="line"># one request per connection). Set to &quot;Off&quot; to deactivate.</span><br><span class="line"></span><br><span class="line">#</span><br><span class="line">KeepAlive On</span><br><span class="line"></span><br><span class="line">#</span><br><span class="line"></span><br><span class="line"># MaxKeepAliveRequests: The maximum number of requests to allow</span><br><span class="line"></span><br><span class="line"># during a persistent connection. Set to 0 to allow an unlimited amount.</span><br><span class="line"></span><br><span class="line"># We recommend you leave this number high, for maximum performance.</span><br><span class="line"></span><br><span class="line">#</span><br><span class="line">MaxKeepAliveRequests 0</span><br><span class="line"></span><br><span class="line">#</span><br><span class="line"></span><br><span class="line"># KeepAliveTimeout: Number of seconds to wait for the next request from the</span><br><span class="line"></span><br><span class="line"># same client on the same connection.</span><br><span class="line"></span><br><span class="line">#</span><br><span class="line">KeepAliveTimeout 7200</span><br></pre></td></tr></table></figure>
+
+<p>3.在apache\conf\extra目录下新建一个httpd-fcgid.conf文件，这个就是我们刚才在配置文件加的，然后把下面的内容加进去</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ProcessLifeTime 7200</span><br><span class="line">FcgidIOTimeout 7200</span><br><span class="line">FcgidConnectTimeout 7200</span><br><span class="line">FcgidOutputBufferSize 128</span><br><span class="line">FcgidMaxRequestsPerProcess 1000</span><br><span class="line">FcgidMinProcessesPerClass 0 </span><br><span class="line">FcgidMaxProcesses 16 </span><br><span class="line">FcgidMaxRequestLen 268435456   </span><br><span class="line">FcgidInitialEnv PHP_FCGI_MAX_REQUESTS 1000</span><br><span class="line">IPCConnectTimeout 7200</span><br><span class="line">IPCCommTimeout 7200</span><br><span class="line">FcgidIdleTimeout 7200</span><br><span class="line">FcgidBusyTimeout 60000</span><br><span class="line">FcgidBusyScanInterval 120</span><br><span class="line">FcgidInitialEnv PHPRC &quot;D:\phpstudy_pro\Extensions\php\php7.4.3nts&quot;</span><br><span class="line">AddHandler fcgid-script .php</span><br></pre></td></tr></table></figure>
+
+<p>FcgidInitialEnv PHPRC 这一行填写你使用的php路径</p>
+<p>修改完apache记得重启一下！！</p>
+<p>4.在php的配置文件php.ini里修改</p>
+<p>找到这一行，修改成你配置的时间</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">max_execution_time=7200</span><br></pre></td></tr></table></figure>
+
+<p>配置完成，你可以快乐的调试了</p>
 <h2 id="实战上篇项目"><a href="#实战上篇项目" class="headerlink" title="实战上篇项目"></a>实战上篇项目</h2><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125225108821.png" alt="image-20250125225108821"></p>
 <p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250125225112199.png" alt="image-20250125225112199"></p>
 <p>现在方便多了，动态调试yyds</p>
@@ -254,7 +278,7 @@
     
     
       <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-phpstudy"><span class="toc-number">1.</span> <span class="toc-text">1.phpstudy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpstudy%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">phpstudy配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-phpstorm-%E9%87%8D%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">2.phpstorm(重点)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E4%B8%8A%E7%AF%87%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.</span> <span class="toc-text">实战上篇项目</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-phpstudy"><span class="toc-number">1.</span> <span class="toc-text">1.phpstudy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpstudy%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">phpstudy配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-phpstorm-%E9%87%8D%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">2.phpstorm(重点)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Xdebug%E5%BB%B6%E9%95%BF%E8%B0%83%E8%AF%95%E6%97%B6%E9%97%B4"><span class="toc-number">3.</span> <span class="toc-text">Xdebug延长调试时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E4%B8%8A%E7%AF%87%E9%A1%B9%E7%9B%AE"><span class="toc-number">4.</span> <span class="toc-text">实战上篇项目</span></a></li></ol>
       </div>
     
 
