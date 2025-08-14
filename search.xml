@@ -4,6 +4,44 @@
   
     
     <entry>
+      <title>tesst</title>
+      <link href="/2025/08/14/7.22/"/>
+      <url>/2025/08/14/7.22/</url>
+      
+        <content type="html"><![CDATA[<h1 id="PoolParty-进程注入技术（windows线程池）"><a href="#PoolParty-进程注入技术（windows线程池）" class="headerlink" title="PoolParty 进程注入技术（windows线程池）"></a><font style="color:rgb(34, 34, 34);">PoolParty 进程注入技术（windows线程池）</font></h1><p><strong><font style="color:#DF2A3F;background-color:rgb(248, 248, 248);">这个的好处是不用自己创建线程</font></strong></p><p><strong><font style="color:#DF2A3F;background-color:rgb(248, 248, 248);">打开进程和分配内存还有写入还是要更改。</font></strong></p><p><a href="https://github.com/SafeBreach-Labs/PoolParty">https://github.com/SafeBreach-Labs/PoolParty</a></p><p><a href="https://hackmag.com/security/pool-party">https://hackmag.com/security/pool-party</a></p><p><a href="https://github.com/SafeBreach-Labs/PoolParty">https://github.com/SafeBreach-Labs/PoolParty</a></p><p><img src="https://cdn.nlark.com/yuque/0/2025/png/26736103/1753144249431-cfae6176-03cf-4ae9-89d8-6134d4eb58c3.png"></p><h2 id="Windows-线程池"><a href="#Windows-线程池" class="headerlink" title="Windows 线程池"></a><font style="color:rgb(34, 34, 34);">Windows 线程池</font></h2><p><font style="color:rgb(34, 34, 34);">Windows 线程池机制显著简化了程序员的线程管理。异步交互和性能管理等任务通过重用现有线程在后台得到解决，从而减少了创建和终止线程所需的 CPU 成本。同时，Windows 线程池还解决了与线程队列相关的问题以及无数可能让程序员抓狂的细微差别。</font></p><p><font style="color:rgb(34, 34, 34);">管理线程池的代码大部分位于用户模式（</font><font style="color:rgb(34, 34, 34);">），只有一小部分位于内核；因此，没有必要在内核和用户空间之间频繁进行上下文切换而浪费资源。</font><code>&lt;font style=&quot;color:rgb(0, 0, 0);background-color:rgb(248, 248, 248);&quot;&gt;ntdll.&lt;/font&gt;&lt;font style=&quot;color:rgb(0, 0, 0);background-color:rgb(248, 248, 248);&quot;&gt;dll&lt;/font&gt;</code></p><p><font style="color:rgb(34, 34, 34);">Windows线程池的主要元素如下：</font></p><ul><li><font style="color:rgb(34, 34, 34);">管理新线程的创建和删除的 Worker Factory； </font></li><li><font style="color:rgb(34, 34, 34);">工作队列：</font><ul><li><font style="color:rgb(34, 34, 34);">任务队列负责调度传入线程池的任务。这些任务可以很快（即在短时间内执行），也可以执行时间较长。线程池会自动扩展；如果任务数量较多，线程池可以创建更多线程来应对负载。</font></li><li><font style="color:rgb(34, 34, 34);">I/O完成队列执行与I/O操作相关的任务（例如文件操作或网络请求）； </font></li><li><font style="color:rgb(34, 34, 34);">定时器队列使得按照一定的时间间隔或者在指定的时间执行任务成为可能。</font></li></ul></li></ul><p><font style="color:rgb(34, 34, 34);">从 PoolParty 开发角度来看，上面列出的线程池元素是最受关注的。</font></p><p><font style="color:rgb(34, 34, 34);">需要注意的是，Windows 环境中运行的所有进程默认都使用线程池。为了通过实验验证这一点，您可以启动 Process Explorer，选择任意进程，然后转到“句柄”选项卡。</font></p><h2 id="捕获目标句柄"><a href="#捕获目标句柄" class="headerlink" title="捕获目标句柄"></a><font style="color:rgb(34, 34, 34);">捕获目标句柄</font></h2><p><font style="color:rgb(34, 34, 34);">与线程池元素的交互是通过句柄实现的。因此，要访问目标进程的工作工厂，必须找到它的句柄并使用 WinAPI</font><code>&lt;font style=&quot;color:rgb(0, 0, 0);background-color:rgb(248, 248, 248);&quot;&gt;DuplicateHandle&lt;/font&gt;</code><font style="color:rgb(34, 34, 34);">函数捕获它。</font></p><p><font style="color:rgb(34, 34, 34);">线程池句柄分为几种类型。如果需要访问工作器工厂， </font><code>&lt;font style=&quot;color:rgb(0, 0, 0);background-color:rgb(248, 248, 248);&quot;&gt;TpWorkerFactory&lt;/font&gt;</code><font style="color:rgb(34, 34, 34);">则应使用对象类型为 的句柄；要访问计时器队列，则应使用类型的句柄</font><code>&lt;font style=&quot;color:rgb(0, 0, 0);background-color:rgb(248, 248, 248);&quot;&gt;IRTimer&lt;/font&gt;</code><font style="color:rgb(34, 34, 34);">；要访问 I/O 队列，则应使用</font><code>&lt;font style=&quot;color:rgb(0, 0, 0);background-color:rgb(248, 248, 248);&quot;&gt;IoCompletion&lt;/font&gt;</code><font style="color:rgb(34, 34, 34);">类型的句柄。由于您要攻击工作器工厂，因此必须查找 </font><code>&lt;font style=&quot;color:rgb(0, 0, 0);background-color:rgb(248, 248, 248);&quot;&gt;TpWorkerFactory&lt;/font&gt;</code><font style="color:rgb(34, 34, 34);">对象管理器类型。</font></p><p><font style="color:rgb(34, 34, 34);">此外，还需要NTAPI 函数</font><code>&lt;font style=&quot;color:rgb(0, 0, 0);background-color:rgb(248, 248, 248);&quot;&gt;NtQueryInformationProcess&lt;/font&gt;</code><font style="color:rgb(34, 34, 34);">和 ；它们的地址可以从中动态获取（仅供参考：本文中提到的其他 NTAPI 函数的地址可以通过类似的方式获取）。</font><code>&lt;font style=&quot;color:rgb(0, 0, 0);background-color:rgb(248, 248, 248);&quot;&gt;NtQueryObject&lt;/font&gt;``&lt;font style=&quot;color:rgb(0, 0, 0);background-color:rgb(248, 248, 248);&quot;&gt;ntdll.dll&lt;/font&gt;</code></p><p><img src="https://cdn.nlark.com/yuque/0/2025/png/26736103/1753150821980-f95218f9-b839-454e-b3e6-f0fbd6895e52.png"></p><p><img src="https://cdn.nlark.com/yuque/0/2025/png/26736103/1753150957654-d9fd64e6-a20a-4920-a3b1-8fabb24d0c35.png"></p><p><strong><font style="color:#DF2A3F;background-color:rgb(248, 248, 248);"></font></strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> assa </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> ssd </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>tesst</title>
+      <link href="/2025/08/14/tesst/"/>
+      <url>/2025/08/14/tesst/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>文章标题</title>
       <link href="/2025/08/14/%E6%96%87%E7%AB%A0%E6%A0%87%E9%A2%98/"/>
       <url>/2025/08/14/%E6%96%87%E7%AB%A0%E6%A0%87%E9%A2%98/</url>
