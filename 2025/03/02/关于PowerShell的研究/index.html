@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="s 什么是 PowerShell？PowerShell 是微软为系统管理员和高级用户提供的多功能工具，常被称为“瑞士军刀”。它于 2006 年推出，融合了强大的命令行 shell 和脚本语言功能。 PowerShell 的独特之处在于：  面向对象：PowerShell 不仅能处理文本，还能处理结构化数据，使得在命令之间操作和传输复杂信息变得轻松自如。 基于 .NET 构建：这一点让 PowerS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于PowerShell的研究">
+<meta property="og:url" content="http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="s 什么是 PowerShell？PowerShell 是微软为系统管理员和高级用户提供的多功能工具，常被称为“瑞士军刀”。它于 2006 年推出，融合了强大的命令行 shell 和脚本语言功能。 PowerShell 的独特之处在于：  面向对象：PowerShell 不仅能处理文本，还能处理结构化数据，使得在命令之间操作和传输复杂信息变得轻松自如。 基于 .NET 构建：这一点让 PowerS">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120103949.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120033697.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303115957302.png">
+<meta property="article:published_time" content="2025-03-02T12:57:51.000Z">
+<meta property="article:modified_time" content="2025-03-03T04:01:07.015Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="《免杀技术实践》">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120103949.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>关于PowerShell的研究</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2025/08/14/%E6%96%87%E7%AB%A0%E6%A0%87%E9%A2%98/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/02/24/%E9%82%AE%E4%BB%B6%E9%92%93%E9%B1%BC/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&text=关于PowerShell的研究"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&title=关于PowerShell的研究"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&is_video=false&description=关于PowerShell的研究"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=关于PowerShell的研究&body=Check out this article: http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&title=关于PowerShell的研究"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&title=关于PowerShell的研究"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&title=关于PowerShell的研究"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&title=关于PowerShell的研究"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&name=关于PowerShell的研究&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&t=关于PowerShell的研究"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-PowerShell%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是 PowerShell？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%BA%A2%E9%98%9F%E5%96%9C%E6%AC%A2-PowerShell"><span class="toc-number">2.</span> <span class="toc-text">为什么红队喜欢 PowerShell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PowerShell-%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD%E5%8A%9F%E8%83%BD"><span class="toc-number">3.</span> <span class="toc-text">PowerShell 及其内存加载功能</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Invoke-Expression-Cmdlet-%E2%80%94-%E5%90%AF%E7%94%A8%E5%86%85%E5%AD%98%E6%89%A7%E8%A1%8C"><span class="toc-number">4.</span> <span class="toc-text">Invoke-Expression Cmdlet — 启用内存执行</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        关于PowerShell的研究
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">John Doe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-03-02T12:57:51.000Z" class="dt-published" itemprop="datePublished">2025-03-02</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/" rel="tag">《免杀技术实践》</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>s</p>
+<h1 id="什么是-PowerShell？"><a href="#什么是-PowerShell？" class="headerlink" title="什么是 PowerShell？"></a>什么是 PowerShell？</h1><p>PowerShell 是微软为系统管理员和高级用户提供的多功能工具，常被称为“瑞士军刀”。它于 2006 年推出，融合了强大的命令行 shell 和脚本语言功能。</p>
+<p>PowerShell 的独特之处在于：</p>
+<ol>
+<li><strong>面向对象</strong>：PowerShell 不仅能处理文本，还能处理结构化数据，使得在命令之间操作和传输复杂信息变得轻松自如。</li>
+<li><strong>基于 .NET 构建</strong>：这一点让 PowerShell 能够深入访问 Windows 内部，具有极强的系统管理能力。</li>
+<li><strong>跨平台支持</strong>：虽然 PowerShell 最初仅适用于 Windows，但现在它也可以在 Linux 和 macOS 上运行。</li>
+<li><strong>高效的管理工具</strong>：无论您是在管理单一笔记本电脑还是一组云服务器，PowerShell 都能帮助您更快速、高效地完成任务。因此，对于任何专注于 Windows 管理或 DevOps 的用户来说，它都是首选工具。</li>
+</ol>
+<h1 id="为什么红队喜欢-PowerShell"><a href="#为什么红队喜欢-PowerShell" class="headerlink" title="为什么红队喜欢 PowerShell"></a>为什么红队喜欢 PowerShell</h1><p>PowerShell 已经稳固地成为红队和渗透测试的核心工具，原因如下：</p>
+<ol>
+<li><strong>预装在 Windows 上</strong>：这意味着攻击者无需额外安装工具，减少了被检测的风险。</li>
+<li><strong>深度集成 Windows 和 .NET</strong>：攻击者可以利用这一点来窃取凭证、在网络中横向移动或提取敏感数据。</li>
+<li><strong>全面支持攻击过程</strong>：从发现目标到保持访问，PowerShell 都能处理攻击的各个步骤。</li>
+<li><strong>脚本隐藏和混淆</strong>：攻击者能够隐藏或扰乱脚本，使得防御者更难检测到它们。</li>
+<li><strong>与云平台兼容</strong>：PowerShell 能与 Azure 和 AWS 等云平台协同工作，适应现代攻击需求。</li>
+</ol>
+<p>总之，PowerShell 不仅仅是一个工具，它已经成为应对现代攻击面不可或缺的强大盟友。</p>
+<h1 id="PowerShell-及其内存加载功能"><a href="#PowerShell-及其内存加载功能" class="headerlink" title="PowerShell 及其内存加载功能"></a>PowerShell 及其内存加载功能</h1><p>PowerShell 的内存执行功能是红队梦寐以求的强大工具，原因如下：</p>
+<ol>
+<li><strong>代码直接在 RAM 中运行</strong>：这样代码不会在磁盘上留下任何痕迹，使得防病毒软件和其他安全工具难以检测到。</li>
+<li><strong>动态生成和混淆代码</strong>：攻击者可以根据不同环境动态生成、修改或混淆代码，从而快速绕过安全防护。</li>
+<li><strong>全框架和工具加载到内存</strong>：整个攻击框架和复杂工具都可以加载到内存中，攻击者无需在系统中安装任何软件即可使用完整功能。</li>
+<li><strong>低调且高效</strong>：一旦进入系统，内存执行可以支持从凭证收集到横向移动的所有攻击活动，同时保持低调，减少被发现的风险。</li>
+</ol>
+<h1 id="Invoke-Expression-Cmdlet-—-启用内存执行"><a href="#Invoke-Expression-Cmdlet-—-启用内存执行" class="headerlink" title="Invoke-Expression Cmdlet — 启用内存执行"></a>Invoke-Expression Cmdlet — 启用内存执行</h1><p><code>Invoke-Expression</code>（IEX）允许将字符串作为 PowerShell 命令在当前会话中执行，是实现内存执行的关键工具。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Invoke-Expression</span> <span class="string">&quot;Get-Process&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>此命令运行“Get-Process”并返回活动进程列表。<code>Invoke-Expression</code>与其他 cmdlet 或 .NET 方法结合使用时功能更加强大，可实现复杂的内存中命令执行。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120103949.png" alt="image-20250303120103949"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120033697.png" alt="image-20250303120033697"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303115957302.png" alt="image-20250303115957302"></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/categories/">categories</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-PowerShell%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是 PowerShell？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%BA%A2%E9%98%9F%E5%96%9C%E6%AC%A2-PowerShell"><span class="toc-number">2.</span> <span class="toc-text">为什么红队喜欢 PowerShell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PowerShell-%E5%8F%8A%E5%85%B6%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD%E5%8A%9F%E8%83%BD"><span class="toc-number">3.</span> <span class="toc-text">PowerShell 及其内存加载功能</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Invoke-Expression-Cmdlet-%E2%80%94-%E5%90%AF%E7%94%A8%E5%86%85%E5%AD%98%E6%89%A7%E8%A1%8C"><span class="toc-number">4.</span> <span class="toc-text">Invoke-Expression Cmdlet — 启用内存执行</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&text=关于PowerShell的研究"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&title=关于PowerShell的研究"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&is_video=false&description=关于PowerShell的研究"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=关于PowerShell的研究&body=Check out this article: http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&title=关于PowerShell的研究"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&title=关于PowerShell的研究"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&title=关于PowerShell的研究"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&title=关于PowerShell的研究"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&name=关于PowerShell的研究&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/&t=关于PowerShell的研究"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    John Doe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

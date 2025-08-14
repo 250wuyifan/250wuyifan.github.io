@@ -4,6 +4,76 @@
   
     
     <entry>
+      <title>文章标题</title>
+      <link href="/2025/08/14/%E6%96%87%E7%AB%A0%E6%A0%87%E9%A2%98/"/>
+      <url>/2025/08/14/%E6%96%87%E7%AB%A0%E6%A0%87%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>关于PowerShell的研究</title>
+      <link href="/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/"/>
+      <url>/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/</url>
+      
+        <content type="html"><![CDATA[<p>s</p><h1 id="什么是-PowerShell？"><a href="#什么是-PowerShell？" class="headerlink" title="什么是 PowerShell？"></a>什么是 PowerShell？</h1><p>PowerShell 是微软为系统管理员和高级用户提供的多功能工具，常被称为“瑞士军刀”。它于 2006 年推出，融合了强大的命令行 shell 和脚本语言功能。</p><p>PowerShell 的独特之处在于：</p><ol><li><strong>面向对象</strong>：PowerShell 不仅能处理文本，还能处理结构化数据，使得在命令之间操作和传输复杂信息变得轻松自如。</li><li><strong>基于 .NET 构建</strong>：这一点让 PowerShell 能够深入访问 Windows 内部，具有极强的系统管理能力。</li><li><strong>跨平台支持</strong>：虽然 PowerShell 最初仅适用于 Windows，但现在它也可以在 Linux 和 macOS 上运行。</li><li><strong>高效的管理工具</strong>：无论您是在管理单一笔记本电脑还是一组云服务器，PowerShell 都能帮助您更快速、高效地完成任务。因此，对于任何专注于 Windows 管理或 DevOps 的用户来说，它都是首选工具。</li></ol><h1 id="为什么红队喜欢-PowerShell"><a href="#为什么红队喜欢-PowerShell" class="headerlink" title="为什么红队喜欢 PowerShell"></a>为什么红队喜欢 PowerShell</h1><p>PowerShell 已经稳固地成为红队和渗透测试的核心工具，原因如下：</p><ol><li><strong>预装在 Windows 上</strong>：这意味着攻击者无需额外安装工具，减少了被检测的风险。</li><li><strong>深度集成 Windows 和 .NET</strong>：攻击者可以利用这一点来窃取凭证、在网络中横向移动或提取敏感数据。</li><li><strong>全面支持攻击过程</strong>：从发现目标到保持访问，PowerShell 都能处理攻击的各个步骤。</li><li><strong>脚本隐藏和混淆</strong>：攻击者能够隐藏或扰乱脚本，使得防御者更难检测到它们。</li><li><strong>与云平台兼容</strong>：PowerShell 能与 Azure 和 AWS 等云平台协同工作，适应现代攻击需求。</li></ol><p>总之，PowerShell 不仅仅是一个工具，它已经成为应对现代攻击面不可或缺的强大盟友。</p><h1 id="PowerShell-及其内存加载功能"><a href="#PowerShell-及其内存加载功能" class="headerlink" title="PowerShell 及其内存加载功能"></a>PowerShell 及其内存加载功能</h1><p>PowerShell 的内存执行功能是红队梦寐以求的强大工具，原因如下：</p><ol><li><strong>代码直接在 RAM 中运行</strong>：这样代码不会在磁盘上留下任何痕迹，使得防病毒软件和其他安全工具难以检测到。</li><li><strong>动态生成和混淆代码</strong>：攻击者可以根据不同环境动态生成、修改或混淆代码，从而快速绕过安全防护。</li><li><strong>全框架和工具加载到内存</strong>：整个攻击框架和复杂工具都可以加载到内存中，攻击者无需在系统中安装任何软件即可使用完整功能。</li><li><strong>低调且高效</strong>：一旦进入系统，内存执行可以支持从凭证收集到横向移动的所有攻击活动，同时保持低调，减少被发现的风险。</li></ol><h1 id="Invoke-Expression-Cmdlet-—-启用内存执行"><a href="#Invoke-Expression-Cmdlet-—-启用内存执行" class="headerlink" title="Invoke-Expression Cmdlet — 启用内存执行"></a>Invoke-Expression Cmdlet — 启用内存执行</h1><p><code>Invoke-Expression</code>（IEX）允许将字符串作为 PowerShell 命令在当前会话中执行，是实现内存执行的关键工具。</p><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Invoke-Expression</span> <span class="string">&quot;Get-Process&quot;</span></span><br></pre></td></tr></table></figure><p>此命令运行“Get-Process”并返回活动进程列表。<code>Invoke-Expression</code>与其他 cmdlet 或 .NET 方法结合使用时功能更加强大，可实现复杂的内存中命令执行。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120103949.png" alt="image-20250303120103949"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120033697.png" alt="image-20250303120033697"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303115957302.png" alt="image-20250303115957302"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 《免杀技术实践》 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>一名合格蓝队需要学习的知识(上)</title>
+      <link href="/2025/02/24/%E9%82%AE%E4%BB%B6%E9%92%93%E9%B1%BC/"/>
+      <url>/2025/02/24/%E9%82%AE%E4%BB%B6%E9%92%93%E9%B1%BC/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>作者本人还在为25年可能的hw行动做准备，之前做了多次蓝队，现在明白了自己的不足，就是作为蓝队的话，也需要完整的知道红队的手法如何，大体来说除了传统web攻击，邮件钓鱼这方面也是需要关注的，所以先介绍这方面的内容，在整个钓鱼体系中，首先是收集好攻击目标的邮箱或者联系方式，然后根据不同的目标使用不同的话术，之后就是明白自己的需求，是想要控制目标的机器，还是只需要知道对方的账号密码之类的，如果是后者，那就要做好钓鱼网页，像学校的教务系统页面，伪造起来当被钓鱼的对象进入我们的网站，登录之后就可以监听到账号密码，为我们所用，像前者要控制机器，不管使用什么方法，都要做好免杀，上线之后第一时间做好权限维持的操作，所以想学好这方面，难度较大的就是免杀权限维持，其他就是掌握好对不同目标的话术即可，所以在一开始我们就要学习简单基础的免杀和权限维持，然后了解钓鱼网页和钓鱼邮件与目标信息收集的技术，后者还是简单的，只需要按部就班操作，不很费力，大头还是前者。</p><h1 id="免杀"><a href="#免杀" class="headerlink" title="免杀"></a>免杀</h1><h2 id="免杀的目标"><a href="#免杀的目标" class="headerlink" title="免杀的目标"></a>免杀的目标</h2><p>1.C2/CS类远控后门</p><p>2.红队APT钓鱼文档类</p><h2 id="免杀的对象"><a href="#免杀的对象" class="headerlink" title="免杀的对象"></a>免杀的对象</h2><p>各类杀毒产品，EDR，流量产品</p><p><a href="https://cnman.github.io/antivirus.html">https://cnman.github.io/antivirus.html</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 红队笔记 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>《内核攻防-致盲EDR》</title>
+      <link href="/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/"/>
+      <url>/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/</url>
+      
+        <content type="html"><![CDATA[<p>一时兴起，想学习一会儿，看到了先知社区如下的文章，越看越眼熟，发现了这个项目的根源是在我之前学习过的</p><p><a href="https://xz.aliyun.com/news/16779">https://xz.aliyun.com/news/16779</a></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250215004719492.png" alt="image-20250215004719492"></p><p>文章大致都是一些代码的解释，最重要的是删除回调怎么实现</p><h1 id="系统回调"><a href="#系统回调" class="headerlink" title="系统回调"></a>系统回调</h1>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 内核攻防 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>免杀技术：前言</title>
       <link href="/2025/02/03/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%EF%BC%9A%E5%89%8D%E8%A8%80/"/>
       <url>/2025/02/03/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%EF%BC%9A%E5%89%8D%E8%A8%80/</url>
