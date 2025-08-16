@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="一时兴起，想学习一会儿，看到了先知社区如下的文章，越看越眼熟，发现了这个项目的根源是在我之前学习过的 https:&#x2F;&#x2F;xz.aliyun.com&#x2F;news&#x2F;16779  文章大致都是一些代码的解释，最重要的是删除回调怎么实现 系统回调">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《内核攻防-致盲EDR》">
+<meta property="og:url" content="http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/index.html">
+<meta property="og:site_name" content="CHANGMEN&#39;blogs">
+<meta property="og:description" content="一时兴起，想学习一会儿，看到了先知社区如下的文章，越看越眼熟，发现了这个项目的根源是在我之前学习过的 https:&#x2F;&#x2F;xz.aliyun.com&#x2F;news&#x2F;16779  文章大致都是一些代码的解释，最重要的是删除回调怎么实现 系统回调">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250215004719492.png">
+<meta property="article:published_time" content="2025-02-14T16:46:39.000Z">
+<meta property="article:modified_time" content="2025-02-17T21:59:16.112Z">
+<meta property="article:author" content="CHANGMEN">
+<meta property="article:tag" content="内核攻防">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250215004719492.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>《内核攻防-致盲EDR》</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2025/02/24/%E9%82%AE%E4%BB%B6%E9%92%93%E9%B1%BC/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/02/03/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%EF%BC%9A%E5%89%8D%E8%A8%80/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&text=《内核攻防-致盲EDR》"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&title=《内核攻防-致盲EDR》"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&is_video=false&description=《内核攻防-致盲EDR》"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《内核攻防-致盲EDR》&body=Check out this article: http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&title=《内核攻防-致盲EDR》"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&title=《内核攻防-致盲EDR》"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&title=《内核攻防-致盲EDR》"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&title=《内核攻防-致盲EDR》"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&name=《内核攻防-致盲EDR》&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&t=《内核攻防-致盲EDR》"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%9B%9E%E8%B0%83"><span class="toc-number">1.</span> <span class="toc-text">系统回调</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        《内核攻防-致盲EDR》
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">CHANGMEN</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-02-14T16:46:39.000Z" class="dt-published" itemprop="datePublished">2025-02-15</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2/" rel="tag">内核攻防</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>一时兴起，想学习一会儿，看到了先知社区如下的文章，越看越眼熟，发现了这个项目的根源是在我之前学习过的</p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/16779">https://xz.aliyun.com/news/16779</a></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250215004719492.png" alt="image-20250215004719492"></p>
+<p>文章大致都是一些代码的解释，最重要的是删除回调怎么实现</p>
+<h1 id="系统回调"><a href="#系统回调" class="headerlink" title="系统回调"></a>系统回调</h1>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/categories/">categories</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%9B%9E%E8%B0%83"><span class="toc-number">1.</span> <span class="toc-text">系统回调</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&text=《内核攻防-致盲EDR》"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&title=《内核攻防-致盲EDR》"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&is_video=false&description=《内核攻防-致盲EDR》"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《内核攻防-致盲EDR》&body=Check out this article: http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&title=《内核攻防-致盲EDR》"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&title=《内核攻防-致盲EDR》"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&title=《内核攻防-致盲EDR》"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&title=《内核攻防-致盲EDR》"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&name=《内核攻防-致盲EDR》&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/&t=《内核攻防-致盲EDR》"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    CHANGMEN
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
