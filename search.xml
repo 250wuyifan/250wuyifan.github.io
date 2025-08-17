@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>C2框架的新型攻击样本分析</title>
+      <link href="/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/"/>
+      <url>/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</title>
       <link href="/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/"/>
       <url>/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/</url>
@@ -104,24 +117,11 @@
     
     
     <entry>
-      <title>文章标题</title>
-      <link href="/2025/08/14/%E6%96%87%E7%AB%A0%E6%A0%87%E9%A2%98/"/>
-      <url>/2025/08/14/%E6%96%87%E7%AB%A0%E6%A0%87%E9%A2%98/</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>关于PowerShell的研究</title>
       <link href="/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/"/>
       <url>/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/</url>
       
-        <content type="html"><![CDATA[<p>s</p><h1 id="什么是-PowerShell？"><a href="#什么是-PowerShell？" class="headerlink" title="什么是 PowerShell？"></a>什么是 PowerShell？</h1><p>PowerShell 是微软为系统管理员和高级用户提供的多功能工具，常被称为“瑞士军刀”。它于 2006 年推出，融合了强大的命令行 shell 和脚本语言功能。</p><p>PowerShell 的独特之处在于：</p><ol><li><strong>面向对象</strong>：PowerShell 不仅能处理文本，还能处理结构化数据，使得在命令之间操作和传输复杂信息变得轻松自如。</li><li><strong>基于 .NET 构建</strong>：这一点让 PowerShell 能够深入访问 Windows 内部，具有极强的系统管理能力。</li><li><strong>跨平台支持</strong>：虽然 PowerShell 最初仅适用于 Windows，但现在它也可以在 Linux 和 macOS 上运行。</li><li><strong>高效的管理工具</strong>：无论您是在管理单一笔记本电脑还是一组云服务器，PowerShell 都能帮助您更快速、高效地完成任务。因此，对于任何专注于 Windows 管理或 DevOps 的用户来说，它都是首选工具。</li></ol><h1 id="为什么红队喜欢-PowerShell"><a href="#为什么红队喜欢-PowerShell" class="headerlink" title="为什么红队喜欢 PowerShell"></a>为什么红队喜欢 PowerShell</h1><p>PowerShell 已经稳固地成为红队和渗透测试的核心工具，原因如下：</p><ol><li><strong>预装在 Windows 上</strong>：这意味着攻击者无需额外安装工具，减少了被检测的风险。</li><li><strong>深度集成 Windows 和 .NET</strong>：攻击者可以利用这一点来窃取凭证、在网络中横向移动或提取敏感数据。</li><li><strong>全面支持攻击过程</strong>：从发现目标到保持访问，PowerShell 都能处理攻击的各个步骤。</li><li><strong>脚本隐藏和混淆</strong>：攻击者能够隐藏或扰乱脚本，使得防御者更难检测到它们。</li><li><strong>与云平台兼容</strong>：PowerShell 能与 Azure 和 AWS 等云平台协同工作，适应现代攻击需求。</li></ol><p>总之，PowerShell 不仅仅是一个工具，它已经成为应对现代攻击面不可或缺的强大盟友。</p><h1 id="PowerShell-及其内存加载功能"><a href="#PowerShell-及其内存加载功能" class="headerlink" title="PowerShell 及其内存加载功能"></a>PowerShell 及其内存加载功能</h1><p>PowerShell 的内存执行功能是红队梦寐以求的强大工具，原因如下：</p><ol><li><strong>代码直接在 RAM 中运行</strong>：这样代码不会在磁盘上留下任何痕迹，使得防病毒软件和其他安全工具难以检测到。</li><li><strong>动态生成和混淆代码</strong>：攻击者可以根据不同环境动态生成、修改或混淆代码，从而快速绕过安全防护。</li><li><strong>全框架和工具加载到内存</strong>：整个攻击框架和复杂工具都可以加载到内存中，攻击者无需在系统中安装任何软件即可使用完整功能。</li><li><strong>低调且高效</strong>：一旦进入系统，内存执行可以支持从凭证收集到横向移动的所有攻击活动，同时保持低调，减少被发现的风险。</li></ol><h1 id="Invoke-Expression-Cmdlet-—-启用内存执行"><a href="#Invoke-Expression-Cmdlet-—-启用内存执行" class="headerlink" title="Invoke-Expression Cmdlet — 启用内存执行"></a>Invoke-Expression Cmdlet — 启用内存执行</h1><p><code>Invoke-Expression</code>（IEX）允许将字符串作为 PowerShell 命令在当前会话中执行，是实现内存执行的关键工具。</p><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Invoke-Expression</span> <span class="string">&quot;Get-Process&quot;</span></span><br></pre></td></tr></table></figure><p>此命令运行“Get-Process”并返回活动进程列表。<code>Invoke-Expression</code>与其他 cmdlet 或 .NET 方法结合使用时功能更加强大，可实现复杂的内存中命令执行。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120103949.png" alt="image-20250303120103949"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120033697.png" alt="image-20250303120033697"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303115957302.png" alt="image-20250303115957302"></p>]]></content>
+        <content type="html"><![CDATA[<h1 id="什么是-PowerShell？"><a href="#什么是-PowerShell？" class="headerlink" title="什么是 PowerShell？"></a>什么是 PowerShell？</h1><p>PowerShell 是微软为系统管理员和高级用户提供的多功能工具，常被称为“瑞士军刀”。它于 2006 年推出，融合了强大的命令行 shell 和脚本语言功能。</p><p>PowerShell 的独特之处在于：</p><ol><li><strong>面向对象</strong>：PowerShell 不仅能处理文本，还能处理结构化数据，使得在命令之间操作和传输复杂信息变得轻松自如。</li><li><strong>基于 .NET 构建</strong>：这一点让 PowerShell 能够深入访问 Windows 内部，具有极强的系统管理能力。</li><li><strong>跨平台支持</strong>：虽然 PowerShell 最初仅适用于 Windows，但现在它也可以在 Linux 和 macOS 上运行。</li><li><strong>高效的管理工具</strong>：无论您是在管理单一笔记本电脑还是一组云服务器，PowerShell 都能帮助您更快速、高效地完成任务。因此，对于任何专注于 Windows 管理或 DevOps 的用户来说，它都是首选工具。</li></ol><h1 id="为什么红队喜欢-PowerShell"><a href="#为什么红队喜欢-PowerShell" class="headerlink" title="为什么红队喜欢 PowerShell"></a>为什么红队喜欢 PowerShell</h1><p>PowerShell 已经稳固地成为红队和渗透测试的核心工具，原因如下：</p><ol><li><strong>预装在 Windows 上</strong>：这意味着攻击者无需额外安装工具，减少了被检测的风险。</li><li><strong>深度集成 Windows 和 .NET</strong>：攻击者可以利用这一点来窃取凭证、在网络中横向移动或提取敏感数据。</li><li><strong>全面支持攻击过程</strong>：从发现目标到保持访问，PowerShell 都能处理攻击的各个步骤。</li><li><strong>脚本隐藏和混淆</strong>：攻击者能够隐藏或扰乱脚本，使得防御者更难检测到它们。</li><li><strong>与云平台兼容</strong>：PowerShell 能与 Azure 和 AWS 等云平台协同工作，适应现代攻击需求。</li></ol><p>总之，PowerShell 不仅仅是一个工具，它已经成为应对现代攻击面不可或缺的强大盟友。</p><h1 id="PowerShell-及其内存加载功能"><a href="#PowerShell-及其内存加载功能" class="headerlink" title="PowerShell 及其内存加载功能"></a>PowerShell 及其内存加载功能</h1><p>PowerShell 的内存执行功能是红队梦寐以求的强大工具，原因如下：</p><ol><li><strong>代码直接在 RAM 中运行</strong>：这样代码不会在磁盘上留下任何痕迹，使得防病毒软件和其他安全工具难以检测到。</li><li><strong>动态生成和混淆代码</strong>：攻击者可以根据不同环境动态生成、修改或混淆代码，从而快速绕过安全防护。</li><li><strong>全框架和工具加载到内存</strong>：整个攻击框架和复杂工具都可以加载到内存中，攻击者无需在系统中安装任何软件即可使用完整功能。</li><li><strong>低调且高效</strong>：一旦进入系统，内存执行可以支持从凭证收集到横向移动的所有攻击活动，同时保持低调，减少被发现的风险。</li></ol><h1 id="Invoke-Expression-Cmdlet-—-启用内存执行"><a href="#Invoke-Expression-Cmdlet-—-启用内存执行" class="headerlink" title="Invoke-Expression Cmdlet — 启用内存执行"></a>Invoke-Expression Cmdlet — 启用内存执行</h1><p><code>Invoke-Expression</code>（IEX）允许将字符串作为 PowerShell 命令在当前会话中执行，是实现内存执行的关键工具。</p><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Invoke-Expression</span> <span class="string">&quot;Get-Process&quot;</span></span><br></pre></td></tr></table></figure><p>此命令运行“Get-Process”并返回活动进程列表。<code>Invoke-Expression</code>与其他 cmdlet 或 .NET 方法结合使用时功能更加强大，可实现复杂的内存中命令执行。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120103949.png" alt="image-20250303120103949"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303120033697.png" alt="image-20250303120033697"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250303115957302.png" alt="image-20250303115957302"></p>]]></content>
       
       
       
@@ -149,57 +149,6 @@
             <tag> 红队笔记 </tag>
             
         </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>《内核攻防-致盲EDR》</title>
-      <link href="/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/"/>
-      <url>/2025/02/15/%E5%86%85%E6%A0%B8%E6%94%BB%E9%98%B2-%E8%87%B4%E7%9B%B2EDR/</url>
-      
-        <content type="html"><![CDATA[<p>一时兴起，想学习一会儿，看到了先知社区如下的文章，越看越眼熟，发现了这个项目的根源是在我之前学习过的</p><p><a href="https://xz.aliyun.com/news/16779">https://xz.aliyun.com/news/16779</a></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250215004719492.png" alt="image-20250215004719492"></p><p>文章大致都是一些代码的解释，最重要的是删除回调怎么实现</p><h1 id="系统回调"><a href="#系统回调" class="headerlink" title="系统回调"></a>系统回调</h1>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 内核攻防 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>免杀技术：前言</title>
-      <link href="/2025/02/03/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%EF%BC%9A%E5%89%8D%E8%A8%80/"/>
-      <url>/2025/02/03/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%EF%BC%9A%E5%89%8D%E8%A8%80/</url>
-      
-        <content type="html"><![CDATA[<p>​       千里之行始于足下，在近两年，身体原因总感觉做事提不起精神，每次学习的时候静不下心来，就犯了最大的错误，就是什么都学，什么都好像了解一点，但其实都不是很精通，做不出东西来，还是自己不够耐心坐下来好好完成一件事情。</p><p>​         新的一年开始了，重心要全力放在免杀和代码审计两条道路，一定要在网安的道路上越走越远，免杀技术还是比较有意思的，因为在22年的时候自己有学过一段时间逆向，所以理解这些东西更加的快，但是一直没有写下东西来，没有输出的东西，就是相当于没有，学到的东西一定要用到实处才行，不然其实就是毫无意义。</p><p>​          这次做的这个免杀系列，一定要尽可能全面，搜集网上大量的文章，做一个真正的集大成者，站着巨人的肩膀上完成自己的梦想。</p><p>​           话不多说，我们一起努力，完成这一系列</p>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 《免杀技术实践》 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>《免杀技术实践》</title>
-      <link href="/2025/02/03/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/"/>
-      <url>/2025/02/03/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/</url>
-      
-        <content type="html"><![CDATA[]]></content>
-      
-      
       
     </entry>
     
@@ -236,25 +185,6 @@
         <tags>
             
             <tag> 成长故事碎碎念 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>【免杀技术】致盲组件 - AMSI内存修复 （修改一个字节就能绕过AMSI？）</title>
-      <link href="/2025/01/27/%E3%80%90%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E3%80%91%E8%87%B4%E7%9B%B2%E7%BB%84%E4%BB%B6-AMSI%E5%86%85%E5%AD%98%E4%BF%AE%E5%A4%8D-%EF%BC%88%E4%BF%AE%E6%94%B9%E4%B8%80%E4%B8%AA%E5%AD%97%E8%8A%82%E5%B0%B1%E8%83%BD%E7%BB%95%E8%BF%87AMSI%EF%BC%9F%EF%BC%89/"/>
-      <url>/2025/01/27/%E3%80%90%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E3%80%91%E8%87%B4%E7%9B%B2%E7%BB%84%E4%BB%B6-AMSI%E5%86%85%E5%AD%98%E4%BF%AE%E5%A4%8D-%EF%BC%88%E4%BF%AE%E6%94%B9%E4%B8%80%E4%B8%AA%E5%AD%97%E8%8A%82%E5%B0%B1%E8%83%BD%E7%BB%95%E8%BF%87AMSI%EF%BC%9F%EF%BC%89/</url>
-      
-        <content type="html"><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>AMSI是微软开发的一个用于扫描特殊攻击面的反病毒组件，可以看微软官方的<a href="https://learn.microsoft.com/zh-cn/windows/win32/amsi/antimalware-scan-interface-portal">AMSI介绍</a>。这是微软官方的<a href="https://learn.microsoft.com/zh-cn/windows/win32/amsi/how-amsi-helps">扫描原理介绍</a>，ASMI接口会提供扫描的结果给杀毒软件，最后还是由杀软来处理恶意事件。官方还给出了AMSI的一些扫描API：</p><table><thead><tr><th>函数名称</th><th>说明</th></tr></thead><tbody><tr><td>AmsiCloseSession</td><td>关闭由 AmsiOpenSession 打开的会话。</td></tr><tr><td>AmsiInitialize</td><td>初始化 AMSI API。</td></tr><tr><td>AmsiNotifyOperation</td><td>向反恶意软件提供程序发送任意操作的通知。</td></tr><tr><td>AmsiOpenSession</td><td>打开一个会话，在该会话中可以关联多个扫描请求。</td></tr><tr><td>AmsiResultIsMalware</td><td>确定扫描结果是否指示应阻止内容。</td></tr><tr><td>AmsiScanBuffer</td><td>扫描包含恶意软件内容的缓冲区。</td></tr><tr><td>AmsiScanString</td><td>扫描字符串以查找恶意软件。</td></tr><tr><td>AmsiUninitialize</td><td>删除最初由 AmsiInitialize 打开的 AMSI API 实例。</td></tr></tbody></table><p>AMSI内存修补绕过的攻击面主要集中在AmsiOpenSession、AmsiScanBuffer、AmsiScanString。</p><h1 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h1><p>AMSI的功能都是从amsi.dll中调用的API，可以在HackerProcess中看见这个powershell进程中加载了amsi.dll:</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250127005626020.png" alt="image-20250127005626020"></p><p>这也是我们能够进行修补的根本原因（反病毒的代码就在当前的进程内存中）。</p><p>在system32目录下找到amsi.dll，拖进IDA中</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250127010006204.png" alt="image-20250127010006204"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250127010019089.png" alt="image-20250127010019089"></p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">HRESULT __stdcall <span class="title function_">AmsiOpenSession</span><span class="params">(HAMSICONTEXT amsiContext, HAMSISESSION *amsiSession)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">signed</span> __int32 v2; <span class="comment">// eax</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ( !amsiSession</span><br><span class="line">    || !amsiContext</span><br><span class="line">    || *(_DWORD *)amsiContext != <span class="number">1230196033</span></span><br><span class="line">    || !*((_QWORD *)amsiContext + <span class="number">1</span>)</span><br><span class="line">    || !*((_QWORD *)amsiContext + <span class="number">2</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-2147024809</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  v2 = _InterlockedExchangeAdd((<span class="keyword">volatile</span> <span class="type">signed</span> __int32 *)amsiContext + <span class="number">6</span>, <span class="number">1u</span>);</span><br><span class="line">  *amsiSession = (HAMSISESSION)(v2 + <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">if</span> ( v2 == <span class="number">-1</span> )</span><br><span class="line">    *amsiSession = (HAMSISESSION)_InterlockedIncrement((<span class="keyword">volatile</span> <span class="type">signed</span> __int32 *)amsiContext + <span class="number">6</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 免杀技术 </tag>
             
         </tags>
       
