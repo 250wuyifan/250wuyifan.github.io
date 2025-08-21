@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="A Mega Malware Analysis Tutorial Featuring Donut样本分析123sha256如下1d450fb80ff070385e88ab624a387d72abd9d9898109b5c5ebd35c5002223359  静态分析我们可以使用UNIX&#x2F;Windows的FILE程序来看文件类型，输出“PE32可执行文件（GUI）Intel 80386 Mono&#x2F;.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="针对dount的一次恶意样本分析">
+<meta property="og:url" content="http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="CHANGMEN&#39;blogs">
+<meta property="og:description" content="A Mega Malware Analysis Tutorial Featuring Donut样本分析123sha256如下1d450fb80ff070385e88ab624a387d72abd9d9898109b5c5ebd35c5002223359  静态分析我们可以使用UNIX&#x2F;Windows的FILE程序来看文件类型，输出“PE32可执行文件（GUI）Intel 80386 Mono&#x2F;.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818170429830.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818173117091.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818174552590.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818174735236.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818175742236.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818180624704.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818180749370.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818181056956.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818181735675.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818181812557.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818181836701.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818231041100.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818231443210.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818231915258.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818233308475.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818233527345.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818233513834.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819182443590.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819183105151.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819183613364.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819183701243.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819184125406.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819184150588.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819184851021.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819184928111.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819185055196.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819185233019.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819185442799.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819101958888.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819190228409.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819190314796.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819190447856.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819190809654.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819190854271.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191156212.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191228668.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191347102.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191549686.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191857176.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191920695.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192139655.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192250261.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192351165.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192605681.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192643119.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192814748.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819193119151.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819193442660.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819193530011.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819193542605.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819193929199.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194038086.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194311382.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194340317.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194428623.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194622836.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194904488.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195144303.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195209783.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195226417.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195308605.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195404950.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195427451.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195530061.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195721262.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195743378.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195822995.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819200205865.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819200337384.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819200435492.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819200449325.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819200548044.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819230514108.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819230603982.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819232507968.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819232456739.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819232736796.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819233310755.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819233343857.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819233422194.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819233808794.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819233957451.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819234057987.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819234204926.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819234328691.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819234428833.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819234631589.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820102926633.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820103018654.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820103143719.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820103332176.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820103744316.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820153251544.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820104936145.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820152959700.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820153348534.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820153414255.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820153439202.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820153749767.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820154533517.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820154825115.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820154848548.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820160553802.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820160644226.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820160700839.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820161153777.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820161301772.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820161315994.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820161858998.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820162732545.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820165518395.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820165621551.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820165716511.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820165737883.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820165932465.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820170034505.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820170108489.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820170332488.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820170425836.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820170600235.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171054902.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171113397.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171124000.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171331769.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171623581.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171649499.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171931415.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172036476.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172217249.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172408303.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172520011.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172738345.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172752986.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172820348.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172843530.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172956857.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820173044690.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820213330294.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820213357102.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820214434079.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820214844629.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820215031375.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820215349798.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820215510727.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820221356385.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820221427519.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820221648783.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820223911325.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821001443043.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821001503202.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821001611715.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821005417838.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821010307076.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821011044489.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821011227239.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821011841892.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821011853056.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821011904874.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821103155779.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821103437748.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821103715126.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821103618759.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821104342463.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821104405840.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821104557156.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821104611611.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821105016389.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821105353845.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821110213187.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821110234124.png">
+<meta property="article:published_time" content="2025-08-18T08:55:07.000Z">
+<meta property="article:modified_time" content="2025-08-21T03:05:17.710Z">
+<meta property="article:author" content="CHANGMEN">
+<meta property="article:tag" content="恶意样本分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818170429830.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>针对dount的一次恶意样本分析</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&text=针对dount的一次恶意样本分析"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&title=针对dount的一次恶意样本分析"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&is_video=false&description=针对dount的一次恶意样本分析"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=针对dount的一次恶意样本分析&body=Check out this article: http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&title=针对dount的一次恶意样本分析"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&title=针对dount的一次恶意样本分析"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&title=针对dount的一次恶意样本分析"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&title=针对dount的一次恶意样本分析"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&name=针对dount的一次恶意样本分析&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&t=针对dount的一次恶意样本分析"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#A-Mega-Malware-Analysis-Tutorial-Featuring-Donut"><span class="toc-number">1.</span> <span class="toc-text">A Mega Malware Analysis Tutorial Featuring Donut</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">样本分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90"><span class="toc-number">1.1.1.</span> <span class="toc-text">静态分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%B1%BB%E5%9E%8B%E5%BC%95%E7%94%A8%E6%9D%A5%E6%8E%A8%E6%96%AD%E5%8A%9F%E8%83%BD"><span class="toc-number">1.1.2.</span> <span class="toc-text">使用类型引用来推断功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%9F%E8%B8%AA%E4%BB%A3%E7%A0%81%EF%BC%9A%E8%A7%A3%E5%AF%86%E6%9C%89%E6%95%88%E8%BD%BD%E8%8D%B7"><span class="toc-number">1.1.3.</span> <span class="toc-text">跟踪代码：解密有效载荷</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90"><span class="toc-number">1.1.4.</span> <span class="toc-text">程序分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93"><span class="toc-number">1.1.5.</span> <span class="toc-text">静态分析总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%83%E8%AF%95%E6%9C%AC%E5%9C%B0%E4%BB%A3%E7%A0%81%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="toc-number">1.2.</span> <span class="toc-text">调试本地代码的执行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E8%B0%83%E8%AF%95%E5%88%86%E6%9E%90shellcode"><span class="toc-number">1.2.1.</span> <span class="toc-text">开始调试分析shellcode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%931-%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BDdll%E4%B8%8E%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.2.</span> <span class="toc-text">部分总结1 动态加载dll与函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9AMSI%E5%87%BD%E6%95%B0%E7%9A%84%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4"><span class="toc-number">1.2.3.</span> <span class="toc-text">更改AMSI函数的内存保护</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8%EF%BC%88PC%EF%BC%89-%E7%9B%B8%E5%AF%B9%E5%AF%BB%E5%9D%80"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">程序计数器（PC）-相对寻址</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Disabling-AmsiScanBuffer"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">Disabling AmsiScanBuffer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%81%A2%E5%A4%8DAmsiScanBuffer%E7%9A%84%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">恢复AmsiScanBuffer的内存保护</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Disabling-AmisScanString"><span class="toc-number">1.2.3.4.</span> <span class="toc-text">Disabling AmisScanString</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A6%81%E7%94%A8EtwEventWrite"><span class="toc-number">1.2.4.</span> <span class="toc-text">禁用EtwEventWrite</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%932-%E7%A6%81%E7%94%A8%E5%AE%89%E5%85%A8%E5%8A%9F%E8%83%BDasmi%E5%92%8Cetw"><span class="toc-number">1.2.5.</span> <span class="toc-text">部分总结2 禁用安全功能asmi和etw</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86PE%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6%E5%88%B0%E5%86%85%E5%AD%98"><span class="toc-number">1.2.6.</span> <span class="toc-text">将PE文件复制到内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CLR"><span class="toc-number">1.2.7.</span> <span class="toc-text">CLR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%933-CLR"><span class="toc-number">1.2.8.</span> <span class="toc-text">部分总结3 CLR</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        针对dount的一次恶意样本分析
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">CHANGMEN</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-08-18T08:55:07.000Z" class="dt-published" itemprop="datePublished">2025-08-18</time>
+        
+        (Updated: <time datetime="2025-08-21T03:05:17.710Z" class="dt-updated" itemprop="dateModified">2025-08-21</time>)
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">恶意样本分析</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" rel="tag">恶意样本分析</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="A-Mega-Malware-Analysis-Tutorial-Featuring-Donut"><a href="#A-Mega-Malware-Analysis-Tutorial-Featuring-Donut" class="headerlink" title="A Mega Malware Analysis Tutorial Featuring Donut"></a>A Mega Malware Analysis Tutorial Featuring Donut</h1><h2 id="样本分析"><a href="#样本分析" class="headerlink" title="样本分析"></a>样本分析</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sha256如下</span><br><span class="line"></span><br><span class="line">1d450fb80ff070385e88ab624a387d72abd9d9898109b5c5ebd35c5002223359</span><br></pre></td></tr></table></figure>
+
+<h3 id="静态分析"><a href="#静态分析" class="headerlink" title="静态分析"></a>静态分析</h3><p>我们可以使用UNIX/Windows的FILE程序来看文件类型，输出“PE32可执行文件（GUI）Intel 80386 Mono/.Net程序集，用于MS Windows”表明我们的样本是.NET程序集</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818170429830.png" alt="image-20250818170429830"></p>
+<p>.NET程序集是一种通过编译.NET语言（如C#）代码生成的DLL或EXE文件。不过，它并不包含本地x86/x64机器码，而是使用MSIL（微软中间语言）字节码。这些MSIL由.NET运行时执行，并在运行时将其编译为本地代码。</p>
+<p>分析这类文件的利器当属dnSpy——这款集.NET调试器、汇编编辑器和反编译器功能于一身的工具。当我们把示例文件加载到dnSpy时，会立即发现某些函数和对象的名称变成了\u0001、\u0002等乱码字符，而非人类可读的名称。这表明该示例文件已被混淆处理。需要说明的是，文件混淆本身并不具有恶意属性，企业通常会通过混淆技术来保护知识产权。不过，这种现象仍值得我们特别留意。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818173117091.png" alt="image-20250818173117091"></p>
+<p>我们将使用de4dot工具，该工具用于检测常见的混淆器并清理.NET二进制文件。通过将二进制文件拖放到de4dot.exe中。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818174552590.png" alt="image-20250818174552590"></p>
+<p>目前我们已完成对样本的初步分类。通过文件分析、dnSpy和de4dot工具，我们确认该样本为.NET程序集，检测到其存在混淆处理，并完成了反混淆操作。在完成反混淆处理后，现在可以开始深入分析这段代码了。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818174735236.png" alt="image-20250818174735236"></p>
+<h3 id="使用类型引用来推断功能"><a href="#使用类型引用来推断功能" class="headerlink" title="使用类型引用来推断功能"></a>使用类型引用来推断功能</h3><p>在 <strong>dnSpy</strong> 中，<strong>程序集的类型引用（Type References）</strong> 是指当前被分析的程序集（Assembly）所依赖的其他外部类型（如类、接口、结构体等），其实看这个就类似于ida看导入函数一样。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818175742236.png" alt="image-20250818175742236"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818180624704.png" alt="image-20250818180624704"></p>
+<p>如果单击Mcwpgr，将转到其函数定义，在那里我们可以看到对HttpClient的调用。</p>
+<p>我们可以看到，该示例创建了一个HTTP客户端，并从hxxps：//bitbucket[.]org/veloncontinetaker/utencilio/downloads/Tsudun[.]pdf.下载了有效载荷。通过静态分析检查类型引用，我们能够快速锁定示例中的有趣部分，而无需从入口点追溯代码。</p>
+<h3 id="跟踪代码：解密有效载荷"><a href="#跟踪代码：解密有效载荷" class="headerlink" title="跟踪代码：解密有效载荷"></a>跟踪代码：解密有效载荷</h3><p>既然我们已经确定该示例尝试建立HTTP连接，我们希望进一步了解该示例试图下载的有效载荷。我们可以在dnSpy中设置断点并运行调试器来实现这一点</p>
+<p>值得庆幸的是，分析时仍能获取有效载荷（SHA256哈希值：daba1c39a042aec4791151dbabd726e0627c3789deea3fc81b66be111e7c263e））。不过从文件扩展名来看，这似乎并非PDF格式——样本文件开头缺少预期的魔术字节（即文件签名，分析师常用来识别有效载荷类型）“25 50 44 46 2D”（或以“PDF-”开头）。实际上我们无法确定具体文件类型，因为既没有可识别的魔术字节，所有字符也都处于ASCII字符范围之内：<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818180749370.png" alt="image-20250818180749370"></p>
+<p>我们需要重新检查反编译后的代码，以便更深入地了解有效载荷。如果我们跳出下载文件的方法，可以看到一个看似非常简单的字节转换，这可能是解密例程。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818181056956.png" alt="image-20250818181056956"></p>
+<p>然后就是查看此函数的调用，重复刚刚的分析，然后点击被使用，</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818181735675.png" alt="image-20250818181735675"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818181812557.png" alt="image-20250818181812557"></p>
+<p>最后定位到这个，在此下断点，然后执行。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818181836701.png" alt="image-20250818181836701"></p>
+<p>现在我们就可以获取到，解密之后的shellcode了，然后进行下一步分析，分析到底程序做了什么。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818231041100.png" alt="image-20250818231041100"></p>
+<h3 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h3><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818231443210.png" alt="image-20250818231443210"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818231915258.png" alt="image-20250818231915258"></p>
+<p>这段代码展示了一个调用 <code>VirtualAlloc</code>Windows API 函数的间接过程。让我们逐步分析 <code>smethod_9</code>函数的功能：</p>
+<p>1.<code>smethod_9</code>函数接收一个字节数组和一个 <code>Class2</code>对象作为参数，但实际上只使用了字节数组的长度信息。</p>
+<p>2.它调用了 <code>smethod_4</code>函数，传递了以下参数：•</p>
+<p>4096U (分配内存的区域类型，通常是 MEM_COMMIT)</p>
+<p>•IntPtr.Zero (让系统决定分配地址)</p>
+<p>•byte_0.Length (要分配的内存大小)</p>
+<p>•4U (内存保护标志，PAGE_READWRITE)</p>
+<p>3.在 <code>smethod_4</code>内部：</p>
+<p>•创建了一个参数数组</p>
+<p>•动态解析了 “VirtualAlloc” API 函数名（通过字符串替换去掉了点号）</p>
+<p>•从 kernel32.dll 调用这个函数</p>
+<p>4.最终效果等同于直接调用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void* ptr = VirtualAlloc(NULL, byte_0.Length, MEM_COMMIT, PAGE_READWRITE);</span><br></pre></td></tr></table></figure>
+
+<p>所以 <code>smethod_9</code>的功能是：<strong>在进程的虚拟地址空间中保留并提交一块可读写的内存区域</strong>，内存大小等于传入字节数组的长度，返回分配的内存地址指针。</p>
+<p>这种间接调用方式（通过字符串混淆和动态解析）通常出现在混淆/保护过的代码中，可能是为了防止简单的字符串搜索识别出 API 调用。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818233308475.png" alt="image-20250818233308475"></p>
+<p>根据文档说明，Marshal方法会将指定长度的字节副本复制到由提供的指针指向的内存区域。在本例中，该操作将解密后的有效载荷字节副本复制到刚通过VirtualAlloc分配的内存区域。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818233527345.png" alt="image-20250818233527345"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250818233513834.png" alt="image-20250818233513834"></p>
+<p>总之，我们会将最近分配的内存标记为PAGEExecuteRead。这表明，复制到已分配内存中的解密有效载荷最终会被执行，这意味着从互联网下载的有效载荷实际上是shellcode，无论在内存中的位置如何，都可以运行。</p>
+<h3 id="静态分析总结"><a href="#静态分析总结" class="headerlink" title="静态分析总结"></a>静态分析总结</h3><p>本节总结如下：1.使用文件工具确认样本为.NET程序集；2.通过de4dot工具解除混淆处理；3.利用dnSpy检测到样本从互联网下载有效载荷；4.运用dnSpy调试功能完成有效载荷的下载与解密；5.确认样本将解密后的有效载荷加载至内存并执行。</p>
+<h2 id="调试本地代码的执行"><a href="#调试本地代码的执行" class="headerlink" title="调试本地代码的执行"></a>调试本地代码的执行</h2><p>开头先介绍一下<strong>托管代码（managed code）与非托管代码（unmanaged code）</strong>的概念。微软提供的这份资料是一个很好的入门指南，但简单来说：</p>
+<p>•托管代码<strong>（通常用 C# 等语言编写）运行在</strong>公共语言运行时（CLR）环境中，由 CLR 负责内存管理和安全性。</p>
+<p>•非托管代码（通常用 C 或 C++ 编写）则直接由操作系统执行，因此需要程序手动管理内存。</p>
+<p>之所以提到这一点，是因为该样本的执行已从<strong>托管代码切换到了非托管代码</strong>。在上一节中，我们观察到样本在运行时环境中下载了一个有效负载（payload），将其写入内存，并将指向该内存的指针转换为委托（delegate）后调用。</p>
+<p>在此之前，我们还能用 <strong>dnSpy</strong> 单步调试托管代码，但由于执行跳转到了非托管代码，我们失去了对样本执行流的可见性，也无法再用 dnSpy 的调试器控制其执行。接下来，我们需要想办法使用<strong>原生调试器（如 x64dbg）附加到进程</strong>，以便分析shellcode行为。</p>
+<h3 id="开始调试分析shellcode"><a href="#开始调试分析shellcode" class="headerlink" title="开始调试分析shellcode"></a>开始调试分析shellcode</h3><p>我们首先将样本加载到x64dbg中，然后在kernel32上设置断点。通过选择“符号”选项卡&gt;在模块搜索栏中输入‘kernel32.dll’&gt;在符号搜索栏中输入‘VirtualProtect’&gt;右键单击‘VirtualProtect’&gt;点击‘切换断点’</p>
+<p>这个逆向的过程依靠更多的还是经验。初次看的时候我看不到，所以这里写详细一点，写如何依靠的AI。</p>
+<p>是这个断点，里面写的参数先不说了，是根据dnspy里面函数调用情况，加断点调试，是这个参数，设置内存保护属性的，下到这个断点的时候，我们看一下堆栈情况（使用虚拟机的时候很慢很慢，因为前面有一个访问外网某网址获取shellcode的地方）</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819182443590.png" alt="image-20250819182443590"></p>
+<p>我直接真机上了，很快。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819183105151.png" alt="image-20250819183105151"></p>
+<p>看右下角堆栈，结合函数原型。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819183613364.png" alt="image-20250819183613364"></p>
+<p>在 <strong>x86架构</strong> 中，参数通过栈传递（从右向左压栈），调用后的堆栈布局如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[ESP+<span class="number">00</span>] 返回地址 (Return Address)</span><br><span class="line">[ESP+<span class="number">04</span>] lpAddress</span><br><span class="line">[ESP+<span class="number">08</span>] dwSize</span><br><span class="line">[ESP+<span class="number">0</span>C] flNewProtect</span><br><span class="line">[ESP+<span class="number">10</span>] lpflOldProtect</span><br></pre></td></tr></table></figure>
+
+<p>所以这个位置就是设置内存保护这块的地址，也就是之前开辟的一块内存的存放着shellcode，给了权限之后进行执行的，这个之前在使用dnspy的时候已经知道流程了，现在我们去这个内存里面看一下情况。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819183701243.png" alt="image-20250819183701243"></p>
+<p>下断点，然后运行进行跳转到shellcode</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819184125406.png" alt="image-20250819184125406"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819184150588.png" alt="image-20250819184150588"></p>
+<p>上面下断点不好用，下面的直接硬件断点。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819184851021.png" alt="image-20250819184851021"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819184928111.png" alt="image-20250819184928111"></p>
+<p>现在就是shellcode的代码了，可以把这一块内存导出文件，使用ida查看。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819185055196.png" alt="image-20250819185055196"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819185233019.png" alt="image-20250819185233019"></p>
+<p>x64dbg调试一下，进入这个call。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819185442799.png" alt="image-20250819185442799"></p>
+<p>看着像是在执行一个函数之前的操作，我们直接去ida打开刚刚存储的bin然后进行搜索字节，定位到这个7C9B函数（顶部菜单栏中的“搜索”&gt;“下一个字节序列”）：</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819101958888.png" alt="image-20250819101958888"></p>
+<p>这里我们可以知道动态调试是call 0xxx7C9B，ida是sub_xx7C9B,这个关联可以让我们更好的知道我们在看哪个函数，动静结合,如下是这个函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// positive sp value has been detected, the output may be wrong!</span></span><br><span class="line"><span class="type">int</span> __usercall sub_107C9B@&lt;eax&gt;(<span class="type">int</span> a1@&lt;ebx&gt;, <span class="type">int</span> a2@&lt;ebp&gt;, <span class="type">int</span> a3@&lt;edi&gt;, <span class="type">int</span> a4@&lt;esi&gt;)</span><br><span class="line">&#123;</span><br><span class="line">  _DWORD *v4; <span class="comment">// edx</span></span><br><span class="line">  _DWORD *v5; <span class="comment">// esi</span></span><br><span class="line">  <span class="type">int</span> v6; <span class="comment">// edi</span></span><br><span class="line">  <span class="type">int</span> (__cdecl *func_ptr)(_DWORD); <span class="comment">// edi</span></span><br><span class="line">  <span class="type">int</span> func_ptr_1; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">void</span> (__cdecl *func_ptr_3)(<span class="type">int</span>); <span class="comment">// ebx</span></span><br><span class="line">  <span class="type">int</span> (__cdecl *func_ptr_4)(_DWORD *); <span class="comment">// ebp</span></span><br><span class="line">  <span class="type">int</span> v11; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">int</span> v12; <span class="comment">// eax</span></span><br><span class="line">  <span class="type">int</span> v14; <span class="comment">// [esp-24h] [ebp-31Ch]</span></span><br><span class="line">  <span class="type">int</span> v15; <span class="comment">// [esp-4h] [ebp-2FCh]</span></span><br><span class="line">  _DWORD *v16; <span class="comment">// [esp+0h] [ebp-2F8h] BYREF</span></span><br><span class="line">  <span class="type">int</span> func_ptr_2; <span class="comment">// [esp+4h] [ebp-2F4h]</span></span><br><span class="line">  _DWORD v18[<span class="number">46</span>]; <span class="comment">// [esp+8h] [ebp-2F0h] BYREF</span></span><br><span class="line">  <span class="type">int</span> v19; <span class="comment">// [esp+C4h] [ebp-234h]</span></span><br><span class="line">  _DWORD *v20; <span class="comment">// [esp+2F0h] [ebp-8h]</span></span><br><span class="line">  _DWORD *v21; <span class="comment">// [esp+2F4h] [ebp-4h]</span></span><br><span class="line"></span><br><span class="line">  v4 = v21;</span><br><span class="line">  v21 = v20;</span><br><span class="line">  v20 = v4;</span><br><span class="line">  v18[<span class="number">4</span>] = a1;</span><br><span class="line">  v18[<span class="number">3</span>] = a2;</span><br><span class="line">  v18[<span class="number">2</span>] = a4;</span><br><span class="line">  v5 = v21;</span><br><span class="line">  v18[<span class="number">1</span>] = a3;</span><br><span class="line">  v6 = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> ( v21[<span class="number">142</span>] )</span><br><span class="line">  &#123;</span><br><span class="line">    func_ptr = (<span class="type">int</span> (__cdecl *)(_DWORD))sub_10A51D((<span class="type">int</span>)v21, v21[<span class="number">34</span>], v21[<span class="number">35</span>], v21[<span class="number">10</span>], v21[<span class="number">11</span>]);</span><br><span class="line">    <span class="keyword">if</span> ( !func_ptr )</span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    v18[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    func_ptr_2 = <span class="number">0</span>;</span><br><span class="line">    v16 = v21;</span><br><span class="line">    v15 = sub_10A31A() - <span class="number">5028</span>;</span><br><span class="line">    v6 = func_ptr(<span class="number">0</span>);</span><br><span class="line">    func_ptr_1 = sub_10A51D((<span class="type">int</span>)v21, v21[<span class="number">130</span>], v21[<span class="number">131</span>], v21[<span class="number">10</span>], v21[<span class="number">11</span>]);</span><br><span class="line">    v14 = v21[<span class="number">11</span>];</span><br><span class="line">    func_ptr_2 = func_ptr_1;</span><br><span class="line">    func_ptr_3 = (<span class="type">void</span> (__cdecl *)(<span class="type">int</span>))sub_10A51D((<span class="type">int</span>)v21, v21[<span class="number">40</span>], v21[<span class="number">41</span>], v21[<span class="number">10</span>], v14);</span><br><span class="line">    func_ptr_4 = (<span class="type">int</span> (__cdecl *)(_DWORD *))sub_10A51D((<span class="type">int</span>)v21, v21[<span class="number">42</span>], v21[<span class="number">43</span>], v21[<span class="number">10</span>], v21[<span class="number">11</span>]);</span><br><span class="line">    func_ptr_2 = ((<span class="type">int</span> (__cdecl *)(_DWORD))v21[<span class="number">14</span>])(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> ( v21 &amp;&amp; func_ptr_3 )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( func_ptr_4 )</span><br><span class="line">      &#123;</span><br><span class="line">        v18[<span class="number">0</span>] = &amp;byte_10007;</span><br><span class="line">        v11 = func_ptr_4(v18);</span><br><span class="line">        func_ptr_3(v11);</span><br><span class="line">        v12 = v15 + v5[<span class="number">142</span>];</span><br><span class="line">        v19 &amp;= <span class="number">0xFFFFFFFC</span>;</span><br><span class="line">        v18[<span class="number">44</span>] = v12;</span><br><span class="line">        ((<span class="type">void</span> (__cdecl *)(_DWORD **, _DWORD))unk_0)(&amp;v16, <span class="number">0</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    sub_108F76(v21);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> v6;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们先执行一下动态的，看看他做了什么，F8步过到这个地方了。8F76函数，我们看一下ida，这不就是最下面的函数吗，说明最外层的if没有过。if ( v21[142] )</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819190228409.png" alt="image-20250819190228409"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819190314796.png" alt="image-20250819190314796"></p>
+<p>然后我们ida进入这个8F76函数看一下。看到前面都是调用了sub_10A51D函数。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819190447856.png" alt="image-20250819190447856"></p>
+<p>直接把这个sub_10A51D丢给AI问一下。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819190809654.png" alt="image-20250819190809654"></p>
+<p>然后接动态调试。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819190854271.png" alt="image-20250819190854271"></p>
+<p>执行完了第一个 <strong><code>sub_10A51D</code></strong></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191156212.png" alt="image-20250819191156212"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191228668.png" alt="image-20250819191228668"></p>
+<p>后面的也是一样无非就是获取函数地址不一样，我们这里先去IDA给这个函数标记上。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191347102.png" alt="image-20250819191347102"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191549686.png" alt="image-20250819191549686"></p>
+<p>他前面调用的三个这个函数，我们快速在动态调试里面拿到返回值，在ida标记他调用了哪些函数，然后进行改名。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191857176.png" alt="image-20250819191857176"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819191920695.png" alt="image-20250819191920695"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192139655.png" alt="image-20250819192139655"></p>
+<p>我们将向前推进，直到到达下一个功能，申请了一块内存。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192250261.png" alt="image-20250819192250261"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192351165.png" alt="image-20250819192351165"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192605681.png" alt="image-20250819192605681"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192643119.png" alt="image-20250819192643119"></p>
+<p>我们在ida也进行一个重命名，一个申请的内存空间。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819192814748.png" alt="image-20250819192814748"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819193119151.png" alt="image-20250819193119151"></p>
+<p>给x64dbgt也标记一下。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819193442660.png" alt="image-20250819193442660"></p>
+<p>然后进行下面的调试。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819193530011.png" alt="image-20250819193530011"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819193542605.png" alt="image-20250819193542605"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819193929199.png" alt="image-20250819193929199"></p>
+<p>这个函数 <code>sub_10A992</code>是一个 <strong>内存数据复制函数</strong>，其作用是将源地址 (<code>a2</code>) 的数据复制到目标地址 (<code>a1</code>)，复制的长度为 <code>a3</code>字节。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194038086.png" alt="image-20250819194038086"></p>
+<p>  sub_10A9B6(v31, 0, 32);</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194311382.png" alt="image-20250819194311382"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194340317.png" alt="image-20250819194340317"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194428623.png" alt="image-20250819194428623"></p>
+<p>然后进行ida重命名，这两个函数依赖的大部分都是AI结合IDA了，可以再去x64dbg看一下，调用这两个函数的时候，参数情况，然后看一下里面的内存情况，对自己的逆向有帮助，可以更好的熟悉操作。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194622836.png" alt="image-20250819194622836"></p>
+<p>比如这个复制内存。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819194904488.png" alt="image-20250819194904488"></p>
+<p>这个内存里面的内容是这样</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195144303.png" alt="image-20250819195144303"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195209783.png" alt="image-20250819195209783"></p>
+<p>执行之后。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195226417.png" alt="image-20250819195226417"></p>
+<p>这个memset操作的，如下。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195308605.png" alt="image-20250819195308605"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195404950.png" alt="image-20250819195404950"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195427451.png" alt="image-20250819195427451"></p>
+<p>这些字节被清零的目的并不明显。我们需要继续分析，希望后续内容能更清晰地揭示其用途。我们将在IDA Pro中将修改后的变量重命名为zeroed_out_mem：</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195530061.png" alt="image-20250819195530061"></p>
+<p>继续调用下一个函数，sub_10A68A</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195721262.png" alt="image-20250819195721262"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195743378.png" alt="image-20250819195743378"></p>
+<p>问问</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819195822995.png" alt="image-20250819195822995"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819200205865.png" alt="image-20250819200205865"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819200337384.png" alt="image-20250819200337384"></p>
+<p>根据AI，第三个参数就是解密的区域，我们看一下解密之前的。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819200435492.png" alt="image-20250819200435492"></p>
+<p>解密之后</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819200449325.png" alt="image-20250819200449325"></p>
+<p>重命名</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819200548044.png" alt="image-20250819200548044"></p>
+<p>继续往下走</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819230514108.png" alt="image-20250819230514108"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819230603982.png" alt="image-20250819230603982"></p>
+<p>重命名</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819232507968.png" alt="image-20250819232507968"></p>
+<p>观看这个循环</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819232456739.png" alt="image-20250819232456739"></p>
+<p>问问</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819232736796.png" alt="image-20250819232736796"></p>
+<p>动态调试会进入这个循环里面，我们需要注意sub_10A324的调用时间。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819233310755.png" alt="image-20250819233310755"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819233343857.png" alt="image-20250819233343857"></p>
+<p>这里进入循环的时候，如下图这个地方，可以看到进行了inc eax和inc edx，两个自己增加的操作，EDX里面存储了一个字符串，比较CL跟EDX是否相等，CL是分号符号。EAX记录了循环了几次的操作。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819233422194.png" alt="image-20250819233422194"></p>
+<p>接下来看下面操作ESI，ESI里面存储的也是那个字符串，里面存储的DLL的名字。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819233808794.png" alt="image-20250819233808794"></p>
+<p>然后ESI加上了EAX这个计数器，直接就把前面这个dll的名字搞没了，并且使用esp的操作，eax现在是这个dll的名字。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819233957451.png" alt="image-20250819233957451"></p>
+<p>接着就开始调用这个sub_10A324(alloced_mem_copy, v32)函数。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819234057987.png" alt="image-20250819234057987"></p>
+<p>调用之后返回值EAX变成了ole32.76d30000</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819234204926.png" alt="image-20250819234204926"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819234328691.png" alt="image-20250819234328691"></p>
+<p>看起来sub_10A324将DLL的名称作为输入，并返回该DLL的句柄。这个安排是合理的，因为我们之前已经加载并获取了LoadLibraryA的函数指针。我们将这个函数标记为get_dll_base_addr</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819234428833.png" alt="image-20250819234428833"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250819234631589.png" alt="image-20250819234631589"></p>
+<p>此时很清楚，循环的结构是这样的：</p>
+<p>1.将指针沿包含由“；”分隔的DLL名称的字符串前进；</p>
+<p>2.当遇到“；”时，退出内部循环；</p>
+<p>3.加载DLL。</p>
+<p>下一个</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820102926633.png" alt="image-20250820102926633"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820103018654.png" alt="image-20250820103018654"></p>
+<p>返回kernel32.GetProcAddress，这是另一个重要的API函数，恶意软件通常使用它来加载API函数，我们还注意到，我们又进入了一个循环<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820103143719.png" alt="image-20250820103143719"></p>
+<p>使用相同的循环几次并观察寄存器的策略，我们观察到在每次迭代中，ECX增加4，EBP增加1，并且在EAX中返回一个函数指针。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820103332176.png" alt="image-20250820103332176"></p>
+<p>在内存转储中，如果我们在每次迭代期间监视ECX所指向的地址，我们就可以直观的看内存正被函数指针填满</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820103744316.png" alt="image-20250820103744316"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820153251544.png" alt="image-20250820153251544"></p>
+<p>显然，恶意软件正是在这里保存了已加载API的函数指针。其核心操作是将函数指针存入内存，从而实现动态API解析这一常用技术。这样可以避免导入表中使用了这些dll，有一定的免杀效果。</p>
+<h3 id="部分总结1-动态加载dll与函数"><a href="#部分总结1-动态加载dll与函数" class="headerlink" title="部分总结1 动态加载dll与函数"></a>部分总结1 动态加载dll与函数</h3><p>研究发现，该恶意软件具有以下特征：1.动态加载VirtualAlloc并分配大量内存空间；2.将大量数据从内存复制到新分配的内存区域进行解密，其中包含常用系统DLL的名称列表；3.将这些DLL加载至内存后，查找指定API函数指针，并将它们保存到先前分配的内存中。</p>
+<h3 id="更改AMSI函数的内存保护"><a href="#更改AMSI函数的内存保护" class="headerlink" title="更改AMSI函数的内存保护"></a>更改AMSI函数的内存保护</h3><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820104936145.png" alt="image-20250820104936145"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820152959700.png" alt="image-20250820152959700"></p>
+<p>运行的时候程序是没有到这个函数的，先放着。如下图是进入了下一个if的地方</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820153348534.png" alt="image-20250820153348534"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820153414255.png" alt="image-20250820153414255"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820153439202.png" alt="image-20250820153439202"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820153749767.png" alt="image-20250820153749767"></p>
+<p>执行其中的第一个函数get_dll_base_addr，发现获取的是asmi.dll的基址。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820154533517.png" alt="image-20250820154533517"></p>
+<p>我们继续向前推进，直到遇到下一个函数sub_10A3C2，查看参数与返回值。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820154825115.png" alt="image-20250820154825115"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820154848548.png" alt="image-20250820154848548"></p>
+<p>该函数似乎将指向allocatedMEM的指针、amsi.dll的基地址和字符串“AmsiScanBuffer”作为参数，并返回指向AmsiScanBuffer的指针，该指针用于扫描缓冲区中的恶意软件。让我们相应地更新变量和函数。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820160553802.png" alt="image-20250820160553802"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820160644226.png" alt="image-20250820160644226"></p>
+<p>四个参数</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820160700839.png" alt="image-20250820160700839"></p>
+<p>我们在AmsiScanBuffer指令的起始位置设置了12字节（0xC）的内存空间，将其配置为PAGEExecute_Read_Write模式（0x40），并将原有保护值存入地址。这种将内存空间同时设置为可写和可执行的操作，为恶意攻击者提供了执行任意代码的漏洞。值得注意的是，存储功能指令的内存区域（特别是作为Windows安全核心组件的功能模块）被同时设置为可执行和可写模式，这一操作存在重大安全隐患。</p>
+<h4 id="程序计数器（PC）-相对寻址"><a href="#程序计数器（PC）-相对寻址" class="headerlink" title="程序计数器（PC）-相对寻址"></a>程序计数器（PC）-相对寻址</h4><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820161153777.png" alt="image-20250820161153777"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820161301772.png" alt="image-20250820161301772"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820161315994.png" alt="image-20250820161315994"></p>
+<p>它不需要任何参数，当我们跨过它时，它只会返回函数的地址<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820161858998.png" alt="image-20250820161858998"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820162732545.png" alt="image-20250820162732545"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820165518395.png" alt="image-20250820165518395"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820165621551.png" alt="image-20250820165621551"></p>
+<h4 id="Disabling-AmsiScanBuffer"><a href="#Disabling-AmsiScanBuffer" class="headerlink" title="Disabling AmsiScanBuffer"></a>Disabling AmsiScanBuffer</h4><p>接下来是下一个函数，memcpy<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820165716511.png" alt="image-20250820165716511"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820165737883.png" alt="image-20250820165737883"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820165932465.png" alt="image-20250820165932465"></p>
+<p>12字节将被复制到amsi.AmsiScanBuffer，下图是修改前的amsi的函数。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820170034505.png" alt="image-20250820170034505"></p>
+<p>复制之后的</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820170108489.png" alt="image-20250820170108489"></p>
+<p>这部分内容解答了我们之前的疑问：恶意软件通过将内存保护属性修改为 <strong><code>PAGE_EXECUTE_READWRITE</code>**（可执行、可读、可写），从而能够直接覆写 <code>AmsiScanBuffer</code>函数的 **前12字节</strong>。</p>
+<p>但我们的疑问仍未完全解开——<strong>恶意软件为何要这样做？</strong></p>
+<p>由于这些字节是机器指令（instructions），通过对比 <code>memcpy</code>调用前后 <code>AmsiScanBuffer</code>的反汇编指令变化，或许能揭示其真实意图。</p>
+<p>将执行状态回退到 <code>memcpy</code>调用前的时刻，并检查此时 <code>AmsiScanBuffer</code>的反汇编指令。</p>
+<p>修改前：</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820170332488.png" alt="image-20250820170332488"></p>
+<p>修改后：</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820170425836.png" alt="image-20250820170425836"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820170600235.png" alt="image-20250820170600235"></p>
+<p>第一条指令 <code>mov eax, [esp+18]</code>将 <code>esp+18</code>处的内容（即 <code>AmsiScanBuffer</code>的第六个参数）加载到 <code>EAX</code>寄存器。根据 <code>AmsiScanBuffer</code>的官方文档，最后一个参数 <code>AMSI_RESULT</code>是一个指针，指向缓冲区扫描的结果。</p>
+<p>接下来的指令 <code>and [eax], 0</code>将 <code>AMSI_RESULT</code>的值设为 <code>0</code>，根据 <code>amsi.h</code>的定义，这对应 **<code>AMSI_RESULT_CLEAN</code>**，表示缓冲区中未检测到恶意内容。</p>
+<p>总之，AmsiScanBuffer已在内存中打补丁，以始终返回AMSI_RESULT_CLEAN。这是用于绕过AMSI的许多方法之一。</p>
+<h4 id="恢复AmsiScanBuffer的内存保护"><a href="#恢复AmsiScanBuffer的内存保护" class="headerlink" title="恢复AmsiScanBuffer的内存保护"></a>恢复AmsiScanBuffer的内存保护</h4><p>我们继续执行下一个函数调用，该调用同样使用指针运算</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171054902.png" alt="image-20250820171054902"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171113397.png" alt="image-20250820171113397"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171124000.png" alt="image-20250820171124000"></p>
+<p>与第一次调用VirtualProtect类似，第一个参数是指向AmsiScanBuffer的指针，第二个参数是12，但第三个参数这次是0x20。如果我们查阅Microsoft关于VirtualProtect的文档，就会发现该值对应PAGE_EXECUTE_READ。这表明恶意软件似乎正在将内存保护恢复到其原始值</p>
+<h4 id="Disabling-AmisScanString"><a href="#Disabling-AmisScanString" class="headerlink" title="Disabling AmisScanString"></a>Disabling AmisScanString</h4><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171331769.png" alt="image-20250820171331769"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171623581.png" alt="image-20250820171623581"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171649499.png" alt="image-20250820171649499"></p>
+<p>这部分运行到最后，跟刚刚的函数修改的一样，都是首先修改内存保护，然后修改内容，然后再把保护修改回去。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820171931415.png" alt="image-20250820171931415"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172036476.png" alt="image-20250820172036476"></p>
+<h3 id="禁用EtwEventWrite"><a href="#禁用EtwEventWrite" class="headerlink" title="禁用EtwEventWrite"></a>禁用EtwEventWrite</h3><p>让我们退出sub_108106并将其标记为disable_amsi，然后进入下一个函数sub_108201</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172217249.png" alt="image-20250820172217249"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172408303.png" alt="image-20250820172408303"></p>
+<p>如果我们查看sub_108201的反编译代码，会发现它与disable_amsi非常相似，都调用了get_dll_base_addr、get_dll_func和memcpy函数。因此，我们的直觉告诉我们，这个函数可能与disable_amsi类似。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172520011.png" alt="image-20250820172520011"></p>
+<p>接下来，我们将跳转到get_dll_func函数，该函数会返回指向ntdll的指针。EtwEventWrite（图3.7.4)。EtwEventWrite用于记录事件（例如网络连接、磁盘I/O、进程创建），这些事件可以被EDRs和防病毒工具等安全系统捕获，以检测威胁。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172738345.png" alt="image-20250820172738345"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172752986.png" alt="image-20250820172752986"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172820348.png" alt="image-20250820172820348"></p>
+<p>更改这个函数内存保护</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172843530.png" alt="image-20250820172843530"></p>
+<p>复制内容到函数开始</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820172956857.png" alt="image-20250820172956857"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820173044690.png" alt="image-20250820173044690"></p>
+<p>我们将退出sub_108201并将其重命名为disable_etw_event_write</p>
+<h3 id="部分总结2-禁用安全功能asmi和etw"><a href="#部分总结2-禁用安全功能asmi和etw" class="headerlink" title="部分总结2 禁用安全功能asmi和etw"></a>部分总结2 禁用安全功能asmi和etw</h3><p>总而言之，恶意软件通过以下操作禁用了几个对安全至关重要的重要Windows API函数：</p>
+<ol>
+<li>获取amsi.dll和ntdll.dll的基地址</li>
+<li>获取AmsiScanBuffer、AmsiScanString和EtwEventWrite的函数指针</li>
+<li>调用VirtualProtect将内存保护设置为RWX</li>
+<li>重写指令中的一些字节以使这些函数无用</li>
+<li>调用VirtualProtect将内存保护设置为R-X</li>
+</ol>
+<p>这种内存修补方法通常被恶意行为者或红队用来绕过ETW和AMSI等组件。<br>我们还观察到恶意软件使用相对于PC的寻址来定位资源，例如用于重写AmsiScanBuffer、AmsiScanString和EtwEventWrite的伪代码。</p>
+<h3 id="将PE文件复制到内存"><a href="#将PE文件复制到内存" class="headerlink" title="将PE文件复制到内存"></a>将PE文件复制到内存</h3><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820213330294.png" alt="image-20250820213330294"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820213357102.png" alt="image-20250820213357102"></p>
+<p>内存复制之后，查看分配的内存情况。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820214434079.png" alt="image-20250820214434079"></p>
+<p>这些字节的目的并不明显，因此我们将向前推进，直到下一次函数调用为止sub_10A795</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820214844629.png" alt="image-20250820214844629"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820215031375.png" alt="image-20250820215031375"></p>
+<p>问一下AI</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820215349798.png" alt="image-20250820215349798"></p>
+<p>执行之后，发现下面是MZ开头，是PE文件格式的特征。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820215510727.png" alt="image-20250820215510727"></p>
+<p>对于经验丰富的研究人员或经常处理PE文件的人来说，字节‘4D 5A’或字符串‘MZ’可能显得眼熟——这些正是PE文件的魔法字节。当内存被分配并填满PE文件的字节时，这种情况非常可疑，因为这些数据很可能以某种方式被执行。我们需要记录下这个内存地址，以便后续查看其使用情况：</p>
+<h3 id="CLR"><a href="#CLR" class="headerlink" title="CLR"></a>CLR</h3><p>继续向下分析，经过了一个switch之后，运行到了sub_108D67</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820221356385.png" alt="image-20250820221356385"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820221427519.png" alt="image-20250820221427519"></p>
+<p>看一下参数</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820221648783.png" alt="image-20250820221648783"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250820223911325.png" alt="image-20250820223911325"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821001443043.png" alt="image-20250821001443043"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821001503202.png" alt="image-20250821001503202"></p>
+<p>步骤 2：C++ 代码调用 .NET DLL</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// File: clr_host.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;metahost.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib, <span class="string">&quot;mscoree.lib&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    HRESULT hr;</span><br><span class="line">    ICLRMetaHost *pMetaHost = <span class="literal">NULL</span>;</span><br><span class="line">    ICLRRuntimeInfo *pRuntimeInfo = <span class="literal">NULL</span>;</span><br><span class="line">    ICLRRuntimeHost *pRuntimeHost = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 初始化 CLR</span></span><br><span class="line">    hr = <span class="built_in">CLRCreateInstance</span>(CLSID_CLRMetaHost, IID_ICLRMetaHost, (LPVOID*)&amp;pMetaHost);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">FAILED</span>(hr)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;CLRCreateInstance failed: 0x%08X\n&quot;</span>, hr);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 获取最新 .NET 运行时</span></span><br><span class="line">    hr = pMetaHost-&gt;<span class="built_in">GetRuntime</span>(<span class="string">L&quot;v4.0.30319&quot;</span>, IID_ICLRRuntimeInfo, (LPVOID*)&amp;pRuntimeInfo);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">FAILED</span>(hr)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;GetRuntime failed: 0x%08X\n&quot;</span>, hr);</span><br><span class="line">        pMetaHost-&gt;<span class="built_in">Release</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 启动运行时</span></span><br><span class="line">    hr = pRuntimeInfo-&gt;<span class="built_in">GetInterface</span>(CLSID_CLRRuntimeHost, IID_ICLRRuntimeHost, (LPVOID*)&amp;pRuntimeHost);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">FAILED</span>(hr)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;GetInterface failed: 0x%08X\n&quot;</span>, hr);</span><br><span class="line">        pRuntimeInfo-&gt;<span class="built_in">Release</span>();</span><br><span class="line">        pMetaHost-&gt;<span class="built_in">Release</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    hr = pRuntimeHost-&gt;<span class="built_in">Start</span>();</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">FAILED</span>(hr)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Start failed: 0x%08X\n&quot;</span>, hr);</span><br><span class="line">        pRuntimeHost-&gt;<span class="built_in">Release</span>();</span><br><span class="line">        pRuntimeInfo-&gt;<span class="built_in">Release</span>();</span><br><span class="line">        pMetaHost-&gt;<span class="built_in">Release</span>();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 执行 .NET 方法</span></span><br><span class="line">    DWORD retVal;</span><br><span class="line">    hr = pRuntimeHost-&gt;<span class="built_in">ExecuteInDefaultAppDomain</span>(</span><br><span class="line">        <span class="string">L&quot;HelloWorld.dll&quot;</span>,  <span class="comment">// .NET DLL 路径</span></span><br><span class="line">        <span class="string">L&quot;HelloWorld&quot;</span>,      <span class="comment">// 类名</span></span><br><span class="line">        <span class="string">L&quot;SayHello&quot;</span>,        <span class="comment">// 静态方法名</span></span><br><span class="line">        <span class="string">L&quot;&quot;</span>,                <span class="comment">// 参数（无）</span></span><br><span class="line">        &amp;retVal</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">FAILED</span>(hr)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;ExecuteInDefaultAppDomain failed: 0x%08X\n&quot;</span>, hr);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 清理资源</span></span><br><span class="line">    pRuntimeHost-&gt;<span class="built_in">Release</span>();</span><br><span class="line">    pRuntimeInfo-&gt;<span class="built_in">Release</span>();</span><br><span class="line">    pMetaHost-&gt;<span class="built_in">Release</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821001611715.png" alt="image-20250821001611715"></p>
+<p>根据文档，CLRCreateInstance的参数为：<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821005417838.png" alt="image-20250821005417838"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821010307076.png" alt="image-20250821010307076"></p>
+<p>v3(alloced_mem_copy + 2128, alloced_mem_copy + 2144, buf) 函数执行之后，第三个参数的内存地址变成了这样。<img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821011044489.png" alt="image-20250821011044489"></p>
+<p>做个标记，这个就是接口，调用CLRCreateInstance创建了ICLREMetaHost接口，并将它的指针保存（当前函数作用域内的buf）我们可以预期这个指针将用于调用ICLRMetaHost接口的函数</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821011227239.png" alt="image-20250821011227239"></p>
+<p>IDA加载类型信息库并创建自定义结构</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821011841892.png" alt="image-20250821011841892"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821011853056.png" alt="image-20250821011853056"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821011904874.png" alt="image-20250821011904874"></p>
+<p>接下来，看起来前20个字节被填充了版本字符串，且该字符串已被转换为宽字符字符串。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821103155779.png" alt="image-20250821103155779"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821103437748.png" alt="image-20250821103437748"></p>
+<p>接下来运行这个函数的时候发现dbg没有解析，这里进行导入dll</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821103715126.png" alt="image-20250821103715126"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821103618759.png" alt="image-20250821103618759"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821104342463.png" alt="image-20250821104342463"></p>
+<p>现在有这个解析了</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821104405840.png" alt="image-20250821104405840"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821104557156.png" alt="image-20250821104557156"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821104611611.png" alt="image-20250821104611611"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821105016389.png" alt="image-20250821105016389"></p>
+<p>需要注意的是，堆栈顶部的元素并非文档中常见的版本字符串，而是指向ICLRMetaHost实例的指针。这是因为C++编译器会隐式地将“This”指针传递给非静态成员函数。虽然这种操作在源代码和IDA的伪代码视图中不可见，但通过反汇编分析仍可观察到。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821105353845.png" alt="image-20250821105353845"></p>
+<p>接着</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821110213187.png" alt="image-20250821110213187"></p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250821110234124.png" alt="image-20250821110234124"></p>
+<h3 id="部分总结3-CLR"><a href="#部分总结3-CLR" class="headerlink" title="部分总结3 CLR"></a>部分总结3 CLR</h3><p>我们花了相当长的时间单步执行函数并检查它们的参数和返回值。让我们花点时间回顾并在此列出这些函数：</p>
+<ul>
+<li>CLRCreateInstance</li>
+<li>ICLRMetaHost::GetRuntime</li>
+<li>CLRRuntimeInfoImpl::IsLoadable</li>
+<li>CLRRuntimeInfoImpl::GetInterface</li>
+<li>ICorRuntimeHost::Start</li>
+</ul>
+<p>我们借此机会回顾并自问恶意软件在这里在做什么。搜索我们上面遇到的函数会得到许多关于从 C/C++ 代码运行 .NET 程序集，或在非托管/原生可执行文件中运行托管可执行文件的文章。回顾我们之前关于非托管代码与托管代码的讨论，托管代码必须在 CLR 中运行。这里恶意软件似乎在做的是使用一系列 API 函数创建一个 CLR，很可能是为了准备运行之前复制到内存中的 PE 文件。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a href="/categories/">categories</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#A-Mega-Malware-Analysis-Tutorial-Featuring-Donut"><span class="toc-number">1.</span> <span class="toc-text">A Mega Malware Analysis Tutorial Featuring Donut</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">样本分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90"><span class="toc-number">1.1.1.</span> <span class="toc-text">静态分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%B1%BB%E5%9E%8B%E5%BC%95%E7%94%A8%E6%9D%A5%E6%8E%A8%E6%96%AD%E5%8A%9F%E8%83%BD"><span class="toc-number">1.1.2.</span> <span class="toc-text">使用类型引用来推断功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%9F%E8%B8%AA%E4%BB%A3%E7%A0%81%EF%BC%9A%E8%A7%A3%E5%AF%86%E6%9C%89%E6%95%88%E8%BD%BD%E8%8D%B7"><span class="toc-number">1.1.3.</span> <span class="toc-text">跟踪代码：解密有效载荷</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90"><span class="toc-number">1.1.4.</span> <span class="toc-text">程序分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93"><span class="toc-number">1.1.5.</span> <span class="toc-text">静态分析总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%83%E8%AF%95%E6%9C%AC%E5%9C%B0%E4%BB%A3%E7%A0%81%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="toc-number">1.2.</span> <span class="toc-text">调试本地代码的执行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E8%B0%83%E8%AF%95%E5%88%86%E6%9E%90shellcode"><span class="toc-number">1.2.1.</span> <span class="toc-text">开始调试分析shellcode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%931-%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BDdll%E4%B8%8E%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.2.</span> <span class="toc-text">部分总结1 动态加载dll与函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9AMSI%E5%87%BD%E6%95%B0%E7%9A%84%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4"><span class="toc-number">1.2.3.</span> <span class="toc-text">更改AMSI函数的内存保护</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8%EF%BC%88PC%EF%BC%89-%E7%9B%B8%E5%AF%B9%E5%AF%BB%E5%9D%80"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">程序计数器（PC）-相对寻址</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Disabling-AmsiScanBuffer"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">Disabling AmsiScanBuffer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%81%A2%E5%A4%8DAmsiScanBuffer%E7%9A%84%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">恢复AmsiScanBuffer的内存保护</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Disabling-AmisScanString"><span class="toc-number">1.2.3.4.</span> <span class="toc-text">Disabling AmisScanString</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A6%81%E7%94%A8EtwEventWrite"><span class="toc-number">1.2.4.</span> <span class="toc-text">禁用EtwEventWrite</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%932-%E7%A6%81%E7%94%A8%E5%AE%89%E5%85%A8%E5%8A%9F%E8%83%BDasmi%E5%92%8Cetw"><span class="toc-number">1.2.5.</span> <span class="toc-text">部分总结2 禁用安全功能asmi和etw</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86PE%E6%96%87%E4%BB%B6%E5%A4%8D%E5%88%B6%E5%88%B0%E5%86%85%E5%AD%98"><span class="toc-number">1.2.6.</span> <span class="toc-text">将PE文件复制到内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CLR"><span class="toc-number">1.2.7.</span> <span class="toc-text">CLR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%933-CLR"><span class="toc-number">1.2.8.</span> <span class="toc-text">部分总结3 CLR</span></a></li></ol></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&text=针对dount的一次恶意样本分析"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&title=针对dount的一次恶意样本分析"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&is_video=false&description=针对dount的一次恶意样本分析"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=针对dount的一次恶意样本分析&body=Check out this article: http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&title=针对dount的一次恶意样本分析"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&title=针对dount的一次恶意样本分析"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&title=针对dount的一次恶意样本分析"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&title=针对dount的一次恶意样本分析"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&name=针对dount的一次恶意样本分析&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/&t=针对dount的一次恶意样本分析"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    CHANGMEN
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
