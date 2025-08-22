@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang=en>
+<html>
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="萌新的一次恶意程序样本全分析之旅一、快速分析拿到样本的第一步，首先对样本进行快速的分析，判断其是不是恶意程序与病毒，不然是正常程序就尬住了。  1.1 一眼万年三个关键信息：图标，文件格式，文件权限 肉眼可见这是一个危险文件，首先一个材料为什么是应用程序类型，甚至还是要管理员权限打开。 1.2 检查心法在有了第一个疑点后，我们进一步确定该样本是不是恶意程序。通常来说，要快速判断一个样本（exe类）">
+  <meta charset="utf-8">
+  
+
+  
+  <title>萌新的一次恶意程序样本全分析之旅 | CHANGMEN&#39;blogs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="萌新的一次恶意程序样本全分析之旅一、快速分析拿到样本的第一步，首先对样本进行快速的分析，判断其是不是恶意程序与病毒，不然是正常程序就尬住了。  1.1 一眼万年三个关键信息：图标，文件格式，文件权限 肉眼可见这是一个危险文件，首先一个材料为什么是应用程序类型，甚至还是要管理员权限打开。 1.2 检查心法在有了第一个疑点后，我们进一步确定该样本是不是恶意程序。通常来说，要快速判断一个样本（exe类）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="萌新的一次恶意程序样本全分析之旅">
 <meta property="og:url" content="http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/index.html">
@@ -60,158 +61,81 @@
 <meta property="article:tag" content="恶意样本分析">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250814181900197.png">
-    
-    
-      
-        
-          <link rel="shortcut icon" href="/images/favicon.ico">
-        
-      
-      
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
-    
-    <!-- title -->
-    <title>萌新的一次恶意程序样本全分析之旅</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
-
-
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
+  
+    <link rel="alternate" href="/atom.xml" title="CHANGMEN&#39;blogs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
 <link rel="stylesheet" href="/css/style.css">
 
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-	<!-- mathjax -->
-	
 <meta name="generator" content="Hexo 5.4.2"></head>
 
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
-     --><!--
-       --><li><a href="/categories/">categories</a></li><!--
-     --><!--
-       --><li><a href="/search/">Search</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="Previous post" href="/2025/08/15/dropping-elephant-rat%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="Next post" href="/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&text=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&title=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&is_video=false&description=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=萌新的一次恶意程序样本全分析之旅&body=Check out this article: http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&title=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&title=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&title=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&title=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&name=萌新的一次恶意程序样本全分析之旅&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&t=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">CHANGMEN&#39;blogs</a>
+      </h1>
+      
     </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85"><span class="toc-number">1.</span> <span class="toc-text">萌新的一次恶意程序样本全分析之旅</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%BF%AB%E9%80%9F%E5%88%86%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">一、快速分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%B8%80%E7%9C%BC%E4%B8%87%E5%B9%B4"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 一眼万年</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%A3%80%E6%9F%A5%E5%BF%83%E6%B3%95"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 检查心法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-%E6%A3%80%E6%9F%A5%E6%96%87%E4%BB%B6%E7%AD%BE%E5%90%8D"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">1.2.1 检查文件签名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">1.2.2 查看文件字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F%E6%9F%A5%E7%9C%8B%E8%A1%8C%E4%B8%BA"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">1.2.3 运行程序查看行为</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90"><span class="toc-number">1.2.</span> <span class="toc-text">二、深入分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%9F%A5%E5%A3%B3"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 查壳</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-%E6%A3%80%E6%9F%A5%E5%8A%A0%E5%A3%B3"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">2.1.1 检查加壳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-%E5%88%86%E6%9E%90%E9%87%8A%E6%94%BE%E5%90%8E%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">2.1.2 分析释放后的文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%8B%86%E5%8C%85"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 拆包</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-%E5%88%86%E6%9E%90%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">2.2.1 分析文件格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-%E6%A2%B3%E7%90%86%E5%AF%86%E7%A0%81%E5%AF%BB%E6%89%BE%E6%80%9D%E8%B7%AF"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">2.2.2 梳理密码寻找思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3-%E6%89%93%E5%BC%80%E5%8E%8B%E7%BC%A9%E5%8C%85"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">2.2.3 打开压缩包</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E4%BA%8C%E6%AC%A1%E6%8B%86%E5%8C%85"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3 二次拆包</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-1-%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">2.3.1 查看文件内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-2-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95shellcode"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">2.3.2 动态调试shellcode</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-4"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">2.3.4</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-number">1.2.4.</span> <span class="toc-text">2.4 代码解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-1"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">2.4.1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-2"><span class="toc-number">1.2.4.2.</span> <span class="toc-text">2.4.2</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">1.3.</span> <span class="toc-text">三、总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.3</span></a></li></ol></li></ol></li></ol>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
       </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-萌新的一次恶意程序样本全分析之旅" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/" class="article-date">
+  <time datetime="2025-08-14T13:23:26.000Z" itemprop="datePublished">2025-08-14</time>
+</a>
     
-  </span>
-</div>
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">恶意样本分析</a>
+  </div>
 
+  </div>
+  <div class="article-inner">
     
-    <div class="content index py4 ">
+    
+      <header class="article-header">
         
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        萌新的一次恶意程序样本全分析之旅
+  
+    <h1 class="article-title" itemprop="name">
+      萌新的一次恶意程序样本全分析之旅
     </h1>
-
-
-
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">CHANGMEN</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2025-08-14T13:23:26.000Z" class="dt-published" itemprop="datePublished">2025-08-14</time>
-        
-        (Updated: <time datetime="2025-08-14T13:23:57.196Z" class="dt-updated" itemprop="dateModified">2025-08-14</time>)
-        
-      
-    </div>
-
-
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">恶意样本分析</a>
-    </div>
-
-
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" rel="tag">恶意样本分析</a>
-    </div>
-
-
-    </div>
-  </header>
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <h1 id="萌新的一次恶意程序样本全分析之旅"><a href="#萌新的一次恶意程序样本全分析之旅" class="headerlink" title="萌新的一次恶意程序样本全分析之旅"></a>萌新的一次恶意程序样本全分析之旅</h1><h2 id="一、快速分析"><a href="#一、快速分析" class="headerlink" title="一、快速分析"></a>一、快速分析</h2><p>拿到样本的第一步，首先对样本进行快速的分析，判断其是不是恶意程序与病毒，不然是正常程序就尬住了。</p>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="萌新的一次恶意程序样本全分析之旅"><a href="#萌新的一次恶意程序样本全分析之旅" class="headerlink" title="萌新的一次恶意程序样本全分析之旅"></a>萌新的一次恶意程序样本全分析之旅</h1><h2 id="一、快速分析"><a href="#一、快速分析" class="headerlink" title="一、快速分析"></a>一、快速分析</h2><p>拿到样本的第一步，首先对样本进行快速的分析，判断其是不是恶意程序与病毒，不然是正常程序就尬住了。</p>
 <p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250814181900197.png" alt="image-20250814181900197"></p>
 <h3 id="1-1-一眼万年"><a href="#1-1-一眼万年" class="headerlink" title="1.1 一眼万年"></a>1.1 一眼万年</h3><p>三个关键信息：图标，文件格式，文件权限</p>
 <p>肉眼可见这是一个<strong>危险文件</strong>，首先一个材料为什么是应用程序类型，甚至还是要管理员权限打开。</p>
@@ -302,147 +226,153 @@
 <p>链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1ipc4-FS2osbvvIjd3r7uZw?pwd=lnvk">https://pan.baidu.com/s/1ipc4-FS2osbvvIjd3r7uZw?pwd=lnvk</a><br>        提取码：lnvk</p>
 <p><a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-281115.htm">https://bbs.kanxue.com/thread-281115.htm</a></p>
 
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/" data-id="cmem62u31001dwch9fymnerql" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" rel="tag">恶意样本分析</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/08/15/dropping-elephant-rat%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          dropping-elephant rat恶意样本分析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/03/02/%E5%85%B3%E4%BA%8EPowerShell%E7%9A%84%E7%A0%94%E7%A9%B6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">关于PowerShell的研究</div>
+    </a>
+  
+</nav>
+
+  
 </article>
 
-
-
+</section>
         
-          <div id="footer-post-container">
-  <div id="footer-post">
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/java%E5%AE%89%E5%85%A8/">java安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">恶意样本分析</a></li></ul>
+    </div>
+  </div>
 
-    <div id="nav-footer" style="display: none">
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%AE%89%E5%85%A8/" rel="tag">PHP安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/" rel="tag">《免杀技术实践》</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF/" rel="tag">免杀技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" rel="tag">恶意样本分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" rel="tag">成长故事碎碎念</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/PHP%E5%AE%89%E5%85%A8/" style="font-size: 13.33px;">PHP安全</a> <a href="/tags/java%E5%AE%89%E5%85%A8/" style="font-size: 16.67px;">java安全</a> <a href="/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/" style="font-size: 10px;">《免杀技术实践》</a> <a href="/tags/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF/" style="font-size: 10px;">免杀技术</a> <a href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" style="font-size: 20px;">恶意样本分析</a> <a href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" style="font-size: 13.33px;">成长故事碎碎念</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">January 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
       <ul>
         
-          <li><a href="/">Home</a></li>
+          <li>
+            <a href="/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">针对dount的一次恶意样本分析</a>
+          </li>
         
-          <li><a href="/about/">About</a></li>
+          <li>
+            <a href="/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">apt-c-09（摩诃草）组织基于mythic C2框架的新型攻击样本分析</a>
+          </li>
         
-          <li><a href="/archives/">Writing</a></li>
+          <li>
+            <a href="/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/">APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</a>
+          </li>
         
-          <li><a href="/categories/">categories</a></li>
+          <li>
+            <a href="/2025/08/16/%E7%97%85%E6%AF%92%E6%A0%B7%E6%9C%AC-%E7%99%BD%E5%8A%A0%E9%BB%91-1/">一次针对白加黑的快速样本分析</a>
+          </li>
         
-          <li><a href="/search/">Search</a></li>
+          <li>
+            <a href="/2025/08/15/dropping-elephant-rat%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">dropping-elephant rat恶意样本分析</a>
+          </li>
         
       </ul>
     </div>
+  </div>
 
-    
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85"><span class="toc-number">1.</span> <span class="toc-text">萌新的一次恶意程序样本全分析之旅</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%BF%AB%E9%80%9F%E5%88%86%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">一、快速分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%B8%80%E7%9C%BC%E4%B8%87%E5%B9%B4"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 一眼万年</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%A3%80%E6%9F%A5%E5%BF%83%E6%B3%95"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 检查心法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-%E6%A3%80%E6%9F%A5%E6%96%87%E4%BB%B6%E7%AD%BE%E5%90%8D"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">1.2.1 检查文件签名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">1.2.2 查看文件字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F%E6%9F%A5%E7%9C%8B%E8%A1%8C%E4%B8%BA"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">1.2.3 运行程序查看行为</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90"><span class="toc-number">1.2.</span> <span class="toc-text">二、深入分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%9F%A5%E5%A3%B3"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 查壳</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-%E6%A3%80%E6%9F%A5%E5%8A%A0%E5%A3%B3"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">2.1.1 检查加壳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-%E5%88%86%E6%9E%90%E9%87%8A%E6%94%BE%E5%90%8E%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">2.1.2 分析释放后的文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%8B%86%E5%8C%85"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 拆包</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-%E5%88%86%E6%9E%90%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">2.2.1 分析文件格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-%E6%A2%B3%E7%90%86%E5%AF%86%E7%A0%81%E5%AF%BB%E6%89%BE%E6%80%9D%E8%B7%AF"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">2.2.2 梳理密码寻找思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3-%E6%89%93%E5%BC%80%E5%8E%8B%E7%BC%A9%E5%8C%85"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">2.2.3 打开压缩包</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E4%BA%8C%E6%AC%A1%E6%8B%86%E5%8C%85"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3 二次拆包</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-1-%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">2.3.1 查看文件内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-2-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95shellcode"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">2.3.2 动态调试shellcode</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-4"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">2.3.4</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-number">1.2.4.</span> <span class="toc-text">2.4 代码解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-1"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">2.4.1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-2"><span class="toc-number">1.2.4.2.</span> <span class="toc-text">2.4.2</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">1.3.</span> <span class="toc-text">三、总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.3</span></a></li></ol></li></ol></li></ol>
+  
+</aside>
+        
       </div>
-    
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&text=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&title=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&is_video=false&description=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=萌新的一次恶意程序样本全分析之旅&body=Check out this article: http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&title=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&title=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&title=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&title=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&name=萌新的一次恶意程序样本全分析之旅&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/&t=萌新的一次恶意程序样本全分析之旅"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2025 CHANGMEN<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
-
-  </div>
-</div>
-
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2016-2025
-    CHANGMEN
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
-     --><!--
-       --><li><a href="/categories/">categories</a></li><!--
-     --><!--
-       --><li><a href="/search/">Search</a></li><!--
-     -->
-      </ul>
-    </nav>
   </div>
 </footer>
-
     </div>
-    <!-- styles -->
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
-
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
 
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
   
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
-    })
-  })
-  </script>
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/main.js"></script>
 
-<!-- search -->
 
-<!-- Baidu Analytics -->
+<script src="/js/script.js"></script>
 
-<!-- Cloudflare Analytics -->
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
+  </div>
 </body>
 </html>

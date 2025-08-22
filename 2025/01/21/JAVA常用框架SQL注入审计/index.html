@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang=en>
+<html>
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="SQL注入代码审计一、JDBC拼接不当造成sql注入 JDBC存在两种方法执行SQL语句，分别为PreparedStatement和Statement，相比Statement ，PreparedStatement会对SQL语句进行预编译，Statement会直接拼接sql语句造成SQL注入漏洞 1.Statement 示例代码中直接使用statement.executeQuery(sql)，存在s">
+  <meta charset="utf-8">
+  
+
+  
+  <title>JAVA常用框架SQL注入审计 | CHANGMEN&#39;blogs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="SQL注入代码审计一、JDBC拼接不当造成sql注入 JDBC存在两种方法执行SQL语句，分别为PreparedStatement和Statement，相比Statement ，PreparedStatement会对SQL语句进行预编译，Statement会直接拼接sql语句造成SQL注入漏洞 1.Statement 示例代码中直接使用statement.executeQuery(sql)，存在s">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JAVA常用框架SQL注入审计">
 <meta property="og:url" content="http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/index.html">
@@ -38,158 +39,81 @@
 <meta property="article:tag" content="java安全">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250121230904491.png">
-    
-    
-      
-        
-          <link rel="shortcut icon" href="/images/favicon.ico">
-        
-      
-      
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
-    
-    <!-- title -->
-    <title>JAVA常用框架SQL注入审计</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
-
-
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
+  
+    <link rel="alternate" href="/atom.xml" title="CHANGMEN&#39;blogs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
 <link rel="stylesheet" href="/css/style.css">
 
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-	<!-- mathjax -->
-	
 <meta name="generator" content="Hexo 5.4.2"></head>
 
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
-     --><!--
-       --><li><a href="/categories/">categories</a></li><!--
-     --><!--
-       --><li><a href="/search/">Search</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="Previous post" href="/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="Next post" href="/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&text=JAVA常用框架SQL注入审计"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&title=JAVA常用框架SQL注入审计"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&is_video=false&description=JAVA常用框架SQL注入审计"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=JAVA常用框架SQL注入审计&body=Check out this article: http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&title=JAVA常用框架SQL注入审计"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&title=JAVA常用框架SQL注入审计"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&title=JAVA常用框架SQL注入审计"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&title=JAVA常用框架SQL注入审计"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&name=JAVA常用框架SQL注入审计&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&t=JAVA常用框架SQL注入审计"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">CHANGMEN&#39;blogs</a>
+      </h1>
+      
     </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="toc-number">1.</span> <span class="toc-text">SQL注入代码审计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81JDBC%E6%8B%BC%E6%8E%A5%E4%B8%8D%E5%BD%93%E9%80%A0%E6%88%90sql%E6%B3%A8%E5%85%A5"><span class="toc-number">1.1.</span> <span class="toc-text">一、JDBC拼接不当造成sql注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Statement"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.Statement</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-PreparedStatement"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.PreparedStatement</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-JDBC%E6%98%93%E4%BA%A7%E7%94%9F%E6%BC%8F%E6%B4%9E%E7%82%B9"><span class="toc-number">1.1.3.</span> <span class="toc-text">3.JDBC易产生漏洞点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E6%9C%AA%E4%BD%BF%E7%94%A8%E5%8D%A0%E4%BD%8D%E7%AC%A6"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">3.1.未使用占位符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E4%BD%BF%E7%94%A8in%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">3.2.使用in语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E4%BD%BF%E7%94%A8like%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.1.3.3.</span> <span class="toc-text">3.3.使用like语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-%E5%92%8C"><span class="toc-number">1.1.3.4.</span> <span class="toc-text">3.4.%和_</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5-Order-by%E3%80%81from%E7%AD%89%E6%97%A0%E6%B3%95%E9%A2%84%E7%BC%96%E8%AF%91"><span class="toc-number">1.1.3.5.</span> <span class="toc-text">3.5.Order by、from等无法预编译</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C-Mybatis%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84sql%E6%B3%A8%E5%85%A5"><span class="toc-number">1.2.</span> <span class="toc-text">二.Mybatis框架下的sql注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Parameter-%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">1 .${Parameter}方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-MyBatis%E6%98%93%E4%BA%A7%E7%94%9FSQL%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%89%E7%A7%8D%E6%83%85%E5%86%B5"><span class="toc-number">1.2.2.</span> <span class="toc-text">3.MyBatis易产生SQL注入的三种情况</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">3.1 模糊查询</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E4%BD%BF%E7%94%A8in%E8%AF%AD%E5%8F%A5-1"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">3.2 使用in语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3%E4%BD%BF%E7%94%A8order-by-%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">3.3使用order by 语句</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89-Mybatis-plus%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84sql%E6%B3%A8%E5%85%A5"><span class="toc-number">1.3.</span> <span class="toc-text">三.Mybatis-plus框架下的sql注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-number">1.3.1.</span> <span class="toc-text">快速入门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CRUD%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.3.2.</span> <span class="toc-text">CRUD接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Mapper-CRUD%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">Mapper CRUD接口</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E6%9E%84%E9%80%A0%E5%99%A8"><span class="toc-number">1.3.3.</span> <span class="toc-text">条件构造器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8"><span class="toc-number">1.3.4.</span> <span class="toc-text">1.1基础使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2mybatis-puls%E9%A2%84%E7%BC%96%E8%AF%91"><span class="toc-number">1.3.5.</span> <span class="toc-text">1.2mybatis-puls预编译</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B8%B8%E8%A7%81%E6%B3%A8%E5%85%A5%E5%9C%BA%E6%99%AF"><span class="toc-number">1.4.</span> <span class="toc-text">2.常见注入场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9D%A1%E4%BB%B6%E6%9E%84%E9%80%A0%E5%99%A8%E5%B8%B8%E8%A7%81%E6%B3%A8%E5%85%A5%E5%9C%BA%E6%99%AF"><span class="toc-number">1.4.1.</span> <span class="toc-text">1.条件构造器常见注入场景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#apply"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">apply</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#last"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">last</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#exists-notExists"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">exists&#x2F;notExists</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#having"><span class="toc-number">1.4.1.4.</span> <span class="toc-text">having</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#order-by"><span class="toc-number">1.4.1.5.</span> <span class="toc-text">order by</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#group-By"><span class="toc-number">1.4.1.6.</span> <span class="toc-text">group By</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#insql-notinsql"><span class="toc-number">1.4.1.7.</span> <span class="toc-text">insql&#x2F;notinsql</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8-Wrapper-%E8%87%AA%E5%AE%9A%E4%B9%89SQL%EF%BC%88%E7%89%B9%E6%AE%8A%E7%9A%84%E9%A2%84%E7%BC%96%E8%AF%91%E5%9C%BA%E6%99%AF%EF%BC%89"><span class="toc-number">1.4.2.</span> <span class="toc-text">2.使用 Wrapper 自定义SQL（特殊的预编译场景）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%B3%A8%E8%A7%A3%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">1.注解模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-XML%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">2.XML模式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%88%86%E9%A1%B5%E6%8F%92%E4%BB%B6"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.分页插件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-PaginationInnerInterceptor"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">1.PaginationInnerInterceptor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-pagehelper"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">2.pagehelper</span></a></li></ol></li></ol></li></ol></li></ol>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
       </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-JAVA常用框架SQL注入审计" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/" class="article-date">
+  <time datetime="2025-01-21T14:51:12.000Z" itemprop="datePublished">2025-01-21</time>
+</a>
     
-  </span>
-</div>
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java%E5%AE%89%E5%85%A8/">java安全</a>
+  </div>
 
+  </div>
+  <div class="article-inner">
     
-    <div class="content index py4 ">
+    
+      <header class="article-header">
         
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        JAVA常用框架SQL注入审计
+  
+    <h1 class="article-title" itemprop="name">
+      JAVA常用框架SQL注入审计
     </h1>
-
-
-
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">CHANGMEN</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2025-01-21T14:51:12.000Z" class="dt-published" itemprop="datePublished">2025-01-21</time>
-        
-        (Updated: <time datetime="2025-08-14T13:28:43.846Z" class="dt-updated" itemprop="dateModified">2025-08-14</time>)
-        
-      
-    </div>
-
-
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/java%E5%AE%89%E5%85%A8/">java安全</a>
-    </div>
-
-
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a>
-    </div>
-
-
-    </div>
-  </header>
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <h1 id="SQL注入代码审计"><a href="#SQL注入代码审计" class="headerlink" title="SQL注入代码审计"></a>SQL注入代码审计</h1><h2 id="一、JDBC拼接不当造成sql注入"><a href="#一、JDBC拼接不当造成sql注入" class="headerlink" title="一、JDBC拼接不当造成sql注入"></a>一、JDBC拼接不当造成sql注入</h2><p> JDBC存在两种方法执行SQL语句，分别为PreparedStatement和Statement，相比Statement ，PreparedStatement会对SQL语句进行预编译，Statement会直接拼接sql语句造成SQL注入漏洞</p>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="SQL注入代码审计"><a href="#SQL注入代码审计" class="headerlink" title="SQL注入代码审计"></a>SQL注入代码审计</h1><h2 id="一、JDBC拼接不当造成sql注入"><a href="#一、JDBC拼接不当造成sql注入" class="headerlink" title="一、JDBC拼接不当造成sql注入"></a>一、JDBC拼接不当造成sql注入</h2><p> JDBC存在两种方法执行SQL语句，分别为PreparedStatement和Statement，相比Statement ，PreparedStatement会对SQL语句进行预编译，Statement会直接拼接sql语句造成SQL注入漏洞</p>
 <h3 id="1-Statement"><a href="#1-Statement" class="headerlink" title="1.Statement"></a>1.Statement</h3><p> 示例代码中直接使用statement.executeQuery(sql)，存在sql注入漏洞</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.sql.*;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JdbcSQLInjectionTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 数据库连接参数</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">url</span> <span class="operator">=</span> <span class="string">&quot;jdbc:mysql://localhost:3306/yourdatabase&quot;</span>; <span class="comment">// 修改为你的数据库地址</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">user</span> <span class="operator">=</span> <span class="string">&quot;root&quot;</span>; <span class="comment">// 修改为你的数据库用户名</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">password</span> <span class="operator">=</span> <span class="string">&quot;root&quot;</span>; <span class="comment">// 修改为你的数据库密码</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建 Scanner 对象以接收用户输入</span></span><br><span class="line">        <span class="type">Scanner</span> <span class="variable">scanner</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Scanner</span>(System.in);</span><br><span class="line">        System.out.println(<span class="string">&quot;请输入用户名进行测试（例如 admin&#x27; OR &#x27;1&#x27;=&#x27;1）：&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> scanner.nextLine();  <span class="comment">// 读取用户输入的 SQL 注入 payload</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 加载 JDBC 驱动</span></span><br><span class="line">            Class.forName(<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 创建数据库连接</span></span><br><span class="line">            <span class="type">Connection</span> <span class="variable">conn</span> <span class="operator">=</span> DriverManager.getConnection(url, user, password);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 创建 Statement 对象</span></span><br><span class="line">            <span class="type">Statement</span> <span class="variable">stmt</span> <span class="operator">=</span> conn.createStatement();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 拼接用户输入的 SQL 查询</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;SELECT * FROM users WHERE username = &#x27;&quot;</span> + username + <span class="string">&quot;&#x27;&quot;</span>;</span><br><span class="line">            System.out.println(<span class="string">&quot;执行的 SQL 查询: &quot;</span> + sql);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 执行查询</span></span><br><span class="line">            <span class="type">ResultSet</span> <span class="variable">rs</span> <span class="operator">=</span> stmt.executeQuery(sql);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 处理查询结果</span></span><br><span class="line">            <span class="type">boolean</span> <span class="variable">resultFound</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">while</span> (rs.next()) &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">res_name</span> <span class="operator">=</span> rs.getString(<span class="string">&quot;username&quot;</span>);</span><br><span class="line">                <span class="type">String</span> <span class="variable">res_pwd</span> <span class="operator">=</span> rs.getString(<span class="string">&quot;password&quot;</span>);</span><br><span class="line">                System.out.println(<span class="string">&quot;用户: &quot;</span> + res_name + <span class="string">&quot;, 密码: &quot;</span> + res_pwd);</span><br><span class="line">                resultFound = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 如果没有找到匹配的用户</span></span><br><span class="line">            <span class="keyword">if</span> (!resultFound) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;未找到匹配的用户.&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 关闭数据库连接</span></span><br><span class="line">            rs.close();</span><br><span class="line">            stmt.close();</span><br><span class="line">            conn.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 关闭扫描器</span></span><br><span class="line">            scanner.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -472,147 +396,153 @@
 </ul>
 <p>下面一部分直接复制粘贴了，自己懒得写了 到时候有这个项目练手了再写吧。</p>
 
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/" data-id="cmem62u2v000cwch9f0tcarav" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JAVA代码审计-StudentManager
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/01/20/java%E5%AE%89%E5%85%A8-CC1%E9%93%BE%E5%85%A8%E5%88%86%E6%9E%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">java安全-CC1链全分析</div>
+    </a>
+  
+</nav>
+
+  
 </article>
 
-
-
+</section>
         
-          <div id="footer-post-container">
-  <div id="footer-post">
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/java%E5%AE%89%E5%85%A8/">java安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">恶意样本分析</a></li></ul>
+    </div>
+  </div>
 
-    <div id="nav-footer" style="display: none">
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%AE%89%E5%85%A8/" rel="tag">PHP安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/" rel="tag">《免杀技术实践》</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF/" rel="tag">免杀技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" rel="tag">恶意样本分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" rel="tag">成长故事碎碎念</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/PHP%E5%AE%89%E5%85%A8/" style="font-size: 13.33px;">PHP安全</a> <a href="/tags/java%E5%AE%89%E5%85%A8/" style="font-size: 16.67px;">java安全</a> <a href="/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/" style="font-size: 10px;">《免杀技术实践》</a> <a href="/tags/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF/" style="font-size: 10px;">免杀技术</a> <a href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" style="font-size: 20px;">恶意样本分析</a> <a href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" style="font-size: 13.33px;">成长故事碎碎念</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">January 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
       <ul>
         
-          <li><a href="/">Home</a></li>
+          <li>
+            <a href="/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">针对dount的一次恶意样本分析</a>
+          </li>
         
-          <li><a href="/about/">About</a></li>
+          <li>
+            <a href="/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">apt-c-09（摩诃草）组织基于mythic C2框架的新型攻击样本分析</a>
+          </li>
         
-          <li><a href="/archives/">Writing</a></li>
+          <li>
+            <a href="/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/">APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</a>
+          </li>
         
-          <li><a href="/categories/">categories</a></li>
+          <li>
+            <a href="/2025/08/16/%E7%97%85%E6%AF%92%E6%A0%B7%E6%9C%AC-%E7%99%BD%E5%8A%A0%E9%BB%91-1/">一次针对白加黑的快速样本分析</a>
+          </li>
         
-          <li><a href="/search/">Search</a></li>
+          <li>
+            <a href="/2025/08/15/dropping-elephant-rat%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">dropping-elephant rat恶意样本分析</a>
+          </li>
         
       </ul>
     </div>
+  </div>
 
-    
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="toc-number">1.</span> <span class="toc-text">SQL注入代码审计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81JDBC%E6%8B%BC%E6%8E%A5%E4%B8%8D%E5%BD%93%E9%80%A0%E6%88%90sql%E6%B3%A8%E5%85%A5"><span class="toc-number">1.1.</span> <span class="toc-text">一、JDBC拼接不当造成sql注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Statement"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.Statement</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-PreparedStatement"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.PreparedStatement</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-JDBC%E6%98%93%E4%BA%A7%E7%94%9F%E6%BC%8F%E6%B4%9E%E7%82%B9"><span class="toc-number">1.1.3.</span> <span class="toc-text">3.JDBC易产生漏洞点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E6%9C%AA%E4%BD%BF%E7%94%A8%E5%8D%A0%E4%BD%8D%E7%AC%A6"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">3.1.未使用占位符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E4%BD%BF%E7%94%A8in%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">3.2.使用in语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E4%BD%BF%E7%94%A8like%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.1.3.3.</span> <span class="toc-text">3.3.使用like语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-%E5%92%8C"><span class="toc-number">1.1.3.4.</span> <span class="toc-text">3.4.%和_</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5-Order-by%E3%80%81from%E7%AD%89%E6%97%A0%E6%B3%95%E9%A2%84%E7%BC%96%E8%AF%91"><span class="toc-number">1.1.3.5.</span> <span class="toc-text">3.5.Order by、from等无法预编译</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C-Mybatis%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84sql%E6%B3%A8%E5%85%A5"><span class="toc-number">1.2.</span> <span class="toc-text">二.Mybatis框架下的sql注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Parameter-%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">1 .${Parameter}方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-MyBatis%E6%98%93%E4%BA%A7%E7%94%9FSQL%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%89%E7%A7%8D%E6%83%85%E5%86%B5"><span class="toc-number">1.2.2.</span> <span class="toc-text">3.MyBatis易产生SQL注入的三种情况</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">3.1 模糊查询</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E4%BD%BF%E7%94%A8in%E8%AF%AD%E5%8F%A5-1"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">3.2 使用in语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3%E4%BD%BF%E7%94%A8order-by-%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">3.3使用order by 语句</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89-Mybatis-plus%E6%A1%86%E6%9E%B6%E4%B8%8B%E7%9A%84sql%E6%B3%A8%E5%85%A5"><span class="toc-number">1.3.</span> <span class="toc-text">三.Mybatis-plus框架下的sql注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-number">1.3.1.</span> <span class="toc-text">快速入门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CRUD%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.3.2.</span> <span class="toc-text">CRUD接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Mapper-CRUD%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">Mapper CRUD接口</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E6%9E%84%E9%80%A0%E5%99%A8"><span class="toc-number">1.3.3.</span> <span class="toc-text">条件构造器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8"><span class="toc-number">1.3.4.</span> <span class="toc-text">1.1基础使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2mybatis-puls%E9%A2%84%E7%BC%96%E8%AF%91"><span class="toc-number">1.3.5.</span> <span class="toc-text">1.2mybatis-puls预编译</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B8%B8%E8%A7%81%E6%B3%A8%E5%85%A5%E5%9C%BA%E6%99%AF"><span class="toc-number">1.4.</span> <span class="toc-text">2.常见注入场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9D%A1%E4%BB%B6%E6%9E%84%E9%80%A0%E5%99%A8%E5%B8%B8%E8%A7%81%E6%B3%A8%E5%85%A5%E5%9C%BA%E6%99%AF"><span class="toc-number">1.4.1.</span> <span class="toc-text">1.条件构造器常见注入场景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#apply"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">apply</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#last"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">last</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#exists-notExists"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">exists&#x2F;notExists</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#having"><span class="toc-number">1.4.1.4.</span> <span class="toc-text">having</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#order-by"><span class="toc-number">1.4.1.5.</span> <span class="toc-text">order by</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#group-By"><span class="toc-number">1.4.1.6.</span> <span class="toc-text">group By</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#insql-notinsql"><span class="toc-number">1.4.1.7.</span> <span class="toc-text">insql&#x2F;notinsql</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8-Wrapper-%E8%87%AA%E5%AE%9A%E4%B9%89SQL%EF%BC%88%E7%89%B9%E6%AE%8A%E7%9A%84%E9%A2%84%E7%BC%96%E8%AF%91%E5%9C%BA%E6%99%AF%EF%BC%89"><span class="toc-number">1.4.2.</span> <span class="toc-text">2.使用 Wrapper 自定义SQL（特殊的预编译场景）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%B3%A8%E8%A7%A3%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">1.注解模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-XML%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">2.XML模式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%88%86%E9%A1%B5%E6%8F%92%E4%BB%B6"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.分页插件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-PaginationInnerInterceptor"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">1.PaginationInnerInterceptor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-pagehelper"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">2.pagehelper</span></a></li></ol></li></ol></li></ol></li></ol>
+  
+</aside>
+        
       </div>
-    
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&text=JAVA常用框架SQL注入审计"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&title=JAVA常用框架SQL注入审计"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&is_video=false&description=JAVA常用框架SQL注入审计"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=JAVA常用框架SQL注入审计&body=Check out this article: http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&title=JAVA常用框架SQL注入审计"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&title=JAVA常用框架SQL注入审计"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&title=JAVA常用框架SQL注入审计"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&title=JAVA常用框架SQL注入审计"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&name=JAVA常用框架SQL注入审计&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/&t=JAVA常用框架SQL注入审计"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2025 CHANGMEN<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
-
-  </div>
-</div>
-
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2016-2025
-    CHANGMEN
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
-     --><!--
-       --><li><a href="/categories/">categories</a></li><!--
-     --><!--
-       --><li><a href="/search/">Search</a></li><!--
-     -->
-      </ul>
-    </nav>
   </div>
 </footer>
-
     </div>
-    <!-- styles -->
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
-
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
 
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
   
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
-    })
-  })
-  </script>
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/main.js"></script>
 
-<!-- search -->
 
-<!-- Baidu Analytics -->
+<script src="/js/script.js"></script>
 
-<!-- Cloudflare Analytics -->
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
+  </div>
 </body>
 </html>

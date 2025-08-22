@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang=en>
+<html>
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="一、环境搭建123456StudentManagerhttps:&#x2F;&#x2F;github.com&#x2F;Hui4401&#x2F;StudentManageridea IntelliJ IDEA 2022.2.3jdk1.8 mysql 5.7.26apache-tomcat-9.0.68    三、审计StudentManager审计思路找一个功能点 例如登录系统 跟踪观察整个登录过程。关注点 SQL是否采用预编译处理">
+  <meta charset="utf-8">
+  
+
+  
+  <title>JAVA代码审计-StudentManager | CHANGMEN&#39;blogs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一、环境搭建123456StudentManagerhttps:&#x2F;&#x2F;github.com&#x2F;Hui4401&#x2F;StudentManageridea IntelliJ IDEA 2022.2.3jdk1.8 mysql 5.7.26apache-tomcat-9.0.68    三、审计StudentManager审计思路找一个功能点 例如登录系统 跟踪观察整个登录过程。关注点 SQL是否采用预编译处理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JAVA代码审计-StudentManager">
 <meta property="og:url" content="http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/index.html">
@@ -31,158 +32,81 @@
 <meta property="article:tag" content="java安全">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123182752218.png">
-    
-    
-      
-        
-          <link rel="shortcut icon" href="/images/favicon.ico">
-        
-      
-      
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
-    
-    <!-- title -->
-    <title>JAVA代码审计-StudentManager</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
-
-
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
+  
+    <link rel="alternate" href="/atom.xml" title="CHANGMEN&#39;blogs" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
 <link rel="stylesheet" href="/css/style.css">
 
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-	<!-- mathjax -->
-	
 <meta name="generator" content="Hexo 5.4.2"></head>
 
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
-     --><!--
-       --><li><a href="/categories/">categories</a></li><!--
-     --><!--
-       --><li><a href="/search/">Search</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="Previous post" href="/2025/01/24/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-jfinal/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="Next post" href="/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&text=JAVA代码审计-StudentManager"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&title=JAVA代码审计-StudentManager"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&is_video=false&description=JAVA代码审计-StudentManager"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=JAVA代码审计-StudentManager&body=Check out this article: http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&title=JAVA代码审计-StudentManager"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&title=JAVA代码审计-StudentManager"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&title=JAVA代码审计-StudentManager"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&title=JAVA代码审计-StudentManager"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&name=JAVA代码审计-StudentManager&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&t=JAVA代码审计-StudentManager"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">CHANGMEN&#39;blogs</a>
+      </h1>
+      
     </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">一、环境搭建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%A1%E8%AE%A1StudentManager"><span class="toc-number">2.</span> <span class="toc-text">三、审计StudentManager</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A1%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="toc-number">2.1.</span> <span class="toc-text">审计思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.2.</span> <span class="toc-text">SQL注入漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E7%99%BB%E5%BD%95%E7%82%B9"><span class="toc-number">2.3.</span> <span class="toc-text">分析登录点</span></a></li></ol></li></ol>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
       </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-JAVA代码审计-StudentManager" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/" class="article-date">
+  <time datetime="2025-01-23T03:59:55.000Z" itemprop="datePublished">2025-01-23</time>
+</a>
     
-  </span>
-</div>
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java%E5%AE%89%E5%85%A8/">java安全</a>
+  </div>
 
+  </div>
+  <div class="article-inner">
     
-    <div class="content index py4 ">
+    
+      <header class="article-header">
         
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        JAVA代码审计-StudentManager
+  
+    <h1 class="article-title" itemprop="name">
+      JAVA代码审计-StudentManager
     </h1>
-
-
-
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">CHANGMEN</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2025-01-23T03:59:55.000Z" class="dt-published" itemprop="datePublished">2025-01-23</time>
-        
-        (Updated: <time datetime="2025-08-14T13:29:10.797Z" class="dt-updated" itemprop="dateModified">2025-08-14</time>)
-        
-      
-    </div>
-
-
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/java%E5%AE%89%E5%85%A8/">java安全</a>
-    </div>
-
-
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a>
-    </div>
-
-
-    </div>
-  </header>
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <h1 id="一、环境搭建"><a href="#一、环境搭建" class="headerlink" title="一、环境搭建"></a>一、环境搭建</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">StudentManager</span><br><span class="line">https://github.com/Hui4401/StudentManager</span><br><span class="line">idea IntelliJ IDEA 2022.2.3</span><br><span class="line">jdk1.8 </span><br><span class="line">mysql 5.7.26</span><br><span class="line">apache-tomcat-9.0.68</span><br></pre></td></tr></table></figure>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、环境搭建"><a href="#一、环境搭建" class="headerlink" title="一、环境搭建"></a>一、环境搭建</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">StudentManager</span><br><span class="line">https://github.com/Hui4401/StudentManager</span><br><span class="line">idea IntelliJ IDEA 2022.2.3</span><br><span class="line">jdk1.8 </span><br><span class="line">mysql 5.7.26</span><br><span class="line">apache-tomcat-9.0.68</span><br></pre></td></tr></table></figure>
 
 <p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123182752218.png" alt="image-20250123182752218"></p>
 <p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250123182801976.png" alt="image-20250123182801976"></p>
@@ -216,147 +140,153 @@
 <p>太简单了这个期末作业 能学到的东西不多。</p>
 <p>期待下一个文章吧</p>
 
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/" data-id="cmem62u2v000bwch96mlh3n2o" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/01/24/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-jfinal/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JAVA代码审计-jfinal
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/01/21/JAVA%E5%B8%B8%E7%94%A8%E6%A1%86%E6%9E%B6SQL%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JAVA常用框架SQL注入审计</div>
+    </a>
+  
+</nav>
+
+  
 </article>
 
-
-
+</section>
         
-          <div id="footer-post-container">
-  <div id="footer-post">
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/java%E5%AE%89%E5%85%A8/">java安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">恶意样本分析</a></li></ul>
+    </div>
+  </div>
 
-    <div id="nav-footer" style="display: none">
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%AE%89%E5%85%A8/" rel="tag">PHP安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/" rel="tag">《免杀技术实践》</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF/" rel="tag">免杀技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" rel="tag">恶意样本分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" rel="tag">成长故事碎碎念</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/PHP%E5%AE%89%E5%85%A8/" style="font-size: 13.33px;">PHP安全</a> <a href="/tags/java%E5%AE%89%E5%85%A8/" style="font-size: 16.67px;">java安全</a> <a href="/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/" style="font-size: 10px;">《免杀技术实践》</a> <a href="/tags/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF/" style="font-size: 10px;">免杀技术</a> <a href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" style="font-size: 20px;">恶意样本分析</a> <a href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" style="font-size: 13.33px;">成长故事碎碎念</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">January 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
       <ul>
         
-          <li><a href="/">Home</a></li>
+          <li>
+            <a href="/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">针对dount的一次恶意样本分析</a>
+          </li>
         
-          <li><a href="/about/">About</a></li>
+          <li>
+            <a href="/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">apt-c-09（摩诃草）组织基于mythic C2框架的新型攻击样本分析</a>
+          </li>
         
-          <li><a href="/archives/">Writing</a></li>
+          <li>
+            <a href="/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/">APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</a>
+          </li>
         
-          <li><a href="/categories/">categories</a></li>
+          <li>
+            <a href="/2025/08/16/%E7%97%85%E6%AF%92%E6%A0%B7%E6%9C%AC-%E7%99%BD%E5%8A%A0%E9%BB%91-1/">一次针对白加黑的快速样本分析</a>
+          </li>
         
-          <li><a href="/search/">Search</a></li>
+          <li>
+            <a href="/2025/08/15/dropping-elephant-rat%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">dropping-elephant rat恶意样本分析</a>
+          </li>
         
       </ul>
     </div>
+  </div>
 
-    
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">一、环境搭建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%A1%E8%AE%A1StudentManager"><span class="toc-number">2.</span> <span class="toc-text">三、审计StudentManager</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A1%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="toc-number">2.1.</span> <span class="toc-text">审计思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.2.</span> <span class="toc-text">SQL注入漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E7%99%BB%E5%BD%95%E7%82%B9"><span class="toc-number">2.3.</span> <span class="toc-text">分析登录点</span></a></li></ol></li></ol>
+  
+</aside>
+        
       </div>
-    
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&text=JAVA代码审计-StudentManager"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&title=JAVA代码审计-StudentManager"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&is_video=false&description=JAVA代码审计-StudentManager"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=JAVA代码审计-StudentManager&body=Check out this article: http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&title=JAVA代码审计-StudentManager"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&title=JAVA代码审计-StudentManager"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&title=JAVA代码审计-StudentManager"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&title=JAVA代码审计-StudentManager"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&name=JAVA代码审计-StudentManager&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/01/23/JAVA%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-StudentManager/&t=JAVA代码审计-StudentManager"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2025 CHANGMEN<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
-
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
-
-  </div>
-</div>
-
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2016-2025
-    CHANGMEN
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Writing</a></li><!--
-     --><!--
-       --><li><a href="/categories/">categories</a></li><!--
-     --><!--
-       --><li><a href="/search/">Search</a></li><!--
-     -->
-      </ul>
-    </nav>
   </div>
 </footer>
-
     </div>
-    <!-- styles -->
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
-
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
 
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
   
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
-    })
-  })
-  </script>
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
-<script src="/js/main.js"></script>
 
-<!-- search -->
 
-<!-- Baidu Analytics -->
+<script src="/js/script.js"></script>
 
-<!-- Cloudflare Analytics -->
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
+  </div>
 </body>
 </html>
