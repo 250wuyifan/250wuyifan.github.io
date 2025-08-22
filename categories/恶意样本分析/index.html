@@ -1,312 +1,197 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-
-  
-  <title>Category: 恶意样本分析 | CHANGMEN&#39;blogs</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="网络安全爱好者">
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Category: 恶意样本分析 | CHANGMEN'blogs</title><meta name="author" content="CHANGMEN"><meta name="copyright" content="CHANGMEN"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="网络安全爱好者">
 <meta property="og:type" content="website">
 <meta property="og:title" content="CHANGMEN&#39;blogs">
-<meta property="og:url" content="http://example.com/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/index.html">
+<meta property="og:url" content="https://250wuyifan.github.io/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="CHANGMEN&#39;blogs">
 <meta property="og:description" content="网络安全爱好者">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://250wuyifan.github.io/img/butterfly-icon.png">
 <meta property="article:author" content="CHANGMEN">
 <meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="CHANGMEN&#39;blogs" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+<meta name="twitter:image" content="https://250wuyifan.github.io/img/butterfly-icon.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://250wuyifan.github.io/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">CHANGMEN&#39;blogs</a>
-      </h1>
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Category: 恶意样本分析',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'category'
+}</script><meta name="generator" content="Hexo 5.4.2"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">CHANGMEN'blogs</span></a></span><div id="menus"></div></nav><div id="page-site-info"><h1 id="site-title">恶意样本分析</h1></div></header><main class="layout" id="content-inner"><div id="category"><div class="article-sort-title">Category - 恶意样本分析</div><div class="article-sort"><div class="article-sort-item year">2025</div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2025-08-18T08:55:07.000Z" title="Created 2025-08-18 16:55:07">2025-08-18</time></div><a class="article-sort-item-title" href="/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" title="针对dount的一次恶意样本分析">针对dount的一次恶意样本分析</a></div></div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2025-08-17T16:07:16.000Z" title="Created 2025-08-18 00:07:16">2025-08-18</time></div><a class="article-sort-item-title" href="/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" title="apt-c-09（摩诃草）组织基于mythic C2框架的新型攻击样本分析">apt-c-09（摩诃草）组织基于mythic C2框架的新型攻击样本分析</a></div></div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2025-08-16T16:38:01.000Z" title="Created 2025-08-17 00:38:01">2025-08-17</time></div><a class="article-sort-item-title" href="/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/" title="APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析">APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</a></div></div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2025-08-16T11:51:12.000Z" title="Created 2025-08-16 19:51:12">2025-08-16</time></div><a class="article-sort-item-title" href="/2025/08/16/%E7%97%85%E6%AF%92%E6%A0%B7%E6%9C%AC-%E7%99%BD%E5%8A%A0%E9%BB%91-1/" title="一次针对白加黑的快速样本分析">一次针对白加黑的快速样本分析</a></div></div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2025-08-15T02:14:24.000Z" title="Created 2025-08-15 10:14:24">2025-08-15</time></div><a class="article-sort-item-title" href="/2025/08/15/dropping-elephant-rat%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" title="dropping-elephant rat恶意样本分析">dropping-elephant rat恶意样本分析</a></div></div><div class="article-sort-item no-article-cover"><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2025-08-14T13:23:26.000Z" title="Created 2025-08-14 21:23:26">2025-08-14</time></div><a class="article-sort-item-title" href="/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/" title="萌新的一次恶意程序样本全分析之旅">萌新的一次恶意程序样本全分析之旅</a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">CHANGMEN</div><div class="author-info-description">网络安全爱好者</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" title="针对dount的一次恶意样本分析">针对dount的一次恶意样本分析</a><time datetime="2025-08-18T08:55:07.000Z" title="Created 2025-08-18 16:55:07">2025-08-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" title="apt-c-09（摩诃草）组织基于mythic C2框架的新型攻击样本分析">apt-c-09（摩诃草）组织基于mythic C2框架的新型攻击样本分析</a><time datetime="2025-08-17T16:07:16.000Z" title="Created 2025-08-18 00:07:16">2025-08-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/" title="APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析">APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</a><time datetime="2025-08-16T16:38:01.000Z" title="Created 2025-08-17 00:38:01">2025-08-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/16/%E7%97%85%E6%AF%92%E6%A0%B7%E6%9C%AC-%E7%99%BD%E5%8A%A0%E9%BB%91-1/" title="一次针对白加黑的快速样本分析">一次针对白加黑的快速样本分析</a><time datetime="2025-08-16T11:51:12.000Z" title="Created 2025-08-16 19:51:12">2025-08-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/08/15/dropping-elephant-rat%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" title="dropping-elephant rat恶意样本分析">dropping-elephant rat恶意样本分析</a><time datetime="2025-08-15T02:14:24.000Z" title="Created 2025-08-15 10:14:24">2025-08-15</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>Categories</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/java%E5%AE%89%E5%85%A8/"><span class="card-category-list-name">java安全</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/"><span class="card-category-list-name">恶意样本分析</span><span class="card-category-list-count">6</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>Tags</span></div><div class="card-tag-cloud"><a href="/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/" style="font-size: 1.1em; color: #999">《免杀技术实践》</a> <a href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" style="font-size: 1.5em; color: #99a9bf">恶意样本分析</a> <a href="/tags/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF/" style="font-size: 1.1em; color: #999">免杀技术</a> <a href="/tags/PHP%E5%AE%89%E5%85%A8/" style="font-size: 1.23em; color: #999ea6">PHP安全</a> <a href="/tags/java%E5%AE%89%E5%85%A8/" style="font-size: 1.37em; color: #99a4b2">java安全</a> <a href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" style="font-size: 1.23em; color: #999ea6">成长故事碎碎念</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>Archives</span>
       
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
   
-  
-    
-    
+    <ul class="card-archive-list">
       
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/08/">
+            <span class="card-archive-list-date">
+              August 2025
+            </span>
+            <span class="card-archive-list-count">6</span>
+          </a>
+        </li>
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2025" class="archive-year">2025</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" class="archive-article-date">
-  <time datetime="2025-08-18T08:55:07.000Z" itemprop="datePublished">Aug 18</time>
-</a>
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/03/">
+            <span class="card-archive-list-date">
+              March 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">针对dount的一次恶意样本分析</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" class="archive-article-date">
-  <time datetime="2025-08-17T16:07:16.000Z" itemprop="datePublished">Aug 18</time>
-</a>
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/02/">
+            <span class="card-archive-list-date">
+              February 2025
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">apt-c-09（摩诃草）组织基于mythic C2框架的新型攻击样本分析</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/" class="archive-article-date">
-  <time datetime="2025-08-16T16:38:01.000Z" itemprop="datePublished">Aug 17</time>
-</a>
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/01/">
+            <span class="card-archive-list-date">
+              January 2025
+            </span>
+            <span class="card-archive-list-count">8</span>
+          </a>
+        </li>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/">APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2025/08/16/%E7%97%85%E6%AF%92%E6%A0%B7%E6%9C%AC-%E7%99%BD%E5%8A%A0%E9%BB%91-1/" class="archive-article-date">
-  <time datetime="2025-08-16T11:51:12.000Z" itemprop="datePublished">Aug 16</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2025/08/16/%E7%97%85%E6%AF%92%E6%A0%B7%E6%9C%AC-%E7%99%BD%E5%8A%A0%E9%BB%91-1/">一次针对白加黑的快速样本分析</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2025/08/15/dropping-elephant-rat%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" class="archive-article-date">
-  <time datetime="2025-08-15T02:14:24.000Z" itemprop="datePublished">Aug 15</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2025/08/15/dropping-elephant-rat%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">dropping-elephant rat恶意样本分析</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/" class="archive-article-date">
-  <time datetime="2025-08-14T13:23:26.000Z" itemprop="datePublished">Aug 14</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2025/08/14/%E8%90%8C%E6%96%B0%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E7%A8%8B%E5%BA%8F%E6%A0%B7%E6%9C%AC%E5%85%A8%E5%88%86%E6%9E%90%E4%B9%8B%E6%97%85/">萌新的一次恶意程序样本全分析之旅</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/java%E5%AE%89%E5%85%A8/">java安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">恶意样本分析</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP%E5%AE%89%E5%85%A8/" rel="tag">PHP安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/" rel="tag">《免杀技术实践》</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF/" rel="tag">免杀技术</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" rel="tag">恶意样本分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" rel="tag">成长故事碎碎念</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/PHP%E5%AE%89%E5%85%A8/" style="font-size: 13.33px;">PHP安全</a> <a href="/tags/java%E5%AE%89%E5%85%A8/" style="font-size: 16.67px;">java安全</a> <a href="/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/" style="font-size: 10px;">《免杀技术实践》</a> <a href="/tags/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF/" style="font-size: 10px;">免杀技术</a> <a href="/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" style="font-size: 20px;">恶意样本分析</a> <a href="/tags/%E6%88%90%E9%95%BF%E6%95%85%E4%BA%8B%E7%A2%8E%E7%A2%8E%E5%BF%B5/" style="font-size: 13.33px;">成长故事碎碎念</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">January 2025</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2025/08/18/%E9%92%88%E5%AF%B9dount%E7%9A%84%E4%B8%80%E6%AC%A1%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">针对dount的一次恶意样本分析</a>
-          </li>
-        
-          <li>
-            <a href="/2025/08/18/C2%E6%A1%86%E6%9E%B6%E7%9A%84%E6%96%B0%E5%9E%8B%E6%94%BB%E5%87%BB%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">apt-c-09（摩诃草）组织基于mythic C2框架的新型攻击样本分析</a>
-          </li>
-        
-          <li>
-            <a href="/2025/08/17/APT-C-06%EF%BC%88DarkHotel%EF%BC%89%E5%88%A9%E7%94%A8BYOVD%E6%8A%80%E6%9C%AF%E7%9A%84%E6%9C%80%E6%96%B0%E6%94%BB%E5%87%BB%E6%B4%BB%E5%8A%A8%E5%88%86%E6%9E%90/">APT-C-06（DarkHotel）利用BYOVD技术的最新攻击活动分析</a>
-          </li>
-        
-          <li>
-            <a href="/2025/08/16/%E7%97%85%E6%AF%92%E6%A0%B7%E6%9C%AC-%E7%99%BD%E5%8A%A0%E9%BB%91-1/">一次针对白加黑的快速样本分析</a>
-          </li>
-        
-          <li>
-            <a href="/2025/08/15/dropping-elephant-rat%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">dropping-elephant rat恶意样本分析</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2025 CHANGMEN<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-
-  
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-  </div>
-</body>
-</html>
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">17</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-08-22T02:06:28.318Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By CHANGMEN</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 5.4.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
