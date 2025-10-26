@@ -1,0 +1,381 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>EDR-Freeze：一款让 EDR 和杀毒软件进入昏迷状态的工具 | CHANGMEN'个人博客</title><meta name="author" content="CHANGMEN"><meta name="copyright" content="CHANGMEN"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="主要部分Minidumpwritedump 函数关于 MiniDumpWriteDump 函数的基本信息MiniDumpWriteDump是 Windows 系统中 DbgHelp.dll库提供的一个非常重要的函数。它的核心作用是为指定的进程创建一个“迷你转储文件”（Minidump），也就是我们常说的 dump 文件。这个文件相当于进程在某个时间点的“快照”，包含了调试该进程问题（如崩溃、挂起）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EDR-Freeze：一款让 EDR 和杀毒软件进入昏迷状态的工具">
+<meta property="og:url" content="https://250wuyifan.github.io/2025/09/22/EDR-Freeze%EF%BC%9A%E4%B8%80%E6%AC%BE%E8%AE%A9-EDR-%E5%92%8C%E6%9D%80%E6%AF%92%E8%BD%AF%E4%BB%B6%E8%BF%9B%E5%85%A5%E6%98%8F%E8%BF%B7%E7%8A%B6%E6%80%81%E7%9A%84%E5%B7%A5%E5%85%B7/index.html">
+<meta property="og:site_name" content="CHANGMEN&#39;个人博客">
+<meta property="og:description" content="主要部分Minidumpwritedump 函数关于 MiniDumpWriteDump 函数的基本信息MiniDumpWriteDump是 Windows 系统中 DbgHelp.dll库提供的一个非常重要的函数。它的核心作用是为指定的进程创建一个“迷你转储文件”（Minidump），也就是我们常说的 dump 文件。这个文件相当于进程在某个时间点的“快照”，包含了调试该进程问题（如崩溃、挂起）">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://250wuyifan.github.io/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png">
+<meta property="article:published_time" content="2025-09-22T14:37:47.000Z">
+<meta property="article:modified_time" content="2025-09-22T18:20:43.241Z">
+<meta property="article:author" content="CHANGMEN">
+<meta property="article:tag" content="安全开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://250wuyifan.github.io/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "EDR-Freeze：一款让 EDR 和杀毒软件进入昏迷状态的工具",
+  "url": "https://250wuyifan.github.io/2025/09/22/EDR-Freeze%EF%BC%9A%E4%B8%80%E6%AC%BE%E8%AE%A9-EDR-%E5%92%8C%E6%9D%80%E6%AF%92%E8%BD%AF%E4%BB%B6%E8%BF%9B%E5%85%A5%E6%98%8F%E8%BF%B7%E7%8A%B6%E6%80%81%E7%9A%84%E5%B7%A5%E5%85%B7/",
+  "image": "https://250wuyifan.github.io/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png",
+  "datePublished": "2025-09-22T14:37:47.000Z",
+  "dateModified": "2025-09-22T18:20:43.241Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "CHANGMEN",
+      "url": "https://250wuyifan.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://250wuyifan.github.io/2025/09/22/EDR-Freeze%EF%BC%9A%E4%B8%80%E6%AC%BE%E8%AE%A9-EDR-%E5%92%8C%E6%9D%80%E6%AF%92%E8%BD%AF%E4%BB%B6%E8%BF%9B%E5%85%A5%E6%98%8F%E8%BF%B7%E7%8A%B6%E6%80%81%E7%9A%84%E5%B7%A5%E5%85%B7/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'EDR-Freeze：一款让 EDR 和杀毒软件进入昏迷状态的工具',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="CHANGMEN'个人博客" type="application/atom+xml">
+</head><body><div id="web_bg" style="background-image: url(/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">CHANGMEN'个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">EDR-Freeze：一款让 EDR 和杀毒软件进入昏迷状态的工具</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">EDR-Freeze：一款让 EDR 和杀毒软件进入昏迷状态的工具</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-09-22T14:37:47.000Z" title="Created 2025-09-22 22:37:47">2025-09-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-09-22T18:20:43.241Z" title="Updated 2025-09-23 02:20:43">2025-09-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/">安全开发</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="主要部分"><a href="#主要部分" class="headerlink" title="主要部分"></a>主要部分</h1><h2 id="Minidumpwritedump-函数"><a href="#Minidumpwritedump-函数" class="headerlink" title="Minidumpwritedump 函数"></a><code>Minidumpwritedump</code> 函数</h2><h3 id="关于-MiniDumpWriteDump-函数的基本信息"><a href="#关于-MiniDumpWriteDump-函数的基本信息" class="headerlink" title="关于 MiniDumpWriteDump 函数的基本信息"></a>关于 <code>MiniDumpWriteDump</code> 函数的基本信息</h3><p><code>MiniDumpWriteDump</code>是 Windows 系统中 <code>DbgHelp.dll</code>库提供的一个非常重要的函数。它的核心作用是<strong>为指定的进程创建一个“迷你转储文件”（Minidump）</strong>，也就是我们常说的 <strong>dump 文件</strong>。这个文件相当于进程在某个时间点的“快照”，包含了调试该进程问题（如崩溃、挂起）所需的关键信息，例如：</p>
+<ul>
+<li>线程信息（调用栈、寄存器状态）</li>
+<li>模块信息（加载的 DLL）</li>
+<li>异常信息（如果是因为未处理异常而崩溃）</li>
+<li>可选的内存内容（根据参数决定包含多少内存）</li>
+</ul>
+<hr>
+<h3 id="关键行为：挂起所有线程"><a href="#关键行为：挂起所有线程" class="headerlink" title="关键行为：挂起所有线程"></a>关键行为：挂起所有线程</h3><p>您提到的“它会挂起目标进程中的所有线程”是<strong>完全正确</strong>的，这也是这个函数最关键的行为之一。</p>
+<ul>
+<li><strong>为什么必须这么做？<strong>为了保证生成的 dump 文件是</strong>内部一致且有效</strong>的。想象一下，如果不挂起线程，进程中的线程仍在并发执行，它们会不断地修改内存（如堆栈、全局变量）、分配&#x2F;释放资源。在这种情况下抓取快照，得到的 dump 文件可能：<strong>数据不一致</strong>：例如，一个线程的调用栈可能正在变化，导致栈回溯信息错误。<strong>内存状态破碎</strong>：例如，抓取到的堆内存块可能处于正在分配或释放的中间状态，分析起来毫无意义。通过挂起所有线程，函数确保了在生成转储文件的整个过程中，进程的内存和状态是<strong>完全冻结</strong>的，从而得到一个具有一致性的、可用于分析的快照。</li>
+<li><strong>何时恢复？<strong>该函数在完成数据收集后，会</strong>自动恢复</strong>所有被挂起的线程。这个过程对调用者是透明的。</li>
+</ul>
+<hr>
+<h3 id="重要建议：从外部进程调用"><a href="#重要建议：从外部进程调用" class="headerlink" title="重要建议：从外部进程调用"></a>重要建议：从外部进程调用</h3><p>微软官方强烈建议<strong>不要</strong>在目标进程内部调用 <code>MiniDumpWriteDump</code>（例如，在进程自己的未处理异常过滤器中直接调用），而应该从一个<strong>独立的、外部的辅助进程</strong>来调用它。</p>
+<ul>
+<li><strong>为什么？<strong>主要原因正是为了避免</strong>死锁（Deadlock）</strong>。<strong>内部调用的风险</strong>：假设进程 A 发生了崩溃。<strong>线程已停止</strong>：崩溃时，发生异常的线程会暂停，等待调试器处理。进程中的其他线程可能仍在运行，也可能因为各种同步机制（如锁）而处于不确定状态。<strong>死锁场景</strong>：如果此时在进程 A 内部调用 <code>MiniDumpWriteDump</code>，该函数会尝试挂起进程 A 中<strong>所有其他线程</strong>。如果某个线程正好持有一个<strong>锁</strong>（例如，堆锁、CRT 锁、甚至是加载器锁），而挂起它时，它正持有这个锁。<code>MiniDumpWriteDump</code>函数在执行过程中，<strong>自身可能需要获取那个相同的锁</strong>来获取信息（例如，遍历模块列表需要加载器锁）。结果就是：<code>MiniDumpWriteDump</code>在等待那个锁被释放，但持有锁的线程已经被它挂起了，永远无法释放锁。这就导致了<strong>死锁</strong>，进程会永远卡住，无法生成转储文件。</li>
+<li><strong>最佳实践：外部进程转储</strong>创建一个专门的“转储辅助程序”（Dumper Helper）。当进程 A 崩溃时，它通知（或启动）这个辅助程序。辅助程序调用 <code>DebugActiveProcess</code>函数附加到进程 A 上，使其成为一个调试器。然后，辅助程序再调用 <code>MiniDumpWriteDump</code>，并将进程 A 的句柄和 id 传给它。因为调用方是独立的外部进程，它不存在与目标进程共享锁的问题，从而完美避免了死锁的风险。这是生成转储文件最可靠、最推荐的方式。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>功能</strong></td>
+<td>生成进程的内存转储文件（Minidump），用于调试分析。</td>
+</tr>
+<tr>
+<td><strong>关键行为</strong></td>
+<td><strong>挂起目标进程的所有线程</strong>，以确保获取到的数据快照具有一致性。</td>
+</tr>
+<tr>
+<td><strong>主要风险</strong></td>
+<td>在<strong>目标进程内部</strong>调用容易导致<strong>死锁</strong>，使转储失败。</td>
+</tr>
+<tr>
+<td><strong>最佳实践</strong></td>
+<td>始终从一个<strong>独立的、外部的辅助进程</strong>来调用此函数，以避免死锁并确保可靠性。</td>
+</tr>
+</tbody></table>
+<h2 id="验证-MiniDumpWriteDump是否会暂停目标进程的所有线程"><a href="#验证-MiniDumpWriteDump是否会暂停目标进程的所有线程" class="headerlink" title="验证 MiniDumpWriteDump是否会暂停目标进程的所有线程"></a>验证 <code>MiniDumpWriteDump</code>是否会暂停目标进程的所有线程</h2><p>我们可以通过编写一个简单的测试程序来验证 <code>MiniDumpWriteDump</code>是否会暂停目标进程的所有线程。以下是实现思路：</p>
+<ol>
+<li><strong>目标进程（Target.exe）</strong>：创建一个多线程程序，每个线程持续运行（例如，打印日志或计算）。在运行时，我们观察线程是否被暂停。</li>
+<li><strong>转储进程（Dumper.exe）</strong>：使用 <code>MiniDumpWriteDump</code>对目标进程进行转储。在转储期间，检查目标进程的线程状态。</li>
+</ol>
+<hr>
+<h3 id="目标进程（Target-exe）"><a href="#目标进程（Target-exe）" class="headerlink" title="目标进程（Target.exe）"></a><strong>目标进程（Target.exe）</strong></h3><p>这个程序会创建多个线程，每个线程持续运行，并打印日志。</p>
+<h3 id="C-代码（Target-cpp）"><a href="#C-代码（Target-cpp）" class="headerlink" title="C++ 代码（Target.cpp）"></a><strong>C++ 代码（Target.cpp）</strong></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程函数：持续运行并打印日志</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">WorkerThread</span><span class="params">(<span class="type">int</span> threadId)</span> &#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Thread &quot;</span> &lt;&lt; threadId &lt;&lt; <span class="string">&quot; is running...&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">std</span>::this_thread::sleep_for(<span class="built_in">std</span>::chrono::seconds(<span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Target Process Started (PID: &quot;</span> &lt;&lt; GetCurrentProcessId() &lt;&lt; <span class="string">&quot;)&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建 3 个工作线程</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::thread&gt; threads;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">        threads.emplace_back(WorkerThread, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 主线程也打印日志</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Main thread is running...&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">std</span>::this_thread::sleep_for(<span class="built_in">std</span>::chrono::seconds(<span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>编译 &amp; 运行：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ Target.cpp -o Target.exe -static-libgcc -static-libstdc++</span><br><span class="line">./Target.exe</span><br></pre></td></tr></table></figure>
+
+<p>它会输出类似：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Target Process Started (PID: 1234)</span><br><span class="line">Thread 0 is running...</span><br><span class="line">Thread 1 is running...</span><br><span class="line">Thread 2 is running...</span><br><span class="line">Main thread is running...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="转储进程（Dumper-exe）"><a href="#转储进程（Dumper-exe）" class="headerlink" title="转储进程（Dumper.exe）"></a><strong>转储进程（Dumper.exe）</strong></h3><p>这个程序会附加到目标进程并调用 <code>MiniDumpWriteDump</code>，同时检查目标进程的线程状态。</p>
+<h3 id="C-代码（Dumper-cpp）"><a href="#C-代码（Dumper-cpp）" class="headerlink" title="C++ 代码（Dumper.cpp）"></a><strong>C++ 代码（Dumper.cpp）</strong></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;dbghelp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;tlhelp32.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib, <span class="string">&quot;dbghelp.lib&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 检查目标进程的线程状态</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">CheckThreads</span><span class="params">(DWORD pid)</span> &#123;</span><br><span class="line">    HANDLE hThreadSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (hThreadSnap == INVALID_HANDLE_VALUE) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">&quot;Failed to create thread snapshot!&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    THREADENTRY32 te32;</span><br><span class="line">    te32.dwSize = <span class="keyword">sizeof</span>(THREADENTRY32);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!Thread32First(hThreadSnap, &amp;te32)) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">&quot;Thread32First failed!&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        CloseHandle(hThreadSnap);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (te32.th32OwnerProcessID == pid) &#123;</span><br><span class="line">            HANDLE hThread = OpenThread(THREAD_QUERY_INFORMATION, FALSE, te32.th32ThreadID);</span><br><span class="line">            <span class="keyword">if</span> (hThread) &#123;</span><br><span class="line">                DWORD suspendCount = SuspendThread(hThread); <span class="comment">// 尝试挂起线程</span></span><br><span class="line">                <span class="keyword">if</span> (suspendCount == (DWORD)<span class="number">-1</span>) &#123;</span><br><span class="line">                    <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">&quot;Thread &quot;</span> &lt;&lt; te32.th32ThreadID &lt;&lt; <span class="string">&quot; is already suspended!&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Thread &quot;</span> &lt;&lt; te32.th32ThreadID &lt;&lt; <span class="string">&quot; was running (suspend count: &quot;</span> &lt;&lt; suspendCount &lt;&lt; <span class="string">&quot;)&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">                    ResumeThread(hThread); <span class="comment">// 恢复线程</span></span><br><span class="line">                &#125;</span><br><span class="line">                CloseHandle(hThread);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (Thread32Next(hThreadSnap, &amp;te32));</span><br><span class="line"></span><br><span class="line">    CloseHandle(hThreadSnap);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    DWORD targetPid;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Enter Target Process ID (PID): &quot;</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cin</span> &gt;&gt; targetPid;</span><br><span class="line"></span><br><span class="line">    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, targetPid);</span><br><span class="line">    <span class="keyword">if</span> (!hProcess) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">&quot;Failed to open target process! Error: &quot;</span> &lt;&lt; GetLastError() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Checking thread states before dump...&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    CheckThreads(targetPid);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建 minidump</span></span><br><span class="line">    HANDLE hFile = CreateFile(</span><br><span class="line">        <span class="string">L&quot;test.dmp&quot;</span>,</span><br><span class="line">        GENERIC_WRITE,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        <span class="literal">NULL</span>,</span><br><span class="line">        CREATE_ALWAYS,</span><br><span class="line">        FILE_ATTRIBUTE_NORMAL,</span><br><span class="line">        <span class="literal">NULL</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (hFile == INVALID_HANDLE_VALUE) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">&quot;Failed to create dump file! Error: &quot;</span> &lt;&lt; GetLastError() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        CloseHandle(hProcess);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Creating minidump...&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    BOOL success = MiniDumpWriteDump(</span><br><span class="line">        hProcess,</span><br><span class="line">        targetPid,</span><br><span class="line">        hFile,</span><br><span class="line">        MiniDumpNormal,</span><br><span class="line">        <span class="literal">NULL</span>,</span><br><span class="line">        <span class="literal">NULL</span>,</span><br><span class="line">        <span class="literal">NULL</span></span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!success) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">&quot;MiniDumpWriteDump failed! Error: &quot;</span> &lt;&lt; GetLastError() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Minidump created successfully!&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Checking thread states after dump...&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    CheckThreads(targetPid);</span><br><span class="line"></span><br><span class="line">    CloseHandle(hFile);</span><br><span class="line">    CloseHandle(hProcess);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>编译 &amp; 运行：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ Dumper.cpp -o Dumper.exe -static-libgcc -static-libstdc++ -l dbghelp</span><br><span class="line">./Dumper.exe</span><br></pre></td></tr></table></figure>
+
+<p>输入目标进程的 PID（<code>Target.exe</code>的 PID），观察输出。</p>
+<hr>
+<h3 id="预期结果"><a href="#预期结果" class="headerlink" title="预期结果"></a><strong>预期结果</strong></h3><ol>
+<li><strong><code>Target.exe</code>持续输出日志</strong>：<code>Thread 0 is running... Thread 1 is running... Thread 2 is running... Main thread is running...</code></li>
+<li><strong><code>Dumper.exe</code>运行后</strong>：<strong>转储前</strong>：<code>CheckThreads</code>会报告所有线程是 <strong>RUNNING</strong>（<code>SuspendThread</code>返回 <code>0</code>）。<strong>转储期间</strong>：<code>Target.exe</code>的日志输出会 <strong>暂停</strong>（因为所有线程被 <code>MiniDumpWriteDump</code>挂起）。<strong>转储后</strong>：<code>CheckThreads</code>会报告所有线程 <strong>恢复运行</strong>（<code>SuspendThread</code>返回 <code>0</code>）。<code>Target.exe</code>的日志输出 <strong>恢复</strong>。</li>
+</ol>
+<hr>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a><strong>结论</strong></h3><p>✅ <strong>验证成功</strong>：</p>
+<ul>
+<li><code>MiniDumpWriteDump</code><strong>确实会挂起目标进程的所有线程</strong>，以确保内存一致性。</li>
+<li>转储完成后，线程会自动恢复执行。</li>
+</ul>
+<p>⚠ <strong>注意事项</strong>：</p>
+<ul>
+<li>如果目标进程持有关键锁（如堆锁、加载器锁），<strong>在目标进程内部调用 <code>MiniDumpWriteDump</code>可能导致死锁</strong>（验证了微软的建议）。</li>
+<li><strong>最佳实践</strong>：始终从 <strong>外部进程</strong> 调用 <code>MiniDumpWriteDump</code>，以避免死锁问题。</li>
+</ul>
+<hr>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a><strong>完整代码</strong></h3><ul>
+<li><a href="#1-%E7%9B%AE%E6%A0%87%E8%BF%9B%E7%A8%8Btargetexe">Target.cpp</a></li>
+<li><a href="#2-%E8%BD%AC%E5%82%A8%E8%BF%9B%E7%A8%8Bdumperexe">Dumper.cpp</a></li>
+</ul>
+<p>你可以编译并运行这两个程序来验证 <code>MiniDumpWriteDump</code>的行为。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250922225450029.png" alt="image-20250922225450029"></p>
+<p>代码是没问题的，但是发现运行之后，没有暂停的效果。原因是这个函数挂起的速度太快了</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250922225957393.png" alt="image-20250922225957393"></p>
+<p>使用大佬工具的话 指定时间10000毫秒，明显有反应。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250922231458306.png" alt="image-20250922231458306"></p>
+<h1 id="分析源码-如何长时间挂起线程"><a href="#分析源码-如何长时间挂起线程" class="headerlink" title="分析源码-如何长时间挂起线程"></a>分析源码-如何长时间挂起线程</h1><h2 id="整体原理（一句话）"><a href="#整体原理（一句话）" class="headerlink" title="整体原理（一句话）"></a>整体原理（一句话）</h2><p>借助系统自带的 WerFaultSecure 在执行转储（dump）时会“冻结”目标进程所有线程，我们只要在目标被 WER 冻结的瞬间把 WER 自身再挂起，就能让目标保持在挂起状态（“冻结”）。到设定时间后结束 WER，目标进程随之恢复。</p>
+<p><strong>WerFaultSecure</strong>支持在 <strong>WinTCB级别使用****PPL</strong>保护运行。</p>
+<p><a target="_blank" rel="noopener" href="https://www.zerosalarium.com/2025/09/Dumping-LSASS-With-WER-On-Modern-Windows-11.html">参考</a>逆向工程的 运行<strong>WerFaultSecure</strong> 的参数，我们可以使用它来激活任何所需进程的 <strong>MiniDumpWriteDump函数。</strong></p>
+<p>对应代码：</p>
+<ul>
+<li>入口：<code>wmain</code>（<code>EDR-Freeze.cpp</code>）</li>
+<li>主流程：<code>FreezeRun</code>（<code>EDR-Freeze.cpp</code>）</li>
+<li>监控线程：<code>PauseCheck</code>（<code>EDR-Freeze.cpp</code>）</li>
+<li>工具函数：<code>ProcessMisc.h/.cpp</code>（权限、线程枚举、挂起&#x2F;终止等）</li>
+<li>启动 WER（PPL 进程）：<code>PPLHelp.h/.cpp</code></li>
+</ul>
+<hr>
+<h2 id="为什么要把-WerFaultSecure-作为子进程启动？"><a href="#为什么要把-WerFaultSecure-作为子进程启动？" class="headerlink" title="为什么要把 WerFaultSecure 作为子进程启动？"></a>为什么要把 WerFaultSecure 作为子进程启动？</h2><p>代码通过 <code>CreateProcessW</code> 启动 <code>C:\Windows\System32\WerFaultSecure.exe</code>，自然成为当前工具进程的“子进程”。这样做有三个关键原因：</p>
+<ol>
+<li>利用系统行为：不直接注入或篡改目标进程，而是“借力”系统组件 WER 的冻结&#x2F;转储能力。</li>
+<li>继承句柄：我们给 WER 传递了可继承的文件和事件句柄（命令行里 <code>/encfile &lt;句柄&gt;</code>、<code>/cancel &lt;句柄&gt;</code>），要让子进程继承并使用这些句柄。</li>
+<li>提升保护：通过 <code>PROC_THREAD_ATTRIBUTE_PROTECTION_LEVEL + CREATE_PROTECTED_PROCESS</code> 把 WER 以 PPL 级别拉起（见 <code>PPLProcessCreator::CreatePPLProcess</code>），减少被安全产品拦截的概率。</li>
+</ol>
+<p>代码位置速览：</p>
+<ul>
+<li>构造命令行与可继承句柄：<code>FreezeRun</code>（<code>EDR-Freeze.cpp</code>）</li>
+<li>创建 PPL 子进程：<code>PPLProcessCreator::CreatePPLProcess</code>（<code>PPLHelp.cpp</code>）</li>
+</ul>
+<hr>
+<h2 id="只指定主线程-TID，为何“所有线程”都会挂起？"><a href="#只指定主线程-TID，为何“所有线程”都会挂起？" class="headerlink" title="只指定主线程 TID，为何“所有线程”都会挂起？"></a>只指定主线程 TID，为何“所有线程”都会挂起？</h2><p>传给 WerFaultSecure 的 <code>/pid &lt;目标PID&gt;</code> 和 <code>/tid &lt;主线程TID&gt;</code>，其中 TID 更多是“上下文&#x2F;首选线程”的提示点，例如用于栈回溯或异常上下文，并不意味着“仅挂起这一条线程”。</p>
+<p>为了生成一致性的内存转储（尤其像 full dump），WER&#x2F;转储机制会在内部冻结整个目标进程（所有线程）。这可以等价理解为：WER 会对目标进程执行整进程挂起策略（效果类似逐线程 Suspend 或系统调用层面的整进程挂起），直到转储完成后再恢复。</p>
+<p>我们代码并未直接挂起目标进程，而是：</p>
+<ol>
+<li>使用 <code>GetMainThreadId(pid)</code> 得到主线程 ID（仅作为 WER 的参考上下文）。</li>
+<li>用 <code>IsProcessSuspendedByPID(pid)</code> 轮询，判断目标是否进入“所有线程都是 Wait+Suspended”的状态——这恰是 WER 冻结中的特征。</li>
+<li>一旦判断成立，就 <code>SuspendProcessByPID(werPid)</code> 把 WER 自身挂起，从而让目标保持冻结。</li>
+<li>计时结束后 <code>TerminateProcessByPID(werPid)</code> 终止 WER，目标随之解冻。</li>
+</ol>
+<p>相关实现：<code>ProcessMisc.cpp</code> 中的 <code>GetMainThreadId</code>、<code>IsProcessSuspendedByPID</code>、<code>SuspendProcessByPID</code>、<code>TerminateProcessByPID</code>。</p>
+<hr>
+<h2 id="为什么“执行-WER”与“检测冻结并挂起-WER-自身”看起来同时进行？"><a href="#为什么“执行-WER”与“检测冻结并挂起-WER-自身”看起来同时进行？" class="headerlink" title="为什么“执行 WER”与“检测冻结并挂起 WER 自身”看起来同时进行？"></a>为什么“执行 WER”与“检测冻结并挂起 WER 自身”看起来同时进行？</h2><p>因为存在两个并发执行体：</p>
+<ul>
+<li>独立的 WER 进程：<code>CreateProcessW</code> 启动后，WER 由内核调度独立运行，开始对目标做转储并冻结其线程；</li>
+<li>当前进程内的监控线程：<code>CreateThread</code> 启动 <code>PauseCheck</code>，轮询判断目标是否“全线程挂起”，一旦成立就挂起 WER。</li>
+</ul>
+<p>这二者并行执行，因此现象上是“同时进行”。与此同时，主线程在 <code>Sleep(sleepTime)</code>，计时结束再结束 WER。</p>
+<p>并发原语与流程：</p>
+<ol>
+<li><code>CreateProcessW</code> → 启动 WER（子进程）。</li>
+<li><code>CreateThread(PauseCheck)</code> → 启动监控线程，轮询 <code>IsProcessSuspendedByPID</code>。</li>
+<li>监控线程检测到目标已冻结 → 调用 <code>SuspendProcessByPID(werPid)</code> 挂起 WER。</li>
+<li>主线程 <code>Sleep</code> 到期 → <code>TerminateProcessByPID(werPid)</code>，目标恢复。</li>
+</ol>
+<p>可改进点：当前轮询为忙等，可在 <code>PauseCheck</code> 中加入小睡眠（如 <code>Sleep(1~10ms)</code>）或事件同步，降低 CPU 占用并更优雅地收尾。</p>
+<hr>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250922231458306.png" alt="image-20250922231458306"></p>
+<h1 id="分析源码-挂起PPL进程的权限问题"><a href="#分析源码-挂起PPL进程的权限问题" class="headerlink" title="分析源码-挂起PPL进程的权限问题"></a>分析源码-挂起PPL进程的权限问题</h1><h2 id="什么是-PPL（Protected-Process-Light）"><a href="#什么是-PPL（Protected-Process-Light）" class="headerlink" title="什么是 PPL（Protected Process Light）"></a>什么是 PPL（Protected Process Light）</h2><p>PPL 是 Windows 的“受保护进程（轻量版）”机制。与普通进程相比，PPL 在“句柄授予&#x2F;访问控制”上由内核实施更严格的策略：</p>
+<ul>
+<li>即使拥有管理员权限与 SeDebugPrivilege，低保护级别的进程也无法对高保护级别的 PPL 进程获取敏感访问（如读&#x2F;写内存、挂起&#x2F;终止等）。</li>
+<li>只有“同级或更高保护”的调用方（或内核&#x2F;驱动）才能被授予足够权限的句柄。</li>
+</ul>
+<p>PPL 机制的目标是保护系统安全组件（如 LSA、反恶意软件、系统关键服务）免受同机高权限但低可信组件的干扰。</p>
+<hr>
+<h2 id="保护等级的两个维度：Signer-类别-强度（Light-Full）"><a href="#保护等级的两个维度：Signer-类别-强度（Light-Full）" class="headerlink" title="保护等级的两个维度：Signer 类别 + 强度（Light&#x2F;Full）"></a>保护等级的两个维度：Signer 类别 + 强度（Light&#x2F;Full）</h2><p>保护等级不仅是“高&#x2F;低”，它包含两个维度：</p>
+<ul>
+<li>Signer 类别（签名者&#x2F;信任域）：如 Windows、WinTCB、LSA、Antimalware 等；</li>
+<li>强度：Light 表示 PPL（Protected Process Light），Full 表示 PP（受保护进程，强度更高）。</li>
+</ul>
+<p>常见（示意）等级名：</p>
+<ul>
+<li>PROTECTION_LEVEL_WINDOWS_LIGHT &#x2F; PROTECTION_LEVEL_WINDOWS</li>
+<li>PROTECTION_LEVEL_LSA_LIGHT</li>
+<li>PROTECTION_LEVEL_ANTIMALWARE_LIGHT</li>
+<li>PROTECTION_LEVEL_WINTCB_LIGHT &#x2F;（WinTCB Full 属于更高强度的受保护进程）</li>
+</ul>
+<p>说明：不同系统版本与补丁中，可用等级以及比较规则会有差异；总体原则是“Signer 类别 + 强度”共同决定相对高低与可访问性。</p>
+<hr>
+<h2 id="“Full-WinTCB-保护”是什么意思"><a href="#“Full-WinTCB-保护”是什么意思" class="headerlink" title="“Full WinTCB 保护”是什么意思"></a>“Full WinTCB 保护”是什么意思</h2><p>当某进程显示为“WinTCB Full”时，表示它处于非常高的保护级别：</p>
+<ul>
+<li>Signer 类别为 WinTCB（Windows TCB：可信计算基底，系统核心信任域之一）。</li>
+<li>强度为 Full（受保护进程，非 Light），比 PPL 还严格。</li>
+</ul>
+<p>含义：</p>
+<ul>
+<li>只有“同类别且强度不低”的进程，或内核，才可能获得对其的敏感访问。</li>
+<li>普通进程（即使管理员 + SeDebugPrivilege）通常拿不到如 <code>PROCESS_SUSPEND_RESUME</code> 此类敏感权限的进程句柄，自然无法挂起其线程、读取敏感内存或将其终止。</li>
+</ul>
+<hr>
+<h2 id="为什么必须具备足够的-PPL-等级才能“挂起-PPL-进程”"><a href="#为什么必须具备足够的-PPL-等级才能“挂起-PPL-进程”" class="headerlink" title="为什么必须具备足够的 PPL 等级才能“挂起 PPL 进程”"></a>为什么必须具备足够的 PPL 等级才能“挂起 PPL 进程”</h2><p>要挂起线程&#x2F;进程，前提是需要先拿到带有相应访问权的句柄（例如 <code>PROCESS_SUSPEND_RESUME</code>）。在 PPL 模型下，内核会在“句柄授予阶段”检查调用方与目标方的保护级别：</p>
+<ul>
+<li>若调用方保护级别（Signer + Light&#x2F;Full）低于目标，则敏感访问会被拒绝；</li>
+<li>即使 <code>OpenProcess</code> 成功返回句柄，也可能因为访问掩码被降级而不包含所需的敏感权限；</li>
+<li>这就是为什么“要对 PPL 目标做挂起&#x2F;致盲操作，调用方本身也要处于不低于目标的 PPL 等级（或在内核态）”。</li>
+</ul>
+<p>总结为一句话：访问被内核在“授予句柄”时就挡住了，权限不够连门都进不去，谈不上后续 <code>NtSuspendProcess</code> 或 <code>SuspendThread</code>。</p>
+<hr>
+<h2 id="与项目的关系（WerFaultSecure-与-PPL）"><a href="#与项目的关系（WerFaultSecure-与-PPL）" class="headerlink" title="与项目的关系（WerFaultSecure 与 PPL）"></a>与项目的关系（WerFaultSecure 与 PPL）</h2><p>项目会以指定保护级别启动 WerFaultSecure（通过 <code>PROC_THREAD_ATTRIBUTE_PROTECTION_LEVEL + CREATE_PROTECTED_PROCESS</code>）：</p>
+<ul>
+<li>实际生效的保护级别，取决于系统策略、二进制签名和平台支持；</li>
+<li>运行时可用 <code>GetProcessInformation(ProcessProtectionLevelInfo)</code> 获取到真实的 ProtectionLevel，并打印为人类可读的名称（见 <code>PPLHelp.cpp</code>）。</li>
+</ul>
+<p>当 WerFaultSecure 处于较高保护级别时（例如 WinTCB Full）：</p>
+<ul>
+<li>普通进程无法对其执行挂起&#x2F;终止等敏感操作；</li>
+<li>这与“我们可以利用 WER 冻结目标进程”并不矛盾，因为冻结目标是 WER 的内部行为，我们只是“检测到目标被 WER 冻住后，再对 WER 自身做状态控制”。是否能“挂起 WER 自身”，取决于你当前进程能否对 WER 获得敏感访问权限（由两者的保护级别比较决定）。</li>
+</ul>
+<hr>
+<h2 id="诊断与实践建议"><a href="#诊断与实践建议" class="headerlink" title="诊断与实践建议"></a>诊断与实践建议</h2><p>诊断：</p>
+<ul>
+<li>打印并核实目标&#x2F;调用方&#x2F;中间方（如 WER）的保护级别，区分 Signer 与 Light&#x2F;Full；</li>
+<li>检查 <code>OpenProcess</code> 返回值以及 <code>GetLastError</code>，确认是否因权限不足无法获得敏感句柄；</li>
+<li>对 <code>MiniDumpWriteDump</code>&#x2F;WER 转储流程与“目标冻结判定”解耦，避免混淆。</li>
+</ul>
+<p>实践建议：</p>
+<ul>
+<li>如果需要对高保护级别的 PPL 进程做破坏性操作（挂起&#x2F;写内存&#x2F;终止），调用方必须具备至少同级的 PPL 等级；</li>
+<li>若做不到，需转向内核途径（驱动&#x2F;BYOVD）或改变策略，避免与高保护级别的进程直接对抗；</li>
+<li>在利用 WER 冻结目标的场景里，重点是“让 WER 内部触发冻结”，而非调用方直接挂起目标。随后对 WER 的操控是否可行，取决于双方的保护级别比较。</li>
+</ul>
+<hr>
+<h2 id="常见问答（FAQ）"><a href="#常见问答（FAQ）" class="headerlink" title="常见问答（FAQ）"></a>常见问答（FAQ）</h2><p><strong>Q: 我有管理员 + SeDebugPrivilege，为什么还是打不开&#x2F;挂不起某些进程？</strong></p>
+<p>A: 因为对方是 PPL&#x2F;PP，且保护级别高于你；内核在授予句柄时做了保护级别检查，你拿不到包含敏感访问的句柄。</p>
+<p><strong>Q: “Full WinTCB”和“WinTCB Light”差别大吗？</strong></p>
+<p>A: 是。Full 是受保护进程（PP），更严格；Light 是 PPL。一般来说 Full &gt; Light。同类 Signer 下，Full 访问要求更苛刻。</p>
+<p><strong>Q: 我如何知道某进程的保护级别？</strong></p>
+<p>A: 使用 <code>GetProcessInformation(ProcessProtectionLevelInfo)</code> 查询，项目中 <code>PPLProcessCreator::GetPPLProtectionLevel</code> 与 <code>GetPPLProtectionLevelName</code> 展示了获取与打印方法。</p>
+<p><strong>Q: 如果 WER 是更高等级，我还能“致盲”它吗？</strong></p>
+<p>A: 取决于你的调用方保护级别。如果不够高，直接挂起&#x2F;终止它通常会失败；这时需改策略：让 WER 自己冻结目标，然后通过你能控制的途径维持&#x2F;结束该状态（比如等待、超时终止、或在你能获取到的权限范围内进行控制）。</p>
+<hr>
+<h2 id="一句话总结"><a href="#一句话总结" class="headerlink" title="一句话总结"></a>一句话总结</h2><p>PPL&#x2F;PP 是“按保护等级授予访问”的内核强制模型。“Full WinTCB”属于高强度高信任域，低等级进程对其敏感操作会在句柄授予阶段被拒绝；要挂起&#x2F;致盲这类进程，调用方必须具备足够高的 PPL 等级（或转向内核层面）。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://250wuyifan.github.io">CHANGMEN</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://250wuyifan.github.io/2025/09/22/EDR-Freeze%EF%BC%9A%E4%B8%80%E6%AC%BE%E8%AE%A9-EDR-%E5%92%8C%E6%9D%80%E6%AF%92%E8%BD%AF%E4%BB%B6%E8%BF%9B%E5%85%A5%E6%98%8F%E8%BF%B7%E7%8A%B6%E6%80%81%E7%9A%84%E5%B7%A5%E5%85%B7/">https://250wuyifan.github.io/2025/09/22/EDR-Freeze%EF%BC%9A%E4%B8%80%E6%AC%BE%E8%AE%A9-EDR-%E5%92%8C%E6%9D%80%E6%AF%92%E8%BD%AF%E4%BB%B6%E8%BF%9B%E5%85%A5%E6%98%8F%E8%BF%B7%E7%8A%B6%E6%80%81%E7%9A%84%E5%B7%A5%E5%85%B7/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/">安全开发</a></div><div class="post-share"><div class="social-share" data-image="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/09/25/VAD%E5%9C%A8%E8%BF%9B%E7%A8%8B%E7%AF%A1%E6%94%B9%E4%B8%8E%E6%8C%96%E7%A9%BA%E7%9A%84%E4%BF%9D%E6%8A%A4/" title="VAD在进程篡改与挖空的保护"><img class="cover" src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%BB%A3%E7%A0%81-%E5%BC%80%E5%8F%91-%E6%8A%80%E6%9C%AF.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">VAD在进程篡改与挖空的保护</div></div><div class="info-2"><div class="info-item-1">VAD树1. 什么是 VAD 树？VAD 的全称是 Virtual Address Descriptor。你可以把它想象成进程的“内存地图”或“内存目录”。  核心思想：每个 Windows 用户进程都有自己独立的 4GB（在 32 位系统上）或 256TB（在 64 位系统上）的虚拟地址空间。但进程并不会使用所有这些空间。VAD 树就是一个内核数据结构，它用来记录该进程当前实际使用了哪些虚拟内存区域，以及这些区域的各种属性。 树形结构：VAD 不是简单的列表，而是一棵自平衡的二叉搜索树，通常是 AVL 树。这使得操作系统能够非常高效地（时间复杂度为 O(log n)）查找、插入和删除内存区域描述符。  2. VAD 节点里存储了什么信息？每个 VAD 节点代表进程地址空间中一个连续的、具有相同内存属性的内存区域。一个节点通常包含以下关键信息：  起始地址和结束地址：定义了这个内存区域的范围。 内存分配类型：MEM_IMAGE： 该区域映射了一个可执行文件（如 .exe, .dll）的某一部分。MEM_MAPPED： 该区域映射了一个数据文件（通过内存映射文件）。MEM_PRIV...</div></div></div></a><a class="pagination-related" href="/2025/09/13/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%AE%AD%E7%BB%83%E8%8E%B7%E5%8F%96%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E6%95%B0%E6%8D%AE%E9%9B%86/" title="深度学习训练获取恶意代码数据集"><img class="cover" src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">深度学习训练获取恶意代码数据集</div></div><div class="info-2"><div class="info-item-1">免费获取网站https://bazaar.abuse.ch/   API接口调用可根据自己的要求调用API。  批量下载  批量下载脚本一个一个手点击下载是满的，脚本是对的。   </div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">CHANGMEN</div><div class="author-info-description">网络安全爱好者</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E9%83%A8%E5%88%86"><span class="toc-number">1.</span> <span class="toc-text">主要部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Minidumpwritedump-%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.</span> <span class="toc-text">Minidumpwritedump 函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E-MiniDumpWriteDump-%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.1.</span> <span class="toc-text">关于 MiniDumpWriteDump 函数的基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E8%A1%8C%E4%B8%BA%EF%BC%9A%E6%8C%82%E8%B5%B7%E6%89%80%E6%9C%89%E7%BA%BF%E7%A8%8B"><span class="toc-number">1.1.2.</span> <span class="toc-text">关键行为：挂起所有线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%BB%BA%E8%AE%AE%EF%BC%9A%E4%BB%8E%E5%A4%96%E9%83%A8%E8%BF%9B%E7%A8%8B%E8%B0%83%E7%94%A8"><span class="toc-number">1.1.3.</span> <span class="toc-text">重要建议：从外部进程调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.1.4.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81-MiniDumpWriteDump%E6%98%AF%E5%90%A6%E4%BC%9A%E6%9A%82%E5%81%9C%E7%9B%AE%E6%A0%87%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%89%80%E6%9C%89%E7%BA%BF%E7%A8%8B"><span class="toc-number">1.2.</span> <span class="toc-text">验证 MiniDumpWriteDump是否会暂停目标进程的所有线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%E8%BF%9B%E7%A8%8B%EF%BC%88Target-exe%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">目标进程（Target.exe）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-%E4%BB%A3%E7%A0%81%EF%BC%88Target-cpp%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">C++ 代码（Target.cpp）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AC%E5%82%A8%E8%BF%9B%E7%A8%8B%EF%BC%88Dumper-exe%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">转储进程（Dumper.exe）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-%E4%BB%A3%E7%A0%81%EF%BC%88Dumper-cpp%EF%BC%89"><span class="toc-number">1.2.4.</span> <span class="toc-text">C++ 代码（Dumper.cpp）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E6%9C%9F%E7%BB%93%E6%9E%9C"><span class="toc-number">1.2.5.</span> <span class="toc-text">预期结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-number">1.2.6.</span> <span class="toc-text">结论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="toc-number">1.2.7.</span> <span class="toc-text">完整代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E6%BA%90%E7%A0%81-%E5%A6%82%E4%BD%95%E9%95%BF%E6%97%B6%E9%97%B4%E6%8C%82%E8%B5%B7%E7%BA%BF%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">分析源码-如何长时间挂起线程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E5%8E%9F%E7%90%86%EF%BC%88%E4%B8%80%E5%8F%A5%E8%AF%9D%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">整体原理（一句话）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%8A%8A-WerFaultSecure-%E4%BD%9C%E4%B8%BA%E5%AD%90%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">为什么要把 WerFaultSecure 作为子进程启动？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AA%E6%8C%87%E5%AE%9A%E4%B8%BB%E7%BA%BF%E7%A8%8B-TID%EF%BC%8C%E4%B8%BA%E4%BD%95%E2%80%9C%E6%89%80%E6%9C%89%E7%BA%BF%E7%A8%8B%E2%80%9D%E9%83%BD%E4%BC%9A%E6%8C%82%E8%B5%B7%EF%BC%9F"><span class="toc-number">2.3.</span> <span class="toc-text">只指定主线程 TID，为何“所有线程”都会挂起？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E2%80%9C%E6%89%A7%E8%A1%8C-WER%E2%80%9D%E4%B8%8E%E2%80%9C%E6%A3%80%E6%B5%8B%E5%86%BB%E7%BB%93%E5%B9%B6%E6%8C%82%E8%B5%B7-WER-%E8%87%AA%E8%BA%AB%E2%80%9D%E7%9C%8B%E8%B5%B7%E6%9D%A5%E5%90%8C%E6%97%B6%E8%BF%9B%E8%A1%8C%EF%BC%9F"><span class="toc-number">2.4.</span> <span class="toc-text">为什么“执行 WER”与“检测冻结并挂起 WER 自身”看起来同时进行？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E6%BA%90%E7%A0%81-%E6%8C%82%E8%B5%B7PPL%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">分析源码-挂起PPL进程的权限问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-PPL%EF%BC%88Protected-Process-Light%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">什么是 PPL（Protected Process Light）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E6%8A%A4%E7%AD%89%E7%BA%A7%E7%9A%84%E4%B8%A4%E4%B8%AA%E7%BB%B4%E5%BA%A6%EF%BC%9ASigner-%E7%B1%BB%E5%88%AB-%E5%BC%BA%E5%BA%A6%EF%BC%88Light-Full%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">保护等级的两个维度：Signer 类别 + 强度（Light&#x2F;Full）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9CFull-WinTCB-%E4%BF%9D%E6%8A%A4%E2%80%9D%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D"><span class="toc-number">3.3.</span> <span class="toc-text">“Full WinTCB 保护”是什么意思</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E5%85%B7%E5%A4%87%E8%B6%B3%E5%A4%9F%E7%9A%84-PPL-%E7%AD%89%E7%BA%A7%E6%89%8D%E8%83%BD%E2%80%9C%E6%8C%82%E8%B5%B7-PPL-%E8%BF%9B%E7%A8%8B%E2%80%9D"><span class="toc-number">3.4.</span> <span class="toc-text">为什么必须具备足够的 PPL 等级才能“挂起 PPL 进程”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8E%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%88WerFaultSecure-%E4%B8%8E-PPL%EF%BC%89"><span class="toc-number">3.5.</span> <span class="toc-text">与项目的关系（WerFaultSecure 与 PPL）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%8A%E6%96%AD%E4%B8%8E%E5%AE%9E%E8%B7%B5%E5%BB%BA%E8%AE%AE"><span class="toc-number">3.6.</span> <span class="toc-text">诊断与实践建议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E7%AD%94%EF%BC%88FAQ%EF%BC%89"><span class="toc-number">3.7.</span> <span class="toc-text">常见问答（FAQ）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%80%BB%E7%BB%93"><span class="toc-number">3.8.</span> <span class="toc-text">一句话总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/10/15/nature%E8%AE%BA%E6%96%87%E6%B1%87%E6%8A%A5/" title="nature论文汇报"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="nature论文汇报"/></a><div class="content"><a class="title" href="/2025/10/15/nature%E8%AE%BA%E6%96%87%E6%B1%87%E6%8A%A5/" title="nature论文汇报">nature论文汇报</a><time datetime="2025-10-15T14:24:09.000Z" title="Created 2025-10-15 22:24:09">2025-10-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/10/%E4%BF%A1%E5%91%BCOA-v2-7-0%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="信呼OA v2.7.0代码审计"><img src="/img/uiltx15is5c.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="信呼OA v2.7.0代码审计"/></a><div class="content"><a class="title" href="/2025/10/10/%E4%BF%A1%E5%91%BCOA-v2-7-0%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="信呼OA v2.7.0代码审计">信呼OA v2.7.0代码审计</a><time datetime="2025-10-10T08:49:07.000Z" title="Created 2025-10-10 16:49:07">2025-10-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/08/%E5%A4%8D%E4%B9%A0SQL%E6%B3%A8%E5%85%A5/" title="复习SQL注入"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91CSS-Python%EF%BC%88%E7%BC%96%E7%A8%8B%EF%BC%89.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="复习SQL注入"/></a><div class="content"><a class="title" href="/2025/10/08/%E5%A4%8D%E4%B9%A0SQL%E6%B3%A8%E5%85%A5/" title="复习SQL注入">复习SQL注入</a><time datetime="2025-10-07T17:07:50.000Z" title="Created 2025-10-08 01:07:50">2025-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/06/jfinal%20CMS%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="jfinal CMS代码审计"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%BB%A3%E7%A0%81-%E5%BC%80%E5%8F%91-%E6%8A%80%E6%9C%AF.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="jfinal CMS代码审计"/></a><div class="content"><a class="title" href="/2025/10/06/jfinal%20CMS%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="jfinal CMS代码审计">jfinal CMS代码审计</a><time datetime="2025-10-06T12:24:25.000Z" title="Created 2025-10-06 20:24:25">2025-10-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/04/%E5%88%9D%E6%8E%A2JSP%E5%85%8D%E6%9D%80/" title="初探JSP免杀"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="初探JSP免杀"/></a><div class="content"><a class="title" href="/2025/10/04/%E5%88%9D%E6%8E%A2JSP%E5%85%8D%E6%9D%80/" title="初探JSP免杀">初探JSP免杀</a><time datetime="2025-10-04T14:58:48.000Z" title="Created 2025-10-04 22:58:48">2025-10-04</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By CHANGMEN</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

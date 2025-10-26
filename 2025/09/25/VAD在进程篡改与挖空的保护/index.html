@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>VAD在进程篡改与挖空的保护 | CHANGMEN'个人博客</title><meta name="author" content="CHANGMEN"><meta name="copyright" content="CHANGMEN"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="VAD树1. 什么是 VAD 树？VAD 的全称是 Virtual Address Descriptor。你可以把它想象成进程的“内存地图”或“内存目录”。  核心思想：每个 Windows 用户进程都有自己独立的 4GB（在 32 位系统上）或 256TB（在 64 位系统上）的虚拟地址空间。但进程并不会使用所有这些空间。VAD 树就是一个内核数据结构，它用来记录该进程当前实际使用了哪些虚拟内存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VAD在进程篡改与挖空的保护">
+<meta property="og:url" content="https://250wuyifan.github.io/2025/09/25/VAD%E5%9C%A8%E8%BF%9B%E7%A8%8B%E7%AF%A1%E6%94%B9%E4%B8%8E%E6%8C%96%E7%A9%BA%E7%9A%84%E4%BF%9D%E6%8A%A4/index.html">
+<meta property="og:site_name" content="CHANGMEN&#39;个人博客">
+<meta property="og:description" content="VAD树1. 什么是 VAD 树？VAD 的全称是 Virtual Address Descriptor。你可以把它想象成进程的“内存地图”或“内存目录”。  核心思想：每个 Windows 用户进程都有自己独立的 4GB（在 32 位系统上）或 256TB（在 64 位系统上）的虚拟地址空间。但进程并不会使用所有这些空间。VAD 树就是一个内核数据结构，它用来记录该进程当前实际使用了哪些虚拟内存">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://250wuyifan.github.io/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%BB%A3%E7%A0%81-%E5%BC%80%E5%8F%91-%E6%8A%80%E6%9C%AF.png">
+<meta property="article:published_time" content="2025-09-25T13:32:54.000Z">
+<meta property="article:modified_time" content="2025-10-02T06:17:54.579Z">
+<meta property="article:author" content="CHANGMEN">
+<meta property="article:tag" content="免杀">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://250wuyifan.github.io/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%BB%A3%E7%A0%81-%E5%BC%80%E5%8F%91-%E6%8A%80%E6%9C%AF.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "VAD在进程篡改与挖空的保护",
+  "url": "https://250wuyifan.github.io/2025/09/25/VAD%E5%9C%A8%E8%BF%9B%E7%A8%8B%E7%AF%A1%E6%94%B9%E4%B8%8E%E6%8C%96%E7%A9%BA%E7%9A%84%E4%BF%9D%E6%8A%A4/",
+  "image": "https://250wuyifan.github.io/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%BB%A3%E7%A0%81-%E5%BC%80%E5%8F%91-%E6%8A%80%E6%9C%AF.png",
+  "datePublished": "2025-09-25T13:32:54.000Z",
+  "dateModified": "2025-10-02T06:17:54.579Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "CHANGMEN",
+      "url": "https://250wuyifan.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://250wuyifan.github.io/2025/09/25/VAD%E5%9C%A8%E8%BF%9B%E7%A8%8B%E7%AF%A1%E6%94%B9%E4%B8%8E%E6%8C%96%E7%A9%BA%E7%9A%84%E4%BF%9D%E6%8A%A4/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'VAD在进程篡改与挖空的保护',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="CHANGMEN'个人博客" type="application/atom+xml">
+</head><body><div id="web_bg" style="background-image: url(/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%BB%A3%E7%A0%81-%E5%BC%80%E5%8F%91-%E6%8A%80%E6%9C%AF.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">CHANGMEN'个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">VAD在进程篡改与挖空的保护</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">VAD在进程篡改与挖空的保护</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-09-25T13:32:54.000Z" title="Created 2025-09-25 21:32:54">2025-09-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-10-02T06:17:54.579Z" title="Updated 2025-10-02 14:17:54">2025-10-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="VAD树"><a href="#VAD树" class="headerlink" title="VAD树"></a>VAD树</h1><h2 id="1-什么是-VAD-树？"><a href="#1-什么是-VAD-树？" class="headerlink" title="1. 什么是 VAD 树？"></a>1. 什么是 VAD 树？</h2><p><strong>VAD</strong> 的全称是 <strong>Virtual Address Descriptor</strong>。你可以把它想象成进程的“内存地图”或“内存目录”。</p>
+<ul>
+<li><strong>核心思想</strong>：每个 Windows 用户进程都有自己独立的 4GB（在 32 位系统上）或 256TB（在 64 位系统上）的虚拟地址空间。但进程并不会使用所有这些空间。VAD 树就是一个内核数据结构，它用来记录<strong>该进程当前实际使用了哪些虚拟内存区域</strong>，以及这些区域的各种属性。</li>
+<li><strong>树形结构</strong>：VAD 不是简单的列表，而是一棵<strong>自平衡的二叉搜索树</strong>，通常是 <strong>AVL 树</strong>。这使得操作系统能够非常高效地（时间复杂度为 O(log n)）查找、插入和删除内存区域描述符。</li>
+</ul>
+<h2 id="2-VAD-节点里存储了什么信息？"><a href="#2-VAD-节点里存储了什么信息？" class="headerlink" title="2. VAD 节点里存储了什么信息？"></a>2. VAD 节点里存储了什么信息？</h2><p>每个 VAD 节点代表进程地址空间中一个<strong>连续的</strong>、具有相同内存属性的内存区域。一个节点通常包含以下关键信息：</p>
+<ul>
+<li><strong>起始地址和结束地址</strong>：定义了这个内存区域的范围。</li>
+<li><strong>内存分配类型</strong>：<code>MEM_IMAGE</code>： 该区域映射了一个可执行文件（如 .exe, .dll）的某一部分。<code>MEM_MAPPED</code>： 该区域映射了一个数据文件（通过内存映射文件）。<code>MEM_PRIVATE</code>： 该区域是进程私有的（如堆、栈、动态分配的内存）。</li>
+<li><strong>内存保护属性</strong>：<code>PAGE_READONLY</code>， <code>PAGE_READWRITE</code>， <code>PAGE_EXECUTE</code>， <code>PAGE_EXECUTE_READ</code>等。这决定了该内存区域是否可读、可写、可执行。</li>
+<li><strong>控制区域指针</strong>： 这是一个指向 <code>_CONTROL_AREA</code>结构的指针，该结构进一步指向一个 <code>_SECTION_OBJECT</code>（节对象）。这对于映射文件（<code>MEM_IMAGE</code>和 <code>MEM_MAPPED</code>）至关重要，因为它将虚拟内存页面与物理文件 on disk 关联起来。<strong>简单来说</strong>：如果是映射文件，VAD 节点里的信息可以帮你找到这个内存区域背后是哪个磁盘上的文件，以及具体是文件的哪一部分。</li>
+<li><strong>其他标志</strong>： 例如，该内存区域是否被提交、是否为守护页面等。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250925220447553.png" alt="image-20250925220447553"></p>
+<h2 id="3-VAD-树的主要作用和目的"><a href="#3-VAD-树的主要作用和目的" class="headerlink" title="3. VAD 树的主要作用和目的"></a>3. VAD 树的主要作用和目的</h2><ol>
+<li><strong>内存访问验证</strong>： 当进程尝试访问一个内存地址（例如，读取、写入或执行指令）时，内存管理器会查询该进程的 VAD 树，以确定该地址是否在一个已提交的、具有相应权限的内存区域内。如果访问无效（例如，写入一个只读页面，或访问一个未分配的区域），则会引发<strong>访问违规异常</strong>。</li>
+<li><strong>结构化存储</strong>： 为进程的虚拟地址空间提供一个紧凑的、高效的“目录”，避免为每一个内存页面都保存元数据，从而节省资源。</li>
+<li><strong>支持内存映射文件</strong>： VAD 是实现内存映射文件（<code>CreateFileMapping</code>&#x2F; <code>MapViewOfFile</code>）的基础。它记录了文件哪一部分被映射到了进程地址空间的哪个位置。</li>
+</ol>
+<h2 id="4-为什么-VAD-树对安全和分析如此重要？"><a href="#4-为什么-VAD-树对安全和分析如此重要？" class="headerlink" title="4. 为什么 VAD 树对安全和分析如此重要？"></a>4. 为什么 VAD 树对安全和分析如此重要？</h2><p>VAD 树是恶意软件分析和数字取证的“金矿”，因为它揭示了进程行为的许多秘密：</p>
+<ul>
+<li><strong>检测隐藏模块&#x2F;DLL</strong>： 恶意软件可能会使用一种叫做“反射式 DLL 注入”或“模块镂空”的技术，将恶意 DLL 加载到内存中，但绕过标准的 Windows 模块列表（如 PEB 中的模块链表）。然而，这种注入方式仍然需要在进程地址空间中分配内存并设置权限，因此<strong>必定会在 VAD 树中留下记录</strong>。分析 VAD 树可以发现这些隐藏的模块。</li>
+<li><strong>检测代码注入</strong>： 当恶意软件将代码注入到另一个进程（如 <code>explorer.exe</code>）时，它必须在该进程中分配可读、可写、可执行的内存。这会在目标进程的 VAD 树中创建一个具有 <code>PAGE_EXECUTE_READWRITE</code>属性的 <code>MEM_PRIVATE</code>区域，这是一个非常可疑的迹象（因为正常程序很少需要私有的、可执行且可写的内存）。</li>
+<li><strong>提取映射文件</strong>： 在取证中，可以从 VAD 节点中提取出已映射的文件内容。例如，如果一个恶意软件映射了一个可执行文件到内存中但并未执行，传统的动态分析工具可能无法发现它，但通过转储 VAD 树中对应的内存区域，可以恢复出完整的文件。</li>
+<li><strong>了解进程行为</strong>： 通过查看 VAD 树，可以了解一个进程加载了哪些 DLL、映射了哪些数据文件、它的堆栈在哪里等等，从而全面了解其内存布局和行为。</li>
+</ul>
+<h2 id="可视化示例"><a href="#可视化示例" class="headerlink" title="可视化示例"></a>可视化示例</h2><p>想象一个进程的 VAD 树可能长这样：</p>
+<p>复制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[VAD #2: 0x00010000 - 0x0001FFFF] (Image: notepad.exe, .text section, RX)</span><br><span class="line">       /</span><br><span class="line">[VAD Root]</span><br><span class="line">       \</span><br><span class="line">        [VAD #3: 0x00020000 - 0x0002FFFF] (Image: notepad.exe, .data section, RW)</span><br><span class="line">        \</span><br><span class="line">         [VAD #5: 0x00100000 - 0x0010FFFF] (Private Heap, RW)</span><br><span class="line">         \</span><br><span class="line">          [VAD #4: 0x00200000 - 0x0020FFFF] (Image: kernel32.dll, .text section, RX)</span><br></pre></td></tr></table></figure>
+
+<h2 id="如何查看-VAD-树？"><a href="#如何查看-VAD-树？" class="headerlink" title="如何查看 VAD 树？"></a>如何查看 VAD 树？</h2><p>最常用的工具是 <strong>WinDbg</strong>（微软官方调试器）及其 <code>!vad</code>扩展命令。</p>
+<ol>
+<li>在 WinDbg 中附加到一个进程。</li>
+<li>输入命令 <code>!vad</code>。</li>
+<li>它会以文本形式打印出进程的 VAD 树，显示每个节点的地址范围、保护属性、类型等信息。</li>
+</ol>
+<p>商业内存取证工具如 <strong>Volatility</strong> 也内置了强大的 VAD 解析功能，可以非常直观地展示和分析 VAD 树。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>VAD 树是 Windows 内核为每个进程维护的一个高效“内存地图”，它精确描述了进程虚拟地址空间的使用情况。</strong> 它不仅是操作系统正常运作的基石，也是安全研究人员和数字取证分析师深入探究进程内部状态、检测高级威胁的不可或缺的强大工具。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://250wuyifan.github.io">CHANGMEN</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://250wuyifan.github.io/2025/09/25/VAD%E5%9C%A8%E8%BF%9B%E7%A8%8B%E7%AF%A1%E6%94%B9%E4%B8%8E%E6%8C%96%E7%A9%BA%E7%9A%84%E4%BF%9D%E6%8A%A4/">https://250wuyifan.github.io/2025/09/25/VAD%E5%9C%A8%E8%BF%9B%E7%A8%8B%E7%AF%A1%E6%94%B9%E4%B8%8E%E6%8C%96%E7%A9%BA%E7%9A%84%E4%BF%9D%E6%8A%A4/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%85%8D%E6%9D%80/">免杀</a></div><div class="post-share"><div class="social-share" data-image="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%BB%A3%E7%A0%81-%E5%BC%80%E5%8F%91-%E6%8A%80%E6%9C%AF.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/2025/10/02/Java-Agent/" title="Java Agent"><img class="cover" src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91CSS-Python%EF%BC%88%E7%BC%96%E7%A8%8B%EF%BC%89.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Java Agent</div></div></div></a><a class="pagination-related" href="/2025/09/22/EDR-Freeze%EF%BC%9A%E4%B8%80%E6%AC%BE%E8%AE%A9-EDR-%E5%92%8C%E6%9D%80%E6%AF%92%E8%BD%AF%E4%BB%B6%E8%BF%9B%E5%85%A5%E6%98%8F%E8%BF%B7%E7%8A%B6%E6%80%81%E7%9A%84%E5%B7%A5%E5%85%B7/" title="EDR-Freeze：一款让 EDR 和杀毒软件进入昏迷状态的工具"><img class="cover" src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">EDR-Freeze：一款让 EDR 和杀毒软件进入昏迷状态的工具</div></div><div class="info-2"><div class="info-item-1">主要部分Minidumpwritedump 函数关于 MiniDumpWriteDump 函数的基本信息MiniDumpWriteDump是 Windows 系统中 DbgHelp.dll库提供的一个非常重要的函数。它的核心作用是为指定的进程创建一个“迷你转储文件”（Minidump），也就是我们常说的 dump 文件。这个文件相当于进程在某个时间点的“快照”，包含了调试该进程问题（如崩溃、挂起）所需的关键信息，例如：  线程信息（调用栈、寄存器状态） 模块信息（加载的 DLL） 异常信息（如果是因为未处理异常而崩溃） 可选的内存内容（根据参数决定包含多少内存）   关键行为：挂起所有线程您提到的“它会挂起目标进程中的所有线程”是完全正确的，这也是这个函数最关键的行为之一。  为什么必须这么做？为了保证生成的 dump 文件是内部一致且有效的。想象一下，如果不挂起线程，进程中的线程仍在并发执行，它们会不断地修改内存（如堆栈、全局变量）、分配&#x2F;释放资源。在这种情况下抓取快照，得到的 dump 文件可能：数据不一致：例如，一个线程的调用栈可能正在变化，导致栈回溯信息错误。内...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related no-desc" href="/2025/10/04/%E5%88%9D%E6%8E%A2JSP%E5%85%8D%E6%9D%80/" title="初探JSP免杀"><img class="cover" src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-04</div><div class="info-item-2">初探JSP免杀</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">CHANGMEN</div><div class="author-info-description">网络安全爱好者</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#VAD%E6%A0%91"><span class="toc-number">1.</span> <span class="toc-text">VAD树</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF-VAD-%E6%A0%91%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">1. 什么是 VAD 树？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-VAD-%E8%8A%82%E7%82%B9%E9%87%8C%E5%AD%98%E5%82%A8%E4%BA%86%E4%BB%80%E4%B9%88%E4%BF%A1%E6%81%AF%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">2. VAD 节点里存储了什么信息？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-VAD-%E6%A0%91%E7%9A%84%E4%B8%BB%E8%A6%81%E4%BD%9C%E7%94%A8%E5%92%8C%E7%9B%AE%E7%9A%84"><span class="toc-number">1.3.</span> <span class="toc-text">3. VAD 树的主要作用和目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E4%B8%BA%E4%BB%80%E4%B9%88-VAD-%E6%A0%91%E5%AF%B9%E5%AE%89%E5%85%A8%E5%92%8C%E5%88%86%E6%9E%90%E5%A6%82%E6%AD%A4%E9%87%8D%E8%A6%81%EF%BC%9F"><span class="toc-number">1.4.</span> <span class="toc-text">4. 为什么 VAD 树对安全和分析如此重要？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.5.</span> <span class="toc-text">可视化示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B-VAD-%E6%A0%91%EF%BC%9F"><span class="toc-number">1.6.</span> <span class="toc-text">如何查看 VAD 树？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.7.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/10/15/nature%E8%AE%BA%E6%96%87%E6%B1%87%E6%8A%A5/" title="nature论文汇报"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="nature论文汇报"/></a><div class="content"><a class="title" href="/2025/10/15/nature%E8%AE%BA%E6%96%87%E6%B1%87%E6%8A%A5/" title="nature论文汇报">nature论文汇报</a><time datetime="2025-10-15T14:24:09.000Z" title="Created 2025-10-15 22:24:09">2025-10-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/10/%E4%BF%A1%E5%91%BCOA-v2-7-0%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="信呼OA v2.7.0代码审计"><img src="/img/uiltx15is5c.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="信呼OA v2.7.0代码审计"/></a><div class="content"><a class="title" href="/2025/10/10/%E4%BF%A1%E5%91%BCOA-v2-7-0%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="信呼OA v2.7.0代码审计">信呼OA v2.7.0代码审计</a><time datetime="2025-10-10T08:49:07.000Z" title="Created 2025-10-10 16:49:07">2025-10-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/08/%E5%A4%8D%E4%B9%A0SQL%E6%B3%A8%E5%85%A5/" title="复习SQL注入"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91CSS-Python%EF%BC%88%E7%BC%96%E7%A8%8B%EF%BC%89.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="复习SQL注入"/></a><div class="content"><a class="title" href="/2025/10/08/%E5%A4%8D%E4%B9%A0SQL%E6%B3%A8%E5%85%A5/" title="复习SQL注入">复习SQL注入</a><time datetime="2025-10-07T17:07:50.000Z" title="Created 2025-10-08 01:07:50">2025-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/06/jfinal%20CMS%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="jfinal CMS代码审计"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%BB%A3%E7%A0%81-%E5%BC%80%E5%8F%91-%E6%8A%80%E6%9C%AF.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="jfinal CMS代码审计"/></a><div class="content"><a class="title" href="/2025/10/06/jfinal%20CMS%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" title="jfinal CMS代码审计">jfinal CMS代码审计</a><time datetime="2025-10-06T12:24:25.000Z" title="Created 2025-10-06 20:24:25">2025-10-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/10/04/%E5%88%9D%E6%8E%A2JSP%E5%85%8D%E6%9D%80/" title="初探JSP免杀"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="初探JSP免杀"/></a><div class="content"><a class="title" href="/2025/10/04/%E5%88%9D%E6%8E%A2JSP%E5%85%8D%E6%9D%80/" title="初探JSP免杀">初探JSP免杀</a><time datetime="2025-10-04T14:58:48.000Z" title="Created 2025-10-04 22:58:48">2025-10-04</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%BB%A3%E7%A0%81-%E5%BC%80%E5%8F%91-%E6%8A%80%E6%9C%AF.png);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By CHANGMEN</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
