@@ -1,0 +1,319 @@
+/* 技术栈展示样式 */
+
+.tech-stack-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-stack-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.tech-stack-header {
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.tech-stack-header h2 {
+  font-size: 32px;
+  color: #fff;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.tech-stack-header p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  margin: 0;
+}
+
+.tech-stack-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(10px);
+}
+
+#tech-stack-chart {
+  width: 100%;
+  height: 500px;
+  min-height: 400px;
+}
+
+.chart-controls {
+  text-align: center;
+  margin-top: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.chart-btn {
+  display: inline-block;
+  padding: 10px 25px;
+  margin: 0 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.chart-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.chart-btn:active {
+  transform: translateY(0);
+}
+
+.chart-btn.active {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+}
+
+/* 技术栈标签云样式 */
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 25px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.tech-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 22px;
+  background: white;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2c3e50;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-tag::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.tech-tag:hover::before {
+  left: 100%;
+}
+
+.tech-tag:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  color: #2c3e50;
+}
+
+.tech-tag .icon {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+}
+
+.tech-tag .tag-name {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.tech-tag .count {
+  margin-left: auto;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+.tech-tag .arrow {
+  font-size: 18px;
+  font-weight: bold;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+  color: #667eea;
+}
+
+.tech-tag:hover .arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .tech-stack-container {
+    margin: 15px;
+    padding: 15px;
+  }
+  
+  .tech-stack-header h2 {
+    font-size: 24px;
+  }
+  
+  #tech-stack-chart {
+    height: 400px;
+  }
+  
+  .chart-btn {
+    padding: 8px 18px;
+    margin: 5px;
+    font-size: 13px;
+  }
+  
+  .tech-tag {
+    padding: 8px 15px;
+    font-size: 13px;
+  }
+}
+
+/* 暗色模式适配 */
+[data-theme="dark"] .tech-stack-content {
+  background: rgba(30, 30, 30, 0.95);
+  color: #fff;
+}
+
+[data-theme="dark"] .tech-tag {
+  background: #2c2c2c;
+  color: #fff;
+}
+
+/* 首页卡片样式 */
+.home-tech-stack {
+  margin: 30px auto;
+  padding: 0;
+}
+
+.home-tech-stack .tech-stack-container {
+  max-width: 100%;
+  margin: 0;
+}
+
+.home-tech-stack #tech-stack-chart {
+  height: 400px;
+}
+
+/* 加载动画 */
+.tech-stack-loading {
+  text-align: center;
+  padding: 50px;
+  color: white;
+}
+
+.tech-stack-loading::after {
+  content: "Loading...";
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* 统计卡片 */
+.tech-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card .number {
+  font-size: 36px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 5px;
+}
+
+.stat-card .label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .stat-card {
+  background: #2c2c2c;
+}
+
+[data-theme="dark"] .stat-card .label {
+  color: #aaa;
+}
+
