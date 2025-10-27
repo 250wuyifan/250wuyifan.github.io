@@ -15,15 +15,14 @@ const techStackConfig = {
   ],
 
   // 手动配置各技术栈的文章数量（根据实际情况调整）
-                                                articleCounts: {
+                                                          articleCounts: {
       'Java安全': 9,
       '恶意样本分析': 7,
-      'PHP安全': 2,
+      'PHP安全': 3,
+      'JS逆向': 3,
       '免杀': 2,
-      'JS逆向': 2,
       '安全开发': 1,
       '云安全': 1,
-      '代码审计': 1,
       'WEB安全': 1
   }
 };
