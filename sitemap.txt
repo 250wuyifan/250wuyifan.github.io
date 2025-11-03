@@ -1,4 +1,6 @@
 https://250wuyifan.github.io/tech-stack/index.html
+https://250wuyifan.github.io/2025/11/02/js%E9%80%86%E5%90%91-%E7%A0%81%E4%B8%8A%E7%88%AC-%E9%A2%98%E5%8D%81%E4%BA%8CJSVMP%E5%85%A5%E9%97%A8%E9%80%86%E5%90%91%E8%A1%A5%E7%8E%AF%E5%A2%83/
+https://250wuyifan.github.io/2025/10/30/js%E9%80%86%E5%90%91-%E6%9F%90%E6%9F%90%E4%BF%A1%E6%95%B0%E6%8D%AE%E6%9C%8D%E5%8A%A1%E5%B9%B3%E5%8F%B0/
 https://250wuyifan.github.io/2025/10/28/js%E9%80%86%E5%90%91-%E6%9F%90%E6%9F%90%E6%9C%8D%E5%8A%A1%E4%B8%AD%E5%BF%83%E5%AE%9A%E7%82%B9%E6%9F%A5%E8%AF%A2webpack%E9%80%86%E5%90%91/
 https://250wuyifan.github.io/2025/10/27/js%E9%80%86%E5%90%91-%E6%9F%90%E6%9F%90Meta%E7%99%BB%E5%BD%95Webpack%E9%80%86%E5%90%91/
 https://250wuyifan.github.io/2025/10/10/%E4%BF%A1%E5%91%BCOA-v2-7-0%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/
