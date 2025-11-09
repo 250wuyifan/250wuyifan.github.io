@@ -1,7 +1,13 @@
 https://250wuyifan.github.io/tech-stack/index.html
+https://250wuyifan.github.io/2025/11/08/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E5%90%88%E6%B3%95%E6%9C%8D%E5%8A%A1%E7%9A%84%E9%9A%90%E8%94%BDC2/
+https://250wuyifan.github.io/2025/11/08/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E5%8F%8D%E5%B0%84DLL%E6%B3%A8%E5%85%A5/
+https://250wuyifan.github.io/2025/11/05/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-CreateRemoteThread-Shellcode-%E6%B3%A8%E5%85%A5/
+https://250wuyifan.github.io/2025/11/04/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-DLL-Injection/
+https://250wuyifan.github.io/2025/11/04/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E4%BB%8B%E7%BB%8D/
 https://250wuyifan.github.io/2025/11/02/js%E9%80%86%E5%90%91-%E7%A0%81%E4%B8%8A%E7%88%AC-%E9%A2%98%E5%8D%81%E4%BA%8CJSVMP%E5%85%A5%E9%97%A8%E9%80%86%E5%90%91%E8%A1%A5%E7%8E%AF%E5%A2%83/
-https://250wuyifan.github.io/2025/10/30/js%E9%80%86%E5%90%91-%E6%9F%90%E6%9F%90%E4%BF%A1%E6%95%B0%E6%8D%AE%E6%9C%8D%E5%8A%A1%E5%B9%B3%E5%8F%B0/
+https://250wuyifan.github.io/2025/11/04/js%E9%80%86%E5%90%91-%E5%AE%9E%E7%8E%B0%E6%9F%90%E7%9F%AD%E4%BF%A1%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%8A%A0%E5%AF%86/
 https://250wuyifan.github.io/2025/10/28/js%E9%80%86%E5%90%91-%E6%9F%90%E6%9F%90%E6%9C%8D%E5%8A%A1%E4%B8%AD%E5%BF%83%E5%AE%9A%E7%82%B9%E6%9F%A5%E8%AF%A2webpack%E9%80%86%E5%90%91/
+https://250wuyifan.github.io/2025/10/30/js%E9%80%86%E5%90%91-%E6%9F%90%E6%9F%90%E4%BF%A1%E6%95%B0%E6%8D%AE%E6%9C%8D%E5%8A%A1%E5%B9%B3%E5%8F%B0/
 https://250wuyifan.github.io/2025/10/27/js%E9%80%86%E5%90%91-%E6%9F%90%E6%9F%90Meta%E7%99%BB%E5%BD%95Webpack%E9%80%86%E5%90%91/
 https://250wuyifan.github.io/2025/10/10/%E4%BF%A1%E5%91%BCOA-v2-7-0%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/
 https://250wuyifan.github.io/2025/10/26/js%E9%80%86%E5%90%91-%E6%9F%90%E5%9B%BD%E8%A7%82%E9%B8%9F%E8%AE%B0%E5%BD%95%E4%B8%AD%E5%BF%83%E6%B4%BB%E5%8A%A8%E6%8A%A5%E5%91%8A/
@@ -40,8 +46,8 @@ https://250wuyifan.github.io/2025/01/26/elephant-Datart-1-0-0-rc3%E6%BC%8F%E6%B4
 https://250wuyifan.github.io/categories/index.html
 https://250wuyifan.github.io/
 https://250wuyifan.github.io/tags/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/
-https://250wuyifan.github.io/tags/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/
 https://250wuyifan.github.io/tags/java%E5%AE%89%E5%85%A8/
+https://250wuyifan.github.io/tags/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/
 https://250wuyifan.github.io/tags/PHP%E5%AE%89%E5%85%A8/
 https://250wuyifan.github.io/tags/%E5%85%8D%E6%9D%80/
 https://250wuyifan.github.io/tags/JS%E9%80%86%E5%90%91/
@@ -49,10 +55,11 @@ https://250wuyifan.github.io/tags/Windows-Kernel%E5%AE%89%E5%85%A8%E7%A0%94%E7%A
 https://250wuyifan.github.io/tags/%E4%BA%91%E5%AE%89%E5%85%A8/
 https://250wuyifan.github.io/tags/%E3%80%8A%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/
 https://250wuyifan.github.io/tags/WEB%E5%AE%89%E5%85%A8/
+https://250wuyifan.github.io/tags/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B/
 https://250wuyifan.github.io/tags/%E7%A0%94%E7%A9%B6%E7%94%9F%E7%94%9F%E6%B4%BB/
 https://250wuyifan.github.io/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/
-https://250wuyifan.github.io/categories/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/
 https://250wuyifan.github.io/categories/java%E5%AE%89%E5%85%A8/
+https://250wuyifan.github.io/categories/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/
 https://250wuyifan.github.io/categories/PHP%E5%AE%89%E5%85%A8/
 https://250wuyifan.github.io/categories/JS%E9%80%86%E5%90%91/
 https://250wuyifan.github.io/categories/Windows-Kernel%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6/
