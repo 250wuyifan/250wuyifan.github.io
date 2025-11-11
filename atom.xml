@@ -6,7 +6,7 @@
   <link href="https://250wuyifan.github.io/atom.xml" rel="self"/>
   
   <link href="https://250wuyifan.github.io/"/>
-  <updated>2025-11-11T14:07:02.983Z</updated>
+  <updated>2025-11-11T14:08:53.268Z</updated>
   <id>https://250wuyifan.github.io/</id>
   
   <author>
@@ -17,11 +17,24 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>一次最新工具的BYOVD分析</title>
-    <link href="https://250wuyifan.github.io/2025/11/11/%E4%B8%80%E6%AC%A1%E6%9C%80%E6%96%B0%E5%B7%A5%E5%85%B7%E7%9A%84BYOVD%E5%88%86%E6%9E%90/"/>
-    <id>https://250wuyifan.github.io/2025/11/11/%E4%B8%80%E6%AC%A1%E6%9C%80%E6%96%B0%E5%B7%A5%E5%85%B7%E7%9A%84BYOVD%E5%88%86%E6%9E%90/</id>
+    <title>恶意代码分析系列课程-Shellcode反射DLL注入</title>
+    <link href="https://250wuyifan.github.io/2025/11/11/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-Shellcode%E5%8F%8D%E5%B0%84DLL%E6%B3%A8%E5%85%A5/"/>
+    <id>https://250wuyifan.github.io/2025/11/11/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-Shellcode%E5%8F%8D%E5%B0%84DLL%E6%B3%A8%E5%85%A5/</id>
+    <published>2025-11-11T14:08:53.000Z</published>
+    <updated>2025-11-11T14:08:53.268Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>恶意代码分析系列课程-一次最新工具的BYOVD分析</title>
+    <link href="https://250wuyifan.github.io/2025/11/11/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E4%B8%80%E6%AC%A1%E6%9C%80%E6%96%B0%E5%B7%A5%E5%85%B7%E7%9A%84BYOVD%E5%88%86%E6%9E%90/"/>
+    <id>https://250wuyifan.github.io/2025/11/11/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E4%B8%80%E6%AC%A1%E6%9C%80%E6%96%B0%E5%B7%A5%E5%85%B7%E7%9A%84BYOVD%E5%88%86%E6%9E%90/</id>
     <published>2025-11-11T14:05:56.000Z</published>
-    <updated>2025-11-11T14:07:02.983Z</updated>
+    <updated>2025-11-11T14:11:08.713Z</updated>
     
     <content type="html"><![CDATA[<p>在twitter上刷的时候，看到了一个推文</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111213429900.png" alt="image-20251111213429900"></p><p>一眼就知道是用了驱动进行关闭的杀毒，所以现在的思路是拿到驱动，进行分析，然后写用户态就行，这是BYOVD基本的思路，不是读写就是关闭函数。</p><p>自然就是千方百计的拿到了驱动</p><p>让AI给我写了一下如何调用。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/bc92acfcb92975c96fdf3a63a890d855.png" alt="bc92acfcb92975c96fdf3a63a890d855"></p><p>IDA分析起来也是巨简单。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111215908963.png" alt="image-20251111215908963"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111215931160.png" alt="image-20251111215931160"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111215948716.png" alt="image-20251111215948716"></p><p>一路按X就完事了</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111220016635.png" alt="image-20251111220016635"></p><p>一路跟到这里发现下面有个IofCompleteRequest((PIRP)a2, 0);那么我们就想到了这就是一个分发函数的地方。</p><p>那只要看看调用号是多少，注册设备对象，然后用户态发出请求给内核就行了。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111220049915.png" alt="image-20251111220049915"></p><p>写代码就好了。</p><p>测试360主动防御</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/18b647a3d6ad020a85757559bd11316f.png" alt="18b647a3d6ad020a85757559bd11316f"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/55939e6a814df19a752fc038d29313e1.png" alt="55939e6a814df19a752fc038d29313e1"></p><p>但是但是LOLdrive其实已经记载了，没办法</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111220515611.png" alt="image-20251111220515611"></p>]]></content>
     
@@ -34,6 +47,8 @@
     
     
     
+    
+    <category term="恶意代码分析系列课程" scheme="https://250wuyifan.github.io/tags/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B/"/>
     
   </entry>
   
@@ -440,23 +455,6 @@
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>Java Agent</title>
-    <link href="https://250wuyifan.github.io/2025/10/02/Java-Agent/"/>
-    <id>https://250wuyifan.github.io/2025/10/02/Java-Agent/</id>
-    <published>2025-10-02T06:18:48.000Z</published>
-    <updated>2025-10-04T15:04:01.267Z</updated>
-    
-    
-    
-    
-    <category term="java安全" scheme="https://250wuyifan.github.io/categories/java%E5%AE%89%E5%85%A8/"/>
-    
-    
-    <category term="java安全" scheme="https://250wuyifan.github.io/tags/java%E5%AE%89%E5%85%A8/"/>
     
   </entry>
   
