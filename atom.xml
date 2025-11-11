@@ -38,26 +38,6 @@
   </entry>
   
   <entry>
-    <title>URL安全分析</title>
-    <link href="https://250wuyifan.github.io/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/"/>
-    <id>https://250wuyifan.github.io/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/</id>
-    <published>2025-11-10T11:22:24.000Z</published>
-    <updated>2025-11-10T11:54:28.784Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="URL安全分析"><a href="#URL安全分析" class="headerlink" title="URL安全分析"></a>URL安全分析</h1><p>首先在此之前做过很多次蓝队，做网络流量监控的工作，恶意邮件投递监控也有做过，但是初次接触URL安全分析，自己脑海里总结了一下，需要了解的内容在此记录一下。</p><h2 id="URL的定义"><a href="#URL的定义" class="headerlink" title="URL的定义"></a>URL的定义</h2><p><strong>URL（统一资源定位符）</strong>，通俗地说，就是<strong>互联网上资源的“地址”</strong>。它告诉浏览器（或任何客户端）在<strong>哪里</strong>以及<strong>如何</strong>找到并访问一个特定的资源，这个资源可以是一个网页、一张图片、一个视频文件，或者一个API接口。</p><p> 比如<code>https://www.example.com:8080/path/to/myfile.html?key1=value1&amp;key2=value2#section1</code></p><h3 id="组成部分"><a href="#组成部分" class="headerlink" title="组成部分"></a>组成部分</h3><h4 id="协议（Scheme）"><a href="#协议（Scheme）" class="headerlink" title="协议（Scheme）"></a>协议（Scheme）</h4><p>上面例子中的协议就是<code>https://</code></p><p>在互联网上，<strong>协议（Scheme）</strong> 就是<strong>客户端（如你的浏览器）和服务器（如网站所在的电脑）之间为了成功交换数据而预先设定好的一套严格的通信规则</strong>。</p><h4 id="Web浏览核心协议"><a href="#Web浏览核心协议" class="headerlink" title="Web浏览核心协议"></a>Web浏览核心协议</h4><p><strong>HTTP：</strong> 超文本传输协议，基础、明文传输，不安全。</p><p>HTTPS：HTTP的安全版本，加密传输，现代网站标准。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251110193444583.png" alt="image-20251110193444583"></p><h4 id="文件与资源访问协议"><a href="#文件与资源访问协议" class="headerlink" title="文件与资源访问协议"></a>文件与资源访问协议</h4><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251110193547485.png" alt="image-20251110193547485"></p><p>![image-20251110193557770](&#x2F;Users&#x2F;changmen&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20251110193557770.png)</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;URL安全分析&quot;&gt;&lt;a href=&quot;#URL安全分析&quot; class=&quot;headerlink&quot; title=&quot;URL安全分析&quot;&gt;&lt;/a&gt;URL安全分析&lt;/h1&gt;&lt;p&gt;首先在此之前做过很多次蓝队，做网络流量监控的工作，恶意邮件投递监控也有做过，但是初次接触URL安全分</summary>
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
     <title>恶意代码分析系列课程-合法服务的隐蔽C2</title>
     <link href="https://250wuyifan.github.io/2025/11/08/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E5%90%88%E6%B3%95%E6%9C%8D%E5%8A%A1%E7%9A%84%E9%9A%90%E8%94%BDC2/"/>
     <id>https://250wuyifan.github.io/2025/11/08/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E5%90%88%E6%B3%95%E6%9C%8D%E5%8A%A1%E7%9A%84%E9%9A%90%E8%94%BDC2/</id>
@@ -460,6 +440,23 @@
     
     
     
+    
+  </entry>
+  
+  <entry>
+    <title>Java Agent</title>
+    <link href="https://250wuyifan.github.io/2025/10/02/Java-Agent/"/>
+    <id>https://250wuyifan.github.io/2025/10/02/Java-Agent/</id>
+    <published>2025-10-02T06:18:48.000Z</published>
+    <updated>2025-10-04T15:04:01.267Z</updated>
+    
+    
+    
+    
+    <category term="java安全" scheme="https://250wuyifan.github.io/categories/java%E5%AE%89%E5%85%A8/"/>
+    
+    
+    <category term="java安全" scheme="https://250wuyifan.github.io/tags/java%E5%AE%89%E5%85%A8/"/>
     
   </entry>
   
