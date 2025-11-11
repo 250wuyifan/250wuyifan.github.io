@@ -6,7 +6,7 @@
   <link href="https://250wuyifan.github.io/atom.xml" rel="self"/>
   
   <link href="https://250wuyifan.github.io/"/>
-  <updated>2025-11-08T12:11:06.152Z</updated>
+  <updated>2025-11-11T14:07:02.983Z</updated>
   <id>https://250wuyifan.github.io/</id>
   
   <author>
@@ -15,6 +15,47 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>一次最新工具的BYOVD分析</title>
+    <link href="https://250wuyifan.github.io/2025/11/11/%E4%B8%80%E6%AC%A1%E6%9C%80%E6%96%B0%E5%B7%A5%E5%85%B7%E7%9A%84BYOVD%E5%88%86%E6%9E%90/"/>
+    <id>https://250wuyifan.github.io/2025/11/11/%E4%B8%80%E6%AC%A1%E6%9C%80%E6%96%B0%E5%B7%A5%E5%85%B7%E7%9A%84BYOVD%E5%88%86%E6%9E%90/</id>
+    <published>2025-11-11T14:05:56.000Z</published>
+    <updated>2025-11-11T14:07:02.983Z</updated>
+    
+    <content type="html"><![CDATA[<p>在twitter上刷的时候，看到了一个推文</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111213429900.png" alt="image-20251111213429900"></p><p>一眼就知道是用了驱动进行关闭的杀毒，所以现在的思路是拿到驱动，进行分析，然后写用户态就行，这是BYOVD基本的思路，不是读写就是关闭函数。</p><p>自然就是千方百计的拿到了驱动</p><p>让AI给我写了一下如何调用。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/bc92acfcb92975c96fdf3a63a890d855.png" alt="bc92acfcb92975c96fdf3a63a890d855"></p><p>IDA分析起来也是巨简单。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111215908963.png" alt="image-20251111215908963"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111215931160.png" alt="image-20251111215931160"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111215948716.png" alt="image-20251111215948716"></p><p>一路按X就完事了</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111220016635.png" alt="image-20251111220016635"></p><p>一路跟到这里发现下面有个IofCompleteRequest((PIRP)a2, 0);那么我们就想到了这就是一个分发函数的地方。</p><p>那只要看看调用号是多少，注册设备对象，然后用户态发出请求给内核就行了。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111220049915.png" alt="image-20251111220049915"></p><p>写代码就好了。</p><p>测试360主动防御</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/18b647a3d6ad020a85757559bd11316f.png" alt="18b647a3d6ad020a85757559bd11316f"></p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/55939e6a814df19a752fc038d29313e1.png" alt="55939e6a814df19a752fc038d29313e1"></p><p>但是但是LOLdrive其实已经记载了，没办法</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111220515611.png" alt="image-20251111220515611"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在twitter上刷的时候，看到了一个推文&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251111213429900.png&quot; alt=</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>URL安全分析</title>
+    <link href="https://250wuyifan.github.io/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/"/>
+    <id>https://250wuyifan.github.io/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/</id>
+    <published>2025-11-10T11:22:24.000Z</published>
+    <updated>2025-11-10T11:54:28.784Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="URL安全分析"><a href="#URL安全分析" class="headerlink" title="URL安全分析"></a>URL安全分析</h1><p>首先在此之前做过很多次蓝队，做网络流量监控的工作，恶意邮件投递监控也有做过，但是初次接触URL安全分析，自己脑海里总结了一下，需要了解的内容在此记录一下。</p><h2 id="URL的定义"><a href="#URL的定义" class="headerlink" title="URL的定义"></a>URL的定义</h2><p><strong>URL（统一资源定位符）</strong>，通俗地说，就是<strong>互联网上资源的“地址”</strong>。它告诉浏览器（或任何客户端）在<strong>哪里</strong>以及<strong>如何</strong>找到并访问一个特定的资源，这个资源可以是一个网页、一张图片、一个视频文件，或者一个API接口。</p><p> 比如<code>https://www.example.com:8080/path/to/myfile.html?key1=value1&amp;key2=value2#section1</code></p><h3 id="组成部分"><a href="#组成部分" class="headerlink" title="组成部分"></a>组成部分</h3><h4 id="协议（Scheme）"><a href="#协议（Scheme）" class="headerlink" title="协议（Scheme）"></a>协议（Scheme）</h4><p>上面例子中的协议就是<code>https://</code></p><p>在互联网上，<strong>协议（Scheme）</strong> 就是<strong>客户端（如你的浏览器）和服务器（如网站所在的电脑）之间为了成功交换数据而预先设定好的一套严格的通信规则</strong>。</p><h4 id="Web浏览核心协议"><a href="#Web浏览核心协议" class="headerlink" title="Web浏览核心协议"></a>Web浏览核心协议</h4><p><strong>HTTP：</strong> 超文本传输协议，基础、明文传输，不安全。</p><p>HTTPS：HTTP的安全版本，加密传输，现代网站标准。</p><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251110193444583.png" alt="image-20251110193444583"></p><h4 id="文件与资源访问协议"><a href="#文件与资源访问协议" class="headerlink" title="文件与资源访问协议"></a>文件与资源访问协议</h4><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251110193547485.png" alt="image-20251110193547485"></p><p>![image-20251110193557770](&#x2F;Users&#x2F;changmen&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20251110193557770.png)</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;URL安全分析&quot;&gt;&lt;a href=&quot;#URL安全分析&quot; class=&quot;headerlink&quot; title=&quot;URL安全分析&quot;&gt;&lt;/a&gt;URL安全分析&lt;/h1&gt;&lt;p&gt;首先在此之前做过很多次蓝队，做网络流量监控的工作，恶意邮件投递监控也有做过，但是初次接触URL安全分</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>恶意代码分析系列课程-合法服务的隐蔽C2</title>
@@ -419,45 +460,6 @@
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>Java Agent</title>
-    <link href="https://250wuyifan.github.io/2025/10/02/Java-Agent/"/>
-    <id>https://250wuyifan.github.io/2025/10/02/Java-Agent/</id>
-    <published>2025-10-02T06:18:48.000Z</published>
-    <updated>2025-10-04T15:04:01.267Z</updated>
-    
-    
-    
-    
-    <category term="java安全" scheme="https://250wuyifan.github.io/categories/java%E5%AE%89%E5%85%A8/"/>
-    
-    
-    <category term="java安全" scheme="https://250wuyifan.github.io/tags/java%E5%AE%89%E5%85%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>VAD在进程篡改与挖空的保护</title>
-    <link href="https://250wuyifan.github.io/2025/09/25/VAD%E5%9C%A8%E8%BF%9B%E7%A8%8B%E7%AF%A1%E6%94%B9%E4%B8%8E%E6%8C%96%E7%A9%BA%E7%9A%84%E4%BF%9D%E6%8A%A4/"/>
-    <id>https://250wuyifan.github.io/2025/09/25/VAD%E5%9C%A8%E8%BF%9B%E7%A8%8B%E7%AF%A1%E6%94%B9%E4%B8%8E%E6%8C%96%E7%A9%BA%E7%9A%84%E4%BF%9D%E6%8A%A4/</id>
-    <published>2025-09-25T13:32:54.000Z</published>
-    <updated>2025-10-02T06:17:54.579Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="VAD树"><a href="#VAD树" class="headerlink" title="VAD树"></a>VAD树</h1><h2 id="1-什么是-VAD-树？"><a href="#1-什么是-VAD-树？" class="headerlink" title="1. 什么是 VAD 树？"></a>1. 什么是 VAD 树？</h2><p><strong>VAD</strong> 的全称是 <strong>Virtual Address Descriptor</strong>。你可以把它想象成进程的“内存地图”或“内存目录”。</p><ul><li><strong>核心思想</strong>：每个 Windows 用户进程都有自己独立的 4GB（在 32 位系统上）或 256TB（在 64 位系统上）的虚拟地址空间。但进程并不会使用所有这些空间。VAD 树就是一个内核数据结构，它用来记录<strong>该进程当前实际使用了哪些虚拟内存区域</strong>，以及这些区域的各种属性。</li><li><strong>树形结构</strong>：VAD 不是简单的列表，而是一棵<strong>自平衡的二叉搜索树</strong>，通常是 <strong>AVL 树</strong>。这使得操作系统能够非常高效地（时间复杂度为 O(log n)）查找、插入和删除内存区域描述符。</li></ul><h2 id="2-VAD-节点里存储了什么信息？"><a href="#2-VAD-节点里存储了什么信息？" class="headerlink" title="2. VAD 节点里存储了什么信息？"></a>2. VAD 节点里存储了什么信息？</h2><p>每个 VAD 节点代表进程地址空间中一个<strong>连续的</strong>、具有相同内存属性的内存区域。一个节点通常包含以下关键信息：</p><ul><li><strong>起始地址和结束地址</strong>：定义了这个内存区域的范围。</li><li><strong>内存分配类型</strong>：<code>MEM_IMAGE</code>： 该区域映射了一个可执行文件（如 .exe, .dll）的某一部分。<code>MEM_MAPPED</code>： 该区域映射了一个数据文件（通过内存映射文件）。<code>MEM_PRIVATE</code>： 该区域是进程私有的（如堆、栈、动态分配的内存）。</li><li><strong>内存保护属性</strong>：<code>PAGE_READONLY</code>， <code>PAGE_READWRITE</code>， <code>PAGE_EXECUTE</code>， <code>PAGE_EXECUTE_READ</code>等。这决定了该内存区域是否可读、可写、可执行。</li><li><strong>控制区域指针</strong>： 这是一个指向 <code>_CONTROL_AREA</code>结构的指针，该结构进一步指向一个 <code>_SECTION_OBJECT</code>（节对象）。这对于映射文件（<code>MEM_IMAGE</code>和 <code>MEM_MAPPED</code>）至关重要，因为它将虚拟内存页面与物理文件 on disk 关联起来。<strong>简单来说</strong>：如果是映射文件，VAD 节点里的信息可以帮你找到这个内存区域背后是哪个磁盘上的文件，以及具体是文件的哪一部分。</li><li><strong>其他标志</strong>： 例如，该内存区域是否被提交、是否为守护页面等。</li></ul><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20250925220447553.png" alt="image-20250925220447553"></p><h2 id="3-VAD-树的主要作用和目的"><a href="#3-VAD-树的主要作用和目的" class="headerlink" title="3. VAD 树的主要作用和目的"></a>3. VAD 树的主要作用和目的</h2><ol><li><strong>内存访问验证</strong>： 当进程尝试访问一个内存地址（例如，读取、写入或执行指令）时，内存管理器会查询该进程的 VAD 树，以确定该地址是否在一个已提交的、具有相应权限的内存区域内。如果访问无效（例如，写入一个只读页面，或访问一个未分配的区域），则会引发<strong>访问违规异常</strong>。</li><li><strong>结构化存储</strong>： 为进程的虚拟地址空间提供一个紧凑的、高效的“目录”，避免为每一个内存页面都保存元数据，从而节省资源。</li><li><strong>支持内存映射文件</strong>： VAD 是实现内存映射文件（<code>CreateFileMapping</code>&#x2F; <code>MapViewOfFile</code>）的基础。它记录了文件哪一部分被映射到了进程地址空间的哪个位置。</li></ol><h2 id="4-为什么-VAD-树对安全和分析如此重要？"><a href="#4-为什么-VAD-树对安全和分析如此重要？" class="headerlink" title="4. 为什么 VAD 树对安全和分析如此重要？"></a>4. 为什么 VAD 树对安全和分析如此重要？</h2><p>VAD 树是恶意软件分析和数字取证的“金矿”，因为它揭示了进程行为的许多秘密：</p><ul><li><strong>检测隐藏模块&#x2F;DLL</strong>： 恶意软件可能会使用一种叫做“反射式 DLL 注入”或“模块镂空”的技术，将恶意 DLL 加载到内存中，但绕过标准的 Windows 模块列表（如 PEB 中的模块链表）。然而，这种注入方式仍然需要在进程地址空间中分配内存并设置权限，因此<strong>必定会在 VAD 树中留下记录</strong>。分析 VAD 树可以发现这些隐藏的模块。</li><li><strong>检测代码注入</strong>： 当恶意软件将代码注入到另一个进程（如 <code>explorer.exe</code>）时，它必须在该进程中分配可读、可写、可执行的内存。这会在目标进程的 VAD 树中创建一个具有 <code>PAGE_EXECUTE_READWRITE</code>属性的 <code>MEM_PRIVATE</code>区域，这是一个非常可疑的迹象（因为正常程序很少需要私有的、可执行且可写的内存）。</li><li><strong>提取映射文件</strong>： 在取证中，可以从 VAD 节点中提取出已映射的文件内容。例如，如果一个恶意软件映射了一个可执行文件到内存中但并未执行，传统的动态分析工具可能无法发现它，但通过转储 VAD 树中对应的内存区域，可以恢复出完整的文件。</li><li><strong>了解进程行为</strong>： 通过查看 VAD 树，可以了解一个进程加载了哪些 DLL、映射了哪些数据文件、它的堆栈在哪里等等，从而全面了解其内存布局和行为。</li></ul><h2 id="可视化示例"><a href="#可视化示例" class="headerlink" title="可视化示例"></a>可视化示例</h2><p>想象一个进程的 VAD 树可能长这样：</p><p>复制</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[VAD #2: 0x00010000 - 0x0001FFFF] (Image: notepad.exe, .text section, RX)</span><br><span class="line">       /</span><br><span class="line">[VAD Root]</span><br><span class="line">       \</span><br><span class="line">        [VAD #3: 0x00020000 - 0x0002FFFF] (Image: notepad.exe, .data section, RW)</span><br><span class="line">        \</span><br><span class="line">         [VAD #5: 0x00100000 - 0x0010FFFF] (Private Heap, RW)</span><br><span class="line">         \</span><br><span class="line">          [VAD #4: 0x00200000 - 0x0020FFFF] (Image: kernel32.dll, .text section, RX)</span><br></pre></td></tr></table></figure><h2 id="如何查看-VAD-树？"><a href="#如何查看-VAD-树？" class="headerlink" title="如何查看 VAD 树？"></a>如何查看 VAD 树？</h2><p>最常用的工具是 <strong>WinDbg</strong>（微软官方调试器）及其 <code>!vad</code>扩展命令。</p><ol><li>在 WinDbg 中附加到一个进程。</li><li>输入命令 <code>!vad</code>。</li><li>它会以文本形式打印出进程的 VAD 树，显示每个节点的地址范围、保护属性、类型等信息。</li></ol><p>商业内存取证工具如 <strong>Volatility</strong> 也内置了强大的 VAD 解析功能，可以非常直观地展示和分析 VAD 树。</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>VAD 树是 Windows 内核为每个进程维护的一个高效“内存地图”，它精确描述了进程虚拟地址空间的使用情况。</strong> 它不仅是操作系统正常运作的基石，也是安全研究人员和数字取证分析师深入探究进程内部状态、检测高级威胁的不可或缺的强大工具。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;VAD树&quot;&gt;&lt;a href=&quot;#VAD树&quot; class=&quot;headerlink&quot; title=&quot;VAD树&quot;&gt;&lt;/a&gt;VAD树&lt;/h1&gt;&lt;h2 id=&quot;1-什么是-VAD-树？&quot;&gt;&lt;a href=&quot;#1-什么是-VAD-树？&quot; class=&quot;headerlink&quot; </summary>
-      
-    
-    
-    
-    
-    <category term="免杀" scheme="https://250wuyifan.github.io/tags/%E5%85%8D%E6%9D%80/"/>
     
   </entry>
   

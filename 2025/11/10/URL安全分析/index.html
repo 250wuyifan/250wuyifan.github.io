@@ -1,0 +1,180 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>URL安全分析 | CHANGMEN'个人博客</title><meta name="author" content="CHANGMEN"><meta name="copyright" content="CHANGMEN"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="URL安全分析首先在此之前做过很多次蓝队，做网络流量监控的工作，恶意邮件投递监控也有做过，但是初次接触URL安全分析，自己脑海里总结了一下，需要了解的内容在此记录一下。 URL的定义URL（统一资源定位符），通俗地说，就是互联网上资源的“地址”。它告诉浏览器（或任何客户端）在哪里以及如何找到并访问一个特定的资源，这个资源可以是一个网页、一张图片、一个视频文件，或者一个API接口。  比如https">
+<meta property="og:type" content="article">
+<meta property="og:title" content="URL安全分析">
+<meta property="og:url" content="https://250wuyifan.github.io/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="CHANGMEN&#39;个人博客">
+<meta property="og:description" content="URL安全分析首先在此之前做过很多次蓝队，做网络流量监控的工作，恶意邮件投递监控也有做过，但是初次接触URL安全分析，自己脑海里总结了一下，需要了解的内容在此记录一下。 URL的定义URL（统一资源定位符），通俗地说，就是互联网上资源的“地址”。它告诉浏览器（或任何客户端）在哪里以及如何找到并访问一个特定的资源，这个资源可以是一个网页、一张图片、一个视频文件，或者一个API接口。  比如https">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://250wuyifan.github.io/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF.png">
+<meta property="article:published_time" content="2025-11-10T11:22:24.000Z">
+<meta property="article:modified_time" content="2025-11-10T11:54:28.784Z">
+<meta property="article:author" content="CHANGMEN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://250wuyifan.github.io/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "URL安全分析",
+  "url": "https://250wuyifan.github.io/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/",
+  "image": "https://250wuyifan.github.io/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF.png",
+  "datePublished": "2025-11-10T11:22:24.000Z",
+  "dateModified": "2025-11-10T11:54:28.784Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "CHANGMEN",
+      "url": "https://250wuyifan.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://250wuyifan.github.io/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'URL安全分析',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="CHANGMEN'个人博客" type="application/atom+xml">
+</head><body><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+btf.addGlobalFn('pjaxSend', () => {
+  Pace.restart()
+}, 'pace_restart')
+
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js/themes/blue/pace-theme-minimal.min.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js/pace.min.js"></script><div id="web_bg" style="background-image: url(/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/tech-stack/"><i class="fa-fw fas fa-layer-group"></i><span> Tech Stack</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">CHANGMEN'个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">URL安全分析</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/tech-stack/"><i class="fa-fw fas fa-layer-group"></i><span> Tech Stack</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">URL安全分析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-10T11:22:24.000Z" title="Created 2025-11-10 19:22:24">2025-11-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-10T11:54:28.784Z" title="Updated 2025-11-10 19:54:28">2025-11-10</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="URL安全分析"><a href="#URL安全分析" class="headerlink" title="URL安全分析"></a>URL安全分析</h1><p>首先在此之前做过很多次蓝队，做网络流量监控的工作，恶意邮件投递监控也有做过，但是初次接触URL安全分析，自己脑海里总结了一下，需要了解的内容在此记录一下。</p>
+<h2 id="URL的定义"><a href="#URL的定义" class="headerlink" title="URL的定义"></a>URL的定义</h2><p><strong>URL（统一资源定位符）</strong>，通俗地说，就是<strong>互联网上资源的“地址”</strong>。它告诉浏览器（或任何客户端）在<strong>哪里</strong>以及<strong>如何</strong>找到并访问一个特定的资源，这个资源可以是一个网页、一张图片、一个视频文件，或者一个API接口。</p>
+<p> 比如<code>https://www.example.com:8080/path/to/myfile.html?key1=value1&amp;key2=value2#section1</code></p>
+<h3 id="组成部分"><a href="#组成部分" class="headerlink" title="组成部分"></a>组成部分</h3><h4 id="协议（Scheme）"><a href="#协议（Scheme）" class="headerlink" title="协议（Scheme）"></a>协议（Scheme）</h4><p>上面例子中的协议就是<code>https://</code></p>
+<p>在互联网上，<strong>协议（Scheme）</strong> 就是<strong>客户端（如你的浏览器）和服务器（如网站所在的电脑）之间为了成功交换数据而预先设定好的一套严格的通信规则</strong>。</p>
+<h4 id="Web浏览核心协议"><a href="#Web浏览核心协议" class="headerlink" title="Web浏览核心协议"></a>Web浏览核心协议</h4><p><strong>HTTP：</strong> 超文本传输协议，基础、明文传输，不安全。</p>
+<p>HTTPS：HTTP的安全版本，加密传输，现代网站标准。</p>
+<p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251110193444583.png" alt="image-20251110193444583"></p>
+<h4 id="文件与资源访问协议"><a href="#文件与资源访问协议" class="headerlink" title="文件与资源访问协议"></a>文件与资源访问协议</h4><p><img src="https://raw.githubusercontent.com/250wuyifan/WaiLian250/main/img/image-20251110193547485.png" alt="image-20251110193547485"></p>
+<p>![image-20251110193557770](&#x2F;Users&#x2F;changmen&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20251110193557770.png)</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://250wuyifan.github.io">CHANGMEN</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://250wuyifan.github.io/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/">https://250wuyifan.github.io/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/11/%E4%B8%80%E6%AC%A1%E6%9C%80%E6%96%B0%E5%B7%A5%E5%85%B7%E7%9A%84BYOVD%E5%88%86%E6%9E%90/" title="一次最新工具的BYOVD分析"><img class="cover" src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">一次最新工具的BYOVD分析</div></div><div class="info-2"><div class="info-item-1">在twitter上刷的时候，看到了一个推文  一眼就知道是用了驱动进行关闭的杀毒，所以现在的思路是拿到驱动，进行分析，然后写用户态就行，这是BYOVD基本的思路，不是读写就是关闭函数。 自然就是千方百计的拿到了驱动 让AI给我写了一下如何调用。  IDA分析起来也是巨简单。    一路按X就完事了  一路跟到这里发现下面有个IofCompleteRequest((PIRP)a2, 0);那么我们就想到了这就是一个分发函数的地方。 那只要看看调用号是多少，注册设备对象，然后用户态发出请求给内核就行了。  写代码就好了。 测试360主动防御   但是但是LOLdrive其实已经记载了，没办法  </div></div></div></a><a class="pagination-related" href="/2025/11/08/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E5%90%88%E6%B3%95%E6%9C%8D%E5%8A%A1%E7%9A%84%E9%9A%90%E8%94%BDC2/" title="恶意代码分析系列课程-合法服务的隐蔽C2"><img class="cover" src="/img/uiltx15is5c.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">恶意代码分析系列课程-合法服务的隐蔽C2</div></div><div class="info-2"><div class="info-item-1">参考文章https://xz.aliyun.com/news/16258 利用合法服务进行C2，流量上都是白名单，这样在流量上就不会被判断为恶意流量。  主要还是在本地执行命令，只不过要获取执行的命令，再把执行后的结果通过接口发给这个通讯工具。 一些问题1.经过测试，使用沙箱直接就可以抓到http请求，使用的token也被抓下来，这个地方如果要保护C2的话需要做一个处理。 </div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">CHANGMEN</div><div class="author-info-description">网络安全爱好者</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">46</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">URL安全分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#URL%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">1.1.</span> <span class="toc-text">URL的定义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="toc-number">1.1.1.</span> <span class="toc-text">组成部分</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%EF%BC%88Scheme%EF%BC%89"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">协议（Scheme）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Web%E6%B5%8F%E8%A7%88%E6%A0%B8%E5%BF%83%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">Web浏览核心协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8E%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">文件与资源访问协议</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/11/%E4%B8%80%E6%AC%A1%E6%9C%80%E6%96%B0%E5%B7%A5%E5%85%B7%E7%9A%84BYOVD%E5%88%86%E6%9E%90/" title="一次最新工具的BYOVD分析"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一次最新工具的BYOVD分析"/></a><div class="content"><a class="title" href="/2025/11/11/%E4%B8%80%E6%AC%A1%E6%9C%80%E6%96%B0%E5%B7%A5%E5%85%B7%E7%9A%84BYOVD%E5%88%86%E6%9E%90/" title="一次最新工具的BYOVD分析">一次最新工具的BYOVD分析</a><time datetime="2025-11-11T14:05:56.000Z" title="Created 2025-11-11 22:05:56">2025-11-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/" title="URL安全分析"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="URL安全分析"/></a><div class="content"><a class="title" href="/2025/11/10/URL%E5%AE%89%E5%85%A8%E5%88%86%E6%9E%90/" title="URL安全分析">URL安全分析</a><time datetime="2025-11-10T11:22:24.000Z" title="Created 2025-11-10 19:22:24">2025-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/08/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E5%90%88%E6%B3%95%E6%9C%8D%E5%8A%A1%E7%9A%84%E9%9A%90%E8%94%BDC2/" title="恶意代码分析系列课程-合法服务的隐蔽C2"><img src="/img/uiltx15is5c.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="恶意代码分析系列课程-合法服务的隐蔽C2"/></a><div class="content"><a class="title" href="/2025/11/08/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E5%90%88%E6%B3%95%E6%9C%8D%E5%8A%A1%E7%9A%84%E9%9A%90%E8%94%BDC2/" title="恶意代码分析系列课程-合法服务的隐蔽C2">恶意代码分析系列课程-合法服务的隐蔽C2</a><time datetime="2025-11-08T08:52:51.000Z" title="Created 2025-11-08 16:52:51">2025-11-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/08/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E5%8F%8D%E5%B0%84DLL%E6%B3%A8%E5%85%A5/" title="恶意代码分析系列课程-反射DLL注入"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%BB%A3%E7%A0%81-%E5%BC%80%E5%8F%91-%E6%8A%80%E6%9C%AF.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="恶意代码分析系列课程-反射DLL注入"/></a><div class="content"><a class="title" href="/2025/11/08/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-%E5%8F%8D%E5%B0%84DLL%E6%B3%A8%E5%85%A5/" title="恶意代码分析系列课程-反射DLL注入">恶意代码分析系列课程-反射DLL注入</a><time datetime="2025-11-07T16:12:47.000Z" title="Created 2025-11-08 00:12:47">2025-11-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/05/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-CreateRemoteThread-Shellcode-%E6%B3%A8%E5%85%A5/" title="恶意代码分析系列课程-CreateRemoteThread Shellcode 注入"><img src="/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E4%B8%80%E4%BD%8D%E6%A2%A6%E6%83%B3%E5%AE%B6-%E4%BB%A3%E7%A0%81.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="恶意代码分析系列课程-CreateRemoteThread Shellcode 注入"/></a><div class="content"><a class="title" href="/2025/11/05/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E7%B3%BB%E5%88%97%E8%AF%BE%E7%A8%8B-CreateRemoteThread-Shellcode-%E6%B3%A8%E5%85%A5/" title="恶意代码分析系列课程-CreateRemoteThread Shellcode 注入">恶意代码分析系列课程-CreateRemoteThread Shellcode 注入</a><time datetime="2025-11-04T16:02:52.000Z" title="Created 2025-11-05 00:02:52">2025-11-05</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/%E3%80%90%E5%93%B2%E9%A3%8E%E5%A3%81%E7%BA%B8%E3%80%91%E6%9E%81%E7%AE%80%E4%B8%BB%E4%B9%89-%E7%AE%80%E5%8D%95%E7%9A%84%E8%83%8C%E6%99%AF.png);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By CHANGMEN</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
