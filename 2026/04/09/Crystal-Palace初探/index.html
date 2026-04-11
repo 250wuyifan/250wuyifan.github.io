@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="Crystal Palace初探" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    Crystal Palace初探
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-04-11</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：765</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：2分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%AE%98%E7%BD%91%E4%BB%8B%E7%BB%8D"><span class="post-toc-text">官网介绍</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%BC%94%E7%A4%BACrystal-rdll"><span class="post-toc-text">演示Crystal rdll</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%A0%86%E6%A0%88%E6%83%85%E5%86%B5%E5%88%86%E6%9E%90"><span class="post-toc-text">堆栈情况分析</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%BD%BF%E7%94%A8"><span class="post-toc-text">简单介绍使用</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E9%97%B2%E8%81%8A"><span class="post-toc-text">闲聊</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><h2 id="官网介绍"><a href="#官网介绍" class="headerlink" title="官网介绍"></a>官网介绍</h2><p><a target="_blank" rel="noopener" href="https://tradecraftgarden.org/">https://tradecraftgarden.org/</a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409124914422.png" title="image-20260409124914422" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409124914422.png" alt="image-20260409124914422"></a></p>
+<p>第一个是这个技术的主文件，编译好的文件有，第二个工艺花园是根据这个技术做的一些案例<a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409125006741.png" title="image-20260409125006741" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409125006741.png" alt="image-20260409125006741"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409125239133.png" title="image-20260409125239133" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409125239133.png" alt="image-20260409125239133"></a></p>
+<p>工艺花园的案例好多都是关于dll的，与我们上文dll模块加载是很相关的。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409125100162.png" title="image-20260409125100162" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409125100162.png" alt="image-20260409125100162"></a></p>
+<h2 id="演示Crystal-rdll"><a href="#演示Crystal-rdll" class="headerlink" title="演示Crystal rdll"></a>演示Crystal rdll</h2><p>使用我们上文《DLL模块重载初探》的dll演示代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 这个程序模拟了我们要“重载”的恶意载荷（Payload）</span></span><br><span class="line"><span class="comment">// 在真实的攻击中，这就是Cobalt Strike Beacon的DLL</span></span><br><span class="line"><span class="comment">// 这里我们写一个简单的弹窗DLL来演示</span></span><br><span class="line"></span><br><span class="line">BOOL APIENTRY <span class="title function_">DllMain</span><span class="params">(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">switch</span> (ul_reason_for_call)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_ATTACH:</span><br><span class="line">        MessageBoxA(<span class="literal">NULL</span>, <span class="string">&quot;Hello CHANGMEN&quot;</span>, <span class="string">&quot;Success&quot;</span>, MB_OK | MB_ICONINFORMATION);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> DLL_THREAD_ATTACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_THREAD_DETACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_DETACH:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>进入simple_rdll项目编译加载器生成.o文件 </p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409130044030.png" title="image-20260409130044030" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409130044030.png" alt="image-20260409130044030"></a></p>
+<p>编译生成bin文件</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409130222524.png" title="image-20260409130222524" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409130222524.png" alt="image-20260409130222524"></a></p>
+<p>加载器进行加载</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409130411052.png" title="image-20260409130411052" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409130411052.png" alt="image-20260409130411052"></a></p>
+<h2 id="堆栈情况分析"><a href="#堆栈情况分析" class="headerlink" title="堆栈情况分析"></a>堆栈情况分析</h2><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409130558106.png" title="image-20260409130558106" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260409130558106.png" alt="image-20260409130558106"></a></p>
+<p>可以看到现在堆栈不干净，那么我们使用上文所说的dll模块覆盖加载，然后加上Draugr引擎伪装栈即可。比较重要的是如何把我们之前的C代码改装成Crystal技术使用的加载器，所以需要详细学习如何使用，这里只能简单介绍一下，项目比较复杂。</p>
+<h2 id="简单介绍使用"><a href="#简单介绍使用" class="headerlink" title="简单介绍使用"></a>简单介绍使用</h2><p>最好的方式还是从他给的工艺花园，直接看已经写好的代码，比如我们刚刚看的simple_rdll。</p>
+<p>Crystal Palace 的奥义是：绝对解耦。用 C 语言写一个纯粹的<strong>加载器</strong> (Loader)，编译成 <code>loader.o</code>，与DLL拼接，调用shellcode的起始位置即可调用加载器然后加载dll。</p>
+<p>所以现在我们的重点，可以不是这个dll本身，比如cs的话，我们自写一个beacon.dll,里面硬编码上配置，加载即可上线，这个dll里面只专注于与cs的交互等功能正常稳定实现即可，我们自己使用水晶宫的技术进行编写加载器，然后把加载器+dll编译成与位置无关的shellcode，这样随便开辟一块内存，直接执行就行了，比如我的dll，这个test.exe只是进行了一个简单的loadlibrary的函数直接加载的。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/5ebfe8f92dcc3c4f2275feaf95d121dc.png" title="5ebfe8f92dcc3c4f2275feaf95d121dc" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/5ebfe8f92dcc3c4f2275feaf95d121dc.png" alt="5ebfe8f92dcc3c4f2275feaf95d121dc"></a></p>
+<p>使用水晶宫技术加载dll。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/99076b32be666877acab76ceab73034d.jpg" title="99076b32be666877acab76ceab73034d" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/99076b32be666877acab76ceab73034d.jpg" alt="99076b32be666877acab76ceab73034d"></a></p>
+<p>在pic的加载器中编写了堆栈混淆，sleep masking操作，此时堆栈就是这样</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/da55c68eaa992f311843663db78a18f0.png" title="da55c68eaa992f311843663db78a18f0" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/da55c68eaa992f311843663db78a18f0.png" alt="da55c68eaa992f311843663db78a18f0"></a></p>
+<p>Cobalt Strike 4.4 引入了 UDRL 概念，同样可以使用这个cs自带，进行使用写好的加载器。不过我喜欢使用自己的dll，配置硬编码到代码中自己编译出来，更加灵活，从根源修改一些东西。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260411222904489.png" title="image-20260411222904489" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260411222904489.png" alt="image-20260411222904489"></a></p>
+<h2 id="闲聊"><a href="#闲聊" class="headerlink" title="闲聊"></a>闲聊</h2><p>水晶宫更像是一种语言，把写shellcode变得流程化标准化，我也是用大模型生成了一份中文文档，在我的博客另一篇文章《Crystal Palace 官方文档详细中文版》，可以学习一下，有很多技巧，比如各种混淆，hook，或者yara匹配汇编然后进行修改等。</p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-04-09</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E5%85%8D%E6%9D%80/'>
+                            免杀
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+                    <span>上一篇：<a href='/2026/04/11/Crystal-Palace-%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E8%AF%A6%E7%BB%86%E4%B8%AD%E6%96%87%E7%89%88/'>Crystal Palace 官方文档详细中文版</a></span>
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/04/08/DLL%E6%A8%A1%E5%9D%97%E9%87%8D%E8%BD%BD%E5%88%9D%E6%8E%A2/">DLL模块重载初探</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
