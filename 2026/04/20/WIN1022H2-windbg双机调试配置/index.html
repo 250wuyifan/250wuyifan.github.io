@@ -12,7 +12,7 @@
     <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="" />
+    <meta name="description" content="WIN1022H2-windbg双机调试配置" />
     <meta name="hexo-theme-A4" content="v2.0.1" />
     <link rel="alternate icon" type="image/webp" href="/null">
     <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
@@ -176,6 +176,10 @@
         
         
             
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
         
         <div class="paper">
 
@@ -235,18 +239,93 @@
     
 
     
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    WIN1022H2-windbg双机调试配置
+                </div>
+            
+        
+      
+    
 
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-04-20</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：247</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：1分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
     
 
     <div class="post-md">
         
             
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#cmd"><span class="post-toc-text">cmd</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%AE%BE%E7%BD%AE%E5%8A%A0%E4%B8%B2%E5%8F%A3%E7%AB%AF%E5%8F%A3"><span class="post-toc-text">在虚拟机设置加串口端口</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#windbg%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F%E9%85%8D%E7%BD%AE"><span class="post-toc-text">windbg快捷方式配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B8%80%E4%BA%9B%E9%A2%9D%E5%A4%96%E9%85%8D%E7%BD%AE"><span class="post-toc-text">一些额外配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ok"><span class="post-toc-text">ok</span></a></li></ol>
+            
         
-        
+        <div class=".article-gallery"><h2 id="cmd"><a href="#cmd" class="headerlink" title="cmd"></a>cmd</h2><p>很简单，cmd管理员打开，按照下面输入就行了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">bcdedit</span><br><span class="line"></span><br><span class="line">bcdedit /copy &#123;current&#125; /d debug</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bcdedit /displayorder &#123;<span class="number">6</span>ebe99f0-cf67<span class="number">-11</span>eb<span class="number">-99</span>ea<span class="number">-000</span>c2915a63a&#125; /addlast</span><br><span class="line"></span><br><span class="line">bcdedit /dbgsettings SERIAL DEBUGPORT:<span class="number">1</span> BAUDRATE:<span class="number">115200</span></span><br><span class="line"></span><br><span class="line"> bcdedit /bootdebug &#123;<span class="number">6</span>ebe99f0-cf67<span class="number">-11</span>eb<span class="number">-99</span>ea<span class="number">-000</span>c2915a63a&#125; ON</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bcdedit /debug &#123;<span class="number">6</span>ebe99f0-cf67<span class="number">-11</span>eb<span class="number">-99</span>ea<span class="number">-000</span>c2915a63a&#125; ON</span><br><span class="line"></span><br><span class="line">bcdedit /timeout <span class="number">30</span></span><br><span class="line"></span><br><span class="line">:: <span class="number">1.</span> 开启测试签名（允许加载未签名/自签名 .sys）</span><br><span class="line">bcdedit /<span class="built_in">set</span> &#123;<span class="number">6</span>ebe99f0-cf67<span class="number">-11</span>eb<span class="number">-99</span>ea<span class="number">-000</span>c2915a63a&#125; testsigning on</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//虚拟机配置</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;F:\Windows Kits\10\Debuggers\x64\windbg.exe&quot;</span> -b -k com:port=\\.\pipe\com_1,baud=<span class="number">115200</span>,pipe</span><br></pre></td></tr></table></figure>
+
+<p>那一串6ebe99f0-cf67-11eb-99ea-000c2915a63a换成我们自己的8b207d89-3cbd-11f1-a471-bcd341860c2b</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/3d0b51d3f7a531303318ec568b4785c0.png" title="3d0b51d3f7a531303318ec568b4785c0" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/3d0b51d3f7a531303318ec568b4785c0.png" alt="3d0b51d3f7a531303318ec568b4785c0"></a></p>
+<p>执行完关机</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/44ae0c9d240f90d7afe7787b82745f16.png" title="44ae0c9d240f90d7afe7787b82745f16" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/44ae0c9d240f90d7afe7787b82745f16.png" alt="44ae0c9d240f90d7afe7787b82745f16"></a></p>
+<h2 id="在虚拟机设置加串口端口"><a href="#在虚拟机设置加串口端口" class="headerlink" title="在虚拟机设置加串口端口"></a>在虚拟机设置加串口端口</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\\.\pipe\com_1</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/5c9216bfb37cf235df9d21659cb46412.png" title="5c9216bfb37cf235df9d21659cb46412" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/5c9216bfb37cf235df9d21659cb46412.png" alt="5c9216bfb37cf235df9d21659cb46412"></a></p>
+<h2 id="windbg快捷方式配置"><a href="#windbg快捷方式配置" class="headerlink" title="windbg快捷方式配置"></a>windbg快捷方式配置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;F:\Windows Kits\10\Debuggers\x64\windbg.exe&quot; -b -k com:port=\\.\pipe\com_1,baud=115200,pipe</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/9c056e684d1c5a8fa98ffce307e2aac5.png" title="9c056e684d1c5a8fa98ffce307e2aac5" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/9c056e684d1c5a8fa98ffce307e2aac5.png" alt="9c056e684d1c5a8fa98ffce307e2aac5"></a></p>
+<p>此时开机选择debug即可</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/caf4fc6ccfe9cd9c1844481a9c0dee29.png" title="caf4fc6ccfe9cd9c1844481a9c0dee29" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/caf4fc6ccfe9cd9c1844481a9c0dee29.png" alt="caf4fc6ccfe9cd9c1844481a9c0dee29"></a></p>
+<p>然后打开配置好的windbg，静静等待，有时候第一次很慢。</p>
+<h2 id="一些额外配置"><a href="#一些额外配置" class="headerlink" title="一些额外配置"></a>一些额外配置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">kd&gt; .sympath SRV*c:\mySymbols*http://msdl.microsoft.com/download/symbols</span><br><span class="line">kd&gt; .reload</span><br><span class="line">kd&gt; g</span><br><span class="line">kd&gt; g</span><br><span class="line">kd&gt; ed nt!Kd_SXS_Mask 0</span><br><span class="line">kd&gt; ed nt!Kd_FUSION_Mask 0</span><br><span class="line">kd&gt; u KiSystemServiceUser</span><br></pre></td></tr></table></figure>
+
+<h2 id="ok"><a href="#ok" class="headerlink" title="ok"></a>ok</h2><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/72aad11372a80a628ed1bc9962046200.jpg" title="72aad11372a80a628ed1bc9962046200" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/72aad11372a80a628ed1bc9962046200.jpg" alt="72aad11372a80a628ed1bc9962046200"></a></p>
+</div>
     </div>
 
     <div class="post-meta">
         <i>
+        
+            <span>2026-04-20</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/'>
+                            驱动开发
+                        </a>
+                    
+                </span>
+             
+             
         
         </i>
     </div>
@@ -258,11 +337,9 @@
     
             <div class="post-footer-pre-next">
                 
-                    <span>上一篇：<a href='/'></a></span>
-                
 
                 
-                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/"></a>
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/04/15/parallels%E8%99%9A%E6%8B%9F%E6%9C%BAWIN11%E9%85%8D%E7%BD%AE%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">parallels虚拟机WIN11配置驱动开发环境</a>
                     </span>
                 
             </div>
