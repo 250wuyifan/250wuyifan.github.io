@@ -332,7 +332,7 @@
 <h3 id="三、致盲操作"><a href="#三、致盲操作" class="headerlink" title="三、致盲操作"></a>三、致盲操作</h3><p><strong>方法一：清零回调函数指针（推荐，不破坏链表结构）</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">eq &lt;节点地址&gt;+28 0    ← 清零 PreOperation</span><br><span class="line">eq &lt;节点地址&gt;+30 0    ← 清零 PostOperation</span><br></pre></td></tr></table></figure>
 
-<p><a href="/Users/changmen/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files/wxid_2kp1yqn61s4x22_5ddd/temp/RWTemp/2026-04/440882318e1eb40fef64dcd7431fa0ea/44b1a39c8c6bbdf67d3ce6c43ba4c1fd.png" title="44b1a39c8c6bbdf67d3ce6c43ba4c1fd" class="gallery-item" style="box-shadow: none;"> <img src="/Users/changmen/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files/wxid_2kp1yqn61s4x22_5ddd/temp/RWTemp/2026-04/440882318e1eb40fef64dcd7431fa0ea/44b1a39c8c6bbdf67d3ce6c43ba4c1fd.png" alt="44b1a39c8c6bbdf67d3ce6c43ba4c1fd"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/44b1a39c8c6bbdf67d3ce6c43ba4c1fd.png" title="44b1a39c8c6bbdf67d3ce6c43ba4c1fd" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/44b1a39c8c6bbdf67d3ce6c43ba4c1fd.png" alt="44b1a39c8c6bbdf67d3ce6c43ba4c1fd"></a></p>
 <p><strong>方法二：摘链（让链表头自指，节点孤立）</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">eq &lt;CallbackList地址&gt; &lt;CallbackList地址&gt;      ← Flink 自指</span><br><span class="line">eq &lt;CallbackList地址+8&gt; &lt;CallbackList地址&gt;    ← Blink 自指</span><br></pre></td></tr></table></figure>
 
@@ -390,7 +390,8 @@
 </tbody></table>
 <h2 id="如何寻找所需数据结构"><a href="#如何寻找所需数据结构" class="headerlink" title="如何寻找所需数据结构"></a>如何寻找所需数据结构</h2><p>那么现在知道了回调函数的位置在哪儿，新的问题是如何通过代码定位PsProcessType和PsThreadType 这两个全局内核变量。</p>
 <p>通过IDA 的交叉引用可以找到调用了PsProcessType 和PsThreadType 的函数，并且还这个函数还需要是ntoskrnl.exe 的导出函数，因为这样我们就可以像上篇文章中删除进程回调那样去获取PsProcessType 和PsThreadType 的地址。</p>
-<p><a target="_blank" rel="noopener" href="https://mmbiz.qpic.cn/sz_mmbiz_png/srMupvHFktzW4BkTwiaibDJXcJHQB43u9eEss0ZpIcKSDmznmESpOhf8o6ibSbs41R391M02wlk0qeU32rdeUpdqA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=1" title="图片" class="gallery-item" style="box-shadow: none;"> <img src="https://mmbiz.qpic.cn/sz_mmbiz_png/srMupvHFktzW4BkTwiaibDJXcJHQB43u9eEss0ZpIcKSDmznmESpOhf8o6ibSbs41R391M02wlk0qeU32rdeUpdqA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=1" alt="图片"></a></p>
+<p>引用于<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/ZMTjDMMdQoOczxzZ7OAGtA">https://mp.weixin.qq.com/s/ZMTjDMMdQoOczxzZ7OAGtA</a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/640" title="图片" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/640" alt="图片"></a></p>
 <p>通过分析发现NtDuplicateObject()函数中引用了PsProcessType 全局内核变量，而在NtOpenThreadTokenEx() 函数中引用了<code>PsThreadType</code> 全局内核变量。并且这两个函数在win7上也引用了相应的变量，同时也是ntoskrnl.exe 的导出函数。</p>
 <p>这样代码逻辑就通了：首先定位PsProcessType 和PsThreadType全局内核变量地址，根据偏移获得CALLBACK_ENTRY_ITEM的双向链表结构，遍历此结构将PreOperation 和PostOperation 指向的地址置0。</p>
 </div>
