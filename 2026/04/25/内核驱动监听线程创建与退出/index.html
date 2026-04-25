@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="内核驱动监听线程创建与退出" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    内核驱动监听线程创建与退出
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-04-25</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：540</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：2分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%BB%A3%E7%A0%81%E6%A1%88%E4%BE%8B"><span class="post-toc-text">代码案例</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#windbg%E6%89%BE%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%BF%9B%E8%A1%8C%E6%89%8B%E5%8A%A8%E8%87%B4%E7%9B%B2"><span class="post-toc-text">windbg找数据结构进行手动致盲</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E8%84%9A%E6%9C%AC%E8%87%B4%E7%9B%B2%E6%80%9D%E8%B7%AF"><span class="post-toc-text">脚本致盲思路</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><h2 id="代码案例"><a href="#代码案例" class="headerlink" title="代码案例"></a>代码案例</h2><p>监控线程创建与监控进程差不多，检测线程需要调用<code>PsSetCreateThreadNotifyRoutine</code> 创建回调函数，之后就可监控系统所有线程的创建，具体实现代码如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ntifs.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 两个未公开函数导出</span></span><br><span class="line">NTKERNELAPI PCHAR <span class="title function_">PsGetProcessImageFileName</span><span class="params">(PEPROCESS Process)</span>;</span><br><span class="line">NTKERNELAPI NTSTATUS <span class="title function_">PsLookupProcessByProcessId</span><span class="params">(HANDLE ProcessId, PEPROCESS *Process)</span>;</span><br><span class="line">NTKERNELAPI NTSTATUS <span class="title function_">PsLookupThreadByThreadId</span><span class="params">(HANDLE ThreadId, PETHREAD *Thread)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绕过签名检查</span></span><br><span class="line">BOOLEAN <span class="title function_">BypassCheckSign</span><span class="params">(PDRIVER_OBJECT pDriverObject)</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> _WIN64</span></span><br><span class="line">	<span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">KLDR_DATA_TABLE_ENTRY</span></span></span><br><span class="line"><span class="class">	&#123;</span></span><br><span class="line">		LIST_ENTRY listEntry;</span><br><span class="line">		ULONG64 __Undefined1;</span><br><span class="line">		ULONG64 __Undefined2;</span><br><span class="line">		ULONG64 __Undefined3;</span><br><span class="line">		ULONG64 NonPagedDebugInfo;</span><br><span class="line">		ULONG64 DllBase;</span><br><span class="line">		ULONG64 EntryPoint;</span><br><span class="line">		ULONG SizeOfImage;</span><br><span class="line">		UNICODE_STRING path;</span><br><span class="line">		UNICODE_STRING name;</span><br><span class="line">		ULONG   Flags;</span><br><span class="line">		USHORT  LoadCount;</span><br><span class="line">		USHORT  __Undefined5;</span><br><span class="line">		ULONG64 __Undefined6;</span><br><span class="line">		ULONG   CheckSum;</span><br><span class="line">		ULONG   __padding1;</span><br><span class="line">		ULONG   TimeDateStamp;</span><br><span class="line">		ULONG   __padding2;</span><br><span class="line">	&#125; KLDR_DATA_TABLE_ENTRY, *PKLDR_DATA_TABLE_ENTRY;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	<span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">KLDR_DATA_TABLE_ENTRY</span></span></span><br><span class="line"><span class="class">	&#123;</span></span><br><span class="line">		LIST_ENTRY listEntry;</span><br><span class="line">		ULONG unknown1;</span><br><span class="line">		ULONG unknown2;</span><br><span class="line">		ULONG unknown3;</span><br><span class="line">		ULONG unknown4;</span><br><span class="line">		ULONG unknown5;</span><br><span class="line">		ULONG unknown6;</span><br><span class="line">		ULONG unknown7;</span><br><span class="line">		UNICODE_STRING path;</span><br><span class="line">		UNICODE_STRING name;</span><br><span class="line">		ULONG   Flags;</span><br><span class="line">	&#125; KLDR_DATA_TABLE_ENTRY, *PKLDR_DATA_TABLE_ENTRY;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">	PKLDR_DATA_TABLE_ENTRY pLdrData = (PKLDR_DATA_TABLE_ENTRY)pDriverObject-&gt;DriverSection;</span><br><span class="line">	pLdrData-&gt;Flags = pLdrData-&gt;Flags | <span class="number">0x20</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程回调函数</span></span><br><span class="line">VOID <span class="title function_">MyCreateThreadNotify</span><span class="params">(HANDLE ProcessId, HANDLE ThreadId, BOOLEAN CreateInfo)</span></span><br><span class="line">&#123;</span><br><span class="line">	PEPROCESS eprocess = <span class="literal">NULL</span>;</span><br><span class="line">	PETHREAD ethread = <span class="literal">NULL</span>;</span><br><span class="line">	UCHAR *pWin32Address = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 通过此函数拿到程序的EPROCESS结构</span></span><br><span class="line">	PsLookupProcessByProcessId(ProcessId, &amp;eprocess);</span><br><span class="line">	PsLookupThreadByThreadId(ThreadId, &amp;ethread);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (CreateInfo)</span><br><span class="line">	&#123;</span><br><span class="line">		DbgPrint(<span class="string">&quot;[lyshark.com] 线程TID: %1d | 所属进程名: %s | 进程PID: %1d \n&quot;</span>, ThreadId, PsGetProcessImageFileName(eprocess), PsGetProcessId(eprocess));</span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">		if (0 == _stricmp(PsGetProcessImageFileName(eprocess), &quot;lyshark.exe&quot;))</span></span><br><span class="line"><span class="comment">		&#123;</span></span><br><span class="line"><span class="comment">		DbgPrint(&quot;线程TID: %1d | 所属进程名: %s | 进程PID: %1d \n&quot;, ThreadId, PsGetProcessImageFileName(eprocess), PsGetProcessId(eprocess));</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">		// dt _kthread</span></span><br><span class="line"><span class="comment">		// 寻找里面的 Win32StartAddress 并写入ret</span></span><br><span class="line"><span class="comment">		pWin32Address = *(UCHAR**)((UCHAR*)ethread + 0x1c8);</span></span><br><span class="line"><span class="comment">		if (MmIsAddressValid(pWin32Address))</span></span><br><span class="line"><span class="comment">		&#123;</span></span><br><span class="line"><span class="comment">		*pWin32Address = 0xC3;</span></span><br><span class="line"><span class="comment">		&#125;</span></span><br><span class="line"><span class="comment">		&#125;</span></span><br><span class="line"><span class="comment">		*/</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		DbgPrint(<span class="string">&quot;[LyShark] %s 线程已退出...&quot;</span>, ThreadId);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (eprocess)</span><br><span class="line">		ObDereferenceObject(eprocess);</span><br><span class="line">	<span class="keyword">if</span> (ethread)</span><br><span class="line">		ObDereferenceObject(ethread);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">VOID <span class="title function_">UnDriver</span><span class="params">(PDRIVER_OBJECT driver)</span></span><br><span class="line">&#123;</span><br><span class="line">	NTSTATUS status;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 注销进程回调</span></span><br><span class="line">	status = PsRemoveCreateThreadNotifyRoutine(MyCreateThreadNotify);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NTSTATUS <span class="title function_">DriverEntry</span><span class="params">(IN PDRIVER_OBJECT Driver, PUNICODE_STRING RegistryPath)</span></span><br><span class="line">&#123;</span><br><span class="line">	NTSTATUS status;</span><br><span class="line"></span><br><span class="line">	DbgPrint(<span class="string">&quot;hello lyshark.com \n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 绕过签名检查</span></span><br><span class="line">	<span class="comment">// LINKER_FLAGS=/INTEGRITYCHECK</span></span><br><span class="line">	BypassCheckSign(Driver);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 创建线程回调</span></span><br><span class="line">	<span class="comment">// 参数1: 新线程ProcessID</span></span><br><span class="line">	<span class="comment">// 参数2: 新线程ThreadID</span></span><br><span class="line">	<span class="comment">// 参数3: 线程创建/退出标志</span></span><br><span class="line">	status = PsSetCreateThreadNotifyRoutine(MyCreateThreadNotify);</span><br><span class="line">	<span class="keyword">if</span> (!NT_SUCCESS(status))</span><br><span class="line">	&#123;</span><br><span class="line">		DbgPrint(<span class="string">&quot;创建线程回调错误&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	Driver-&gt;DriverUnload = UnDriver;</span><br><span class="line">	<span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://www.lyshark.com/image/1379525-20221023110114240-101380424.png" title="img" class="gallery-item" style="box-shadow: none;"> <img src="https://www.lyshark.com/image/1379525-20221023110114240-101380424.png" alt="img"></a></p>
+<h2 id="windbg找数据结构进行手动致盲"><a href="#windbg找数据结构进行手动致盲" class="headerlink" title="windbg找数据结构进行手动致盲"></a>windbg找数据结构进行手动致盲</h2><p>与进程的一模一样，按着来就行。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/98b59c7963d29a6fc9b306cf2c77d3d1.png" title="98b59c7963d29a6fc9b306cf2c77d3d1" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/98b59c7963d29a6fc9b306cf2c77d3d1.png" alt="98b59c7963d29a6fc9b306cf2c77d3d1"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/7e71c736c2f79aff3e1c933e02a2b056.png" title="7e71c736c2f79aff3e1c933e02a2b056" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/7e71c736c2f79aff3e1c933e02a2b056.png" alt="7e71c736c2f79aff3e1c933e02a2b056"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/7e0ccf7d045dc9df5c6f0cad45d8a8b1.jpg" title="7e0ccf7d045dc9df5c6f0cad45d8a8b1" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/7e0ccf7d045dc9df5c6f0cad45d8a8b1.jpg" alt="7e0ccf7d045dc9df5c6f0cad45d8a8b1"></a></p>
+<h2 id="脚本致盲思路"><a href="#脚本致盲思路" class="headerlink" title="脚本致盲思路"></a>脚本致盲思路</h2><p>跟进程一样，从函数定位然后计算偏移即可。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/f72a72bf127a1658299c3e3f71a68f21.jpg" title="f72a72bf127a1658299c3e3f71a68f21" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/f72a72bf127a1658299c3e3f71a68f21.jpg" alt="f72a72bf127a1658299c3e3f71a68f21"></a></p>
+<p>使用与进程回调相同的方法，我们需要找到两个靠近 <code>PspSetCreateThreadNotifyRoutine</code> 的函数来进行字节搜索。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">lkd&gt; </span><span class="language-bash">? nt!PspSetCreateThreadNotifyRoutine - nt</span></span><br><span class="line">Evaluate expression: 7686936 = 00000000`00754b18</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal/raw/main/NotifyRoutineKernelBypass/screenshots/ExportTableThread.png" title="Export Table" class="gallery-item" style="box-shadow: none;"> <img src="https://github.com/V-i-x-x/kernel-callback-removal/raw/main/NotifyRoutineKernelBypass/screenshots/ExportTableThread.png" alt="Export Table"></a></p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-04-25</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/'>
+                            驱动开发
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/04/23/%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8%E7%9B%91%E5%90%AC%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E4%B8%8E%E9%94%80%E6%AF%81/">内核驱动监听进程创建与销毁</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
