@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="内核驱动监听Register注册表回调" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    内核驱动监听Register注册表回调
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-04-25</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：2.1k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：9分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#api%E4%BB%8B%E7%BB%8D"><span class="post-toc-text">api介绍</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#windbg%E8%BF%9B%E8%A1%8C%E6%89%8B%E5%8A%A8%E8%87%B4%E7%9B%B2"><span class="post-toc-text">windbg进行手动致盲</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%AE%8C%E6%95%B4%E9%93%BE%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="post-toc-text">完整链表结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%91%98%E9%99%A4"><span class="post-toc-text">摘除</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><h2 id="api介绍"><a href="#api介绍" class="headerlink" title="api介绍"></a>api介绍</h2><p>内核监控Register注册表回调在安全软件、系统监控和调试工具等领域有着广泛的应用。开发者可以利用这个机制来监视和拦截系统中的注册表操作，以保护系统安全。</p>
+<ul>
+<li>CmRegisterCallback 设置注册表回调</li>
+<li>CmUnRegisterCallback 注销注册表回调</li>
+</ul>
+<p>默认情况下<code>CmRegisterCallback</code>需传入三个参数，参数一回调函数地址，参数二空余，参数三回调句柄，微软定义如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 参数1：回调函数地址</span></span><br><span class="line"><span class="comment">// 参数2：无作用</span></span><br><span class="line"><span class="comment">// 参数3：回调句柄</span></span><br><span class="line">NTSTATUS <span class="title function_">CmRegisterCallback</span><span class="params">(</span></span><br><span class="line"><span class="params">  [in]           PEX_CALLBACK_FUNCTION Function,</span></span><br><span class="line"><span class="params">  [in, optional] PVOID                 Context,</span></span><br><span class="line"><span class="params">  [out]          PLARGE_INTEGER        Cookie</span></span><br><span class="line"><span class="params">)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>自定义注册表回调函数<code>MyLySharkCallback</code>需要保留三个参数，<code>CallbackContext</code>回调上下文，<code>Argument1</code>是操作类型，<code>Argument2</code>定义详细结构体指针。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NTSTATUS <span class="title function_">MyLySharkCallback</span><span class="params">(_In_ PVOID CallbackContext, _In_opt_ PVOID Argument1, _In_opt_ PVOID Argument2)</span></span><br></pre></td></tr></table></figure>
+
+<p>在自定义回调函数内<code>Argument1</code>则可获取到操作类型，类型是一个<code>REG_NOTIFY_CLASS</code>枚举结构，微软对其的具体定义如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> _<span class="title">REG_NOTIFY_CLASS</span> &#123;</span></span><br><span class="line">    RegNtDeleteKey,</span><br><span class="line">    RegNtPreDeleteKey = RegNtDeleteKey,</span><br><span class="line">    RegNtSetValueKey,</span><br><span class="line">    RegNtPreSetValueKey = RegNtSetValueKey,</span><br><span class="line">    RegNtDeleteValueKey,</span><br><span class="line">    RegNtPreDeleteValueKey = RegNtDeleteValueKey,</span><br><span class="line">    RegNtSetInformationKey,</span><br><span class="line">    RegNtPreSetInformationKey = RegNtSetInformationKey,</span><br><span class="line">    RegNtRenameKey,</span><br><span class="line">    RegNtPreRenameKey = RegNtRenameKey,</span><br><span class="line">    RegNtEnumerateKey,</span><br><span class="line">    RegNtPreEnumerateKey = RegNtEnumerateKey,</span><br><span class="line">    RegNtEnumerateValueKey,</span><br><span class="line">    RegNtPreEnumerateValueKey = RegNtEnumerateValueKey,</span><br><span class="line">    RegNtQueryKey,</span><br><span class="line">    RegNtPreQueryKey = RegNtQueryKey,</span><br><span class="line">    RegNtQueryValueKey,</span><br><span class="line">    RegNtPreQueryValueKey = RegNtQueryValueKey,</span><br><span class="line">    RegNtQueryMultipleValueKey,</span><br><span class="line">    RegNtPreQueryMultipleValueKey = RegNtQueryMultipleValueKey,</span><br><span class="line">    RegNtPreCreateKey,</span><br><span class="line">    RegNtPostCreateKey,</span><br><span class="line">    RegNtPreOpenKey,</span><br><span class="line">    RegNtPostOpenKey,</span><br><span class="line">    RegNtKeyHandleClose,</span><br><span class="line">    RegNtPreKeyHandleClose = RegNtKeyHandleClose,</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// .Net only</span></span><br><span class="line">    <span class="comment">//    </span></span><br><span class="line">    RegNtPostDeleteKey,</span><br><span class="line">    RegNtPostSetValueKey,</span><br><span class="line">    RegNtPostDeleteValueKey,</span><br><span class="line">    RegNtPostSetInformationKey,</span><br><span class="line">    RegNtPostRenameKey,</span><br><span class="line">    RegNtPostEnumerateKey,</span><br><span class="line">    RegNtPostEnumerateValueKey,</span><br><span class="line">    RegNtPostQueryKey,</span><br><span class="line">    RegNtPostQueryValueKey,</span><br><span class="line">    RegNtPostQueryMultipleValueKey,</span><br><span class="line">    RegNtPostKeyHandleClose,</span><br><span class="line">    RegNtPreCreateKeyEx,</span><br><span class="line">    RegNtPostCreateKeyEx,</span><br><span class="line">    RegNtPreOpenKeyEx,</span><br><span class="line">    RegNtPostOpenKeyEx,</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// new to Windows Vista</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    RegNtPreFlushKey,</span><br><span class="line">    RegNtPostFlushKey,</span><br><span class="line">    RegNtPreLoadKey,</span><br><span class="line">    RegNtPostLoadKey,</span><br><span class="line">    RegNtPreUnLoadKey,</span><br><span class="line">    RegNtPostUnLoadKey,</span><br><span class="line">    RegNtPreQueryKeySecurity,</span><br><span class="line">    RegNtPostQueryKeySecurity,</span><br><span class="line">    RegNtPreSetKeySecurity,</span><br><span class="line">    RegNtPostSetKeySecurity,</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// per-object context cleanup</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    RegNtCallbackObjectContextCleanup,</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// new in Vista SP2 </span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    RegNtPreRestoreKey,</span><br><span class="line">    RegNtPostRestoreKey,</span><br><span class="line">    RegNtPreSaveKey,</span><br><span class="line">    RegNtPostSaveKey,</span><br><span class="line">    RegNtPreReplaceKey,</span><br><span class="line">    RegNtPostReplaceKey,</span><br><span class="line"></span><br><span class="line">    MaxRegNtNotifyClass <span class="comment">//should always be the last enum</span></span><br><span class="line">&#125; REG_NOTIFY_CLASS;</span><br></pre></td></tr></table></figure>
+
+<p>其中对于注册表最常用的监控项为以下几种类型，当然为了实现监控则我们必须要使用之前，如果使用之后则只能起到监视而无法做到监控的目的。</p>
+<ul>
+<li>RegNtPreCreateKey 创建注册表之前</li>
+<li>RegNtPreOpenKey 打开注册表之前</li>
+<li>RegNtPreDeleteKey 删除注册表之前</li>
+<li>RegNtPreDeleteValueKey 删除键值之前</li>
+<li>RegNtPreSetValueKey 修改注册表之前</li>
+</ul>
+<p>如果需要实现监视则，首先<code>CmRegisterCallback</code>注册一个自定义回调，当有消息时则触发<code>MyLySharkCallback</code>其内部获取到<code>lOperateType</code>操作类型，并通过<code>switch</code>选择不同的处理例程，每个处理例程都通过<code>GetFullPath</code>得到注册表完整路径，并打印出来，这段代码实现如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ntifs.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windef.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 未导出函数声明 pEProcess -&gt; PID</span></span><br><span class="line">PUCHAR <span class="title function_">PsGetProcessImageFileName</span><span class="params">(PEPROCESS pEProcess)</span>;</span><br><span class="line"></span><br><span class="line">NTSTATUS <span class="title function_">ObQueryNameString</span><span class="params">(</span></span><br><span class="line"><span class="params">	_In_ PVOID Object,</span></span><br><span class="line"><span class="params">	_Out_writes_bytes_opt_(Length) POBJECT_NAME_INFORMATION ObjectNameInfo,</span></span><br><span class="line"><span class="params">	_In_ ULONG Length,</span></span><br><span class="line"><span class="params">	_Out_ PULONG ReturnLength</span></span><br><span class="line"><span class="params">	)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册表回调Cookie</span></span><br><span class="line">LARGE_INTEGER g_liRegCookie;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取注册表完整路径</span></span><br><span class="line">BOOLEAN <span class="title function_">GetFullPath</span><span class="params">(PUNICODE_STRING pRegistryPath, PVOID pRegistryObject)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// 判断数据地址是否有效</span></span><br><span class="line">	<span class="keyword">if</span> ((FALSE == MmIsAddressValid(pRegistryObject)) ||</span><br><span class="line">		(<span class="literal">NULL</span> == pRegistryObject))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 申请内存</span></span><br><span class="line">	ULONG ulSize = <span class="number">512</span>;</span><br><span class="line">	PVOID lpObjectNameInfo = ExAllocatePool(NonPagedPool, ulSize);</span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">NULL</span> == lpObjectNameInfo)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 获取注册表路径</span></span><br><span class="line">	ULONG ulRetLen = <span class="number">0</span>;</span><br><span class="line">	NTSTATUS status = ObQueryNameString(pRegistryObject, (POBJECT_NAME_INFORMATION)lpObjectNameInfo, ulSize, &amp;ulRetLen);</span><br><span class="line">	<span class="keyword">if</span> (!NT_SUCCESS(status))</span><br><span class="line">	&#123;</span><br><span class="line">		ExFreePool(lpObjectNameInfo);</span><br><span class="line">		<span class="keyword">return</span> FALSE;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 复制</span></span><br><span class="line">	RtlCopyUnicodeString(pRegistryPath, (PUNICODE_STRING)lpObjectNameInfo);</span><br><span class="line">	<span class="comment">// 释放内存</span></span><br><span class="line">	ExFreePool(lpObjectNameInfo);</span><br><span class="line">	<span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册表回调函数</span></span><br><span class="line">NTSTATUS <span class="title function_">MyLySharkCallback</span><span class="params">(_In_ PVOID CallbackContext, _In_opt_ PVOID Argument1, _In_opt_ PVOID Argument2)</span></span><br><span class="line">&#123;</span><br><span class="line">	NTSTATUS status = STATUS_SUCCESS;</span><br><span class="line">	UNICODE_STRING ustrRegPath;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 获取操作类型</span></span><br><span class="line">	LONG lOperateType = (REG_NOTIFY_CLASS)Argument1;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 申请内存</span></span><br><span class="line">	ustrRegPath.Length = <span class="number">0</span>;</span><br><span class="line">	ustrRegPath.MaximumLength = <span class="number">1024</span> * <span class="keyword">sizeof</span>(WCHAR);</span><br><span class="line">	ustrRegPath.Buffer = ExAllocatePool(NonPagedPool, ustrRegPath.MaximumLength);</span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">NULL</span> == ustrRegPath.Buffer)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> status;</span><br><span class="line">	&#125;</span><br><span class="line">	RtlZeroMemory(ustrRegPath.Buffer, ustrRegPath.MaximumLength);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 判断操作</span></span><br><span class="line">	<span class="keyword">switch</span> (lOperateType)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 创建注册表之前</span></span><br><span class="line">	<span class="keyword">case</span> RegNtPreCreateKey:</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 获取注册表路径</span></span><br><span class="line">		GetFullPath(&amp;ustrRegPath, ((PREG_CREATE_KEY_INFORMATION)Argument2)-&gt;RootObject);</span><br><span class="line">		DbgPrint(<span class="string">&quot;[创建注册表][%wZ][%wZ]\n&quot;</span>, &amp;ustrRegPath, ((PREG_CREATE_KEY_INFORMATION)Argument2)-&gt;CompleteName);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 打开注册表之前</span></span><br><span class="line">	<span class="keyword">case</span> RegNtPreOpenKey:</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 获取注册表路径</span></span><br><span class="line">		GetFullPath(&amp;ustrRegPath, ((PREG_CREATE_KEY_INFORMATION)Argument2)-&gt;RootObject);</span><br><span class="line">		DbgPrint(<span class="string">&quot;[打开注册表][%wZ][%wZ]\n&quot;</span>, &amp;ustrRegPath, ((PREG_CREATE_KEY_INFORMATION)Argument2)-&gt;CompleteName);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 删除键之前</span></span><br><span class="line">	<span class="keyword">case</span> RegNtPreDeleteKey:</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 获取注册表路径</span></span><br><span class="line">		GetFullPath(&amp;ustrRegPath, ((PREG_DELETE_KEY_INFORMATION)Argument2)-&gt;Object);</span><br><span class="line">		DbgPrint(<span class="string">&quot;[删除键][%wZ] \n&quot;</span>, &amp;ustrRegPath);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 删除键值之前</span></span><br><span class="line">	<span class="keyword">case</span> RegNtPreDeleteValueKey:</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 获取注册表路径</span></span><br><span class="line">		GetFullPath(&amp;ustrRegPath, ((PREG_DELETE_VALUE_KEY_INFORMATION)Argument2)-&gt;Object);</span><br><span class="line">		DbgPrint(<span class="string">&quot;[删除键值][%wZ][%wZ] \n&quot;</span>, &amp;ustrRegPath, ((PREG_DELETE_VALUE_KEY_INFORMATION)Argument2)-&gt;ValueName);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 获取当前进程, 即操作注册表的进程</span></span><br><span class="line">		PEPROCESS pEProcess = PsGetCurrentProcess();</span><br><span class="line">		<span class="keyword">if</span> (<span class="literal">NULL</span> != pEProcess)</span><br><span class="line">		&#123;</span><br><span class="line">			UCHAR *lpszProcessName = PsGetProcessImageFileName(pEProcess);</span><br><span class="line">			<span class="keyword">if</span> (<span class="literal">NULL</span> != lpszProcessName)</span><br><span class="line">			&#123;</span><br><span class="line">				DbgPrint(<span class="string">&quot;进程 [%s] 删除了键值对 \n&quot;</span>, lpszProcessName);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 修改键值之前</span></span><br><span class="line">	<span class="keyword">case</span> RegNtPreSetValueKey:</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 获取注册表路径</span></span><br><span class="line">		GetFullPath(&amp;ustrRegPath, ((PREG_SET_VALUE_KEY_INFORMATION)Argument2)-&gt;Object);</span><br><span class="line">		DbgPrint(<span class="string">&quot;[修改键值][%wZ][%wZ] \n&quot;</span>, &amp;ustrRegPath, ((PREG_SET_VALUE_KEY_INFORMATION)Argument2)-&gt;ValueName);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 释放内存</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">NULL</span> != ustrRegPath.Buffer)</span><br><span class="line">	&#123;</span><br><span class="line">		ExFreePool(ustrRegPath.Buffer);</span><br><span class="line">		ustrRegPath.Buffer = <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> status;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">VOID <span class="title function_">UnDriver</span><span class="params">(PDRIVER_OBJECT driver)</span></span><br><span class="line">&#123;</span><br><span class="line">	DbgPrint((<span class="string">&quot;Uninstall Driver Is OK \n&quot;</span>));</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 注销当前注册表回调</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="number">0</span> &lt; g_liRegCookie.QuadPart)</span><br><span class="line">	&#123;</span><br><span class="line">		CmUnRegisterCallback(g_liRegCookie);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NTSTATUS <span class="title function_">DriverEntry</span><span class="params">(IN PDRIVER_OBJECT Driver, PUNICODE_STRING RegistryPath)</span></span><br><span class="line">&#123;</span><br><span class="line">	DbgPrint((<span class="string">&quot;hello lyshark.com \n&quot;</span>));</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 设置注册表回调</span></span><br><span class="line">	NTSTATUS status = CmRegisterCallback(MyLySharkCallback, <span class="literal">NULL</span>, &amp;g_liRegCookie);</span><br><span class="line">	<span class="keyword">if</span> (!NT_SUCCESS(status))</span><br><span class="line">	&#123;</span><br><span class="line">		g_liRegCookie.QuadPart = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">return</span> status;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	Driver-&gt;DriverUnload = UnDriver;</span><br><span class="line">	<span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行驱动程序，则会输出当前系统中所有针对注册表的操作，如下图所示。</p>
+<p><a target="_blank" rel="noopener" href="https://www.lyshark.com/image/1379525-20221024113320887-492336436.png" title="img" class="gallery-item" style="box-shadow: none;"> <img src="https://www.lyshark.com/image/1379525-20221024113320887-492336436.png" alt="img"></a></p>
+<p>如上的代码只能实现注册表项的监视，而如果需要保护则需要在回调函数<code>MyLySharkCallback</code>判断，如果指定注册表项是需要保护的则直接返回<code>status = STATUS_ACCESS_DENIED;</code>从而达到保护注册表的目的，核心代码如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 反注册表删除回调</span></span><br><span class="line">NTSTATUS <span class="title function_">MyLySharkCallback</span><span class="params">(_In_ PVOID CallbackContext, _In_opt_ PVOID Argument1, _In_opt_ PVOID Argument2)</span></span><br><span class="line">&#123;</span><br><span class="line">	NTSTATUS status = STATUS_SUCCESS;</span><br><span class="line">	UNICODE_STRING ustrRegPath;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 获取操作类型</span></span><br><span class="line">	LONG lOperateType = (REG_NOTIFY_CLASS)Argument1;</span><br><span class="line">	ustrRegPath.Length = <span class="number">0</span>;</span><br><span class="line">	ustrRegPath.MaximumLength = <span class="number">1024</span> * <span class="keyword">sizeof</span>(WCHAR);</span><br><span class="line">	ustrRegPath.Buffer = ExAllocatePool(NonPagedPool, ustrRegPath.MaximumLength);</span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">NULL</span> == ustrRegPath.Buffer)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> status;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	RtlZeroMemory(ustrRegPath.Buffer, ustrRegPath.MaximumLength);</span><br><span class="line">	<span class="comment">// 判断操作</span></span><br><span class="line">	<span class="keyword">switch</span> (lOperateType)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 删除键值之前</span></span><br><span class="line">	<span class="keyword">case</span> RegNtPreDeleteValueKey:</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 获取注册表路径</span></span><br><span class="line">		GetFullPath(&amp;ustrRegPath, ((PREG_DELETE_VALUE_KEY_INFORMATION)Argument2)-&gt;Object);</span><br><span class="line">		DbgPrint(<span class="string">&quot;[删除键值][%wZ][%wZ]\n&quot;</span>, &amp;ustrRegPath, ((PREG_DELETE_VALUE_KEY_INFORMATION)Argument2)-&gt;ValueName);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 如果要删除指定注册表项则拒绝</span></span><br><span class="line">		PWCH pszRegister = <span class="string">L&quot;\\REGISTRY\\MACHINE\\SOFTWARE\\lyshark.com&quot;</span>;</span><br><span class="line">		<span class="keyword">if</span> (wcscmp(ustrRegPath.Buffer, pszRegister) == <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			DbgPrint(<span class="string">&quot;[lyshark] 注册表项删除操作已被拦截! \n&quot;</span>);</span><br><span class="line">			<span class="comment">// 拒绝操作</span></span><br><span class="line">			status = STATUS_ACCESS_DENIED;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 释放内存</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">NULL</span> != ustrRegPath.Buffer)</span><br><span class="line">	&#123;</span><br><span class="line">		ExFreePool(ustrRegPath.Buffer);</span><br><span class="line">		ustrRegPath.Buffer = <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行驱动程序，然后我们尝试删除<code>\\LyShark\HKEY_LOCAL_MACHINE\SOFTWARE\lyshark.com</code>里面的子项，则会提示如下信息。</p>
+<p><a target="_blank" rel="noopener" href="https://www.lyshark.com/image/1379525-20221024131022148-266503200.png" title="img" class="gallery-item" style="box-shadow: none;"> <img src="https://www.lyshark.com/image/1379525-20221024131022148-266503200.png" alt="img"></a></p>
+<p>当然这里的<code>RegNtPreDeleteValueKey</code>是指的删除操作，如果将其替换成<code>RegNtPreSetValueKey</code>，那么只有当注册表被创建才会拦截，此时就会变成拦截创建。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">// 拦截创建操作</span><br><span class="line">NTSTATUS MyLySharkCallback(_In_ PVOID CallbackContext, _In_opt_ PVOID Argument1, _In_opt_ PVOID Argument2)</span><br><span class="line">&#123;</span><br><span class="line">	NTSTATUS status = STATUS_SUCCESS;</span><br><span class="line">	UNICODE_STRING ustrRegPath;</span><br><span class="line"></span><br><span class="line">	// 获取操作类型</span><br><span class="line">	LONG lOperateType = (REG_NOTIFY_CLASS)Argument1;</span><br><span class="line"></span><br><span class="line">	// 申请内存</span><br><span class="line">	ustrRegPath.Length = 0;</span><br><span class="line">	ustrRegPath.MaximumLength = 1024 * sizeof(WCHAR);</span><br><span class="line">	ustrRegPath.Buffer = ExAllocatePool(NonPagedPool, ustrRegPath.MaximumLength);</span><br><span class="line">	if (NULL == ustrRegPath.Buffer)</span><br><span class="line">	&#123;</span><br><span class="line">		return status;</span><br><span class="line">	&#125;</span><br><span class="line">	RtlZeroMemory(ustrRegPath.Buffer, ustrRegPath.MaximumLength);</span><br><span class="line"></span><br><span class="line">	// 判断操作</span><br><span class="line">	switch (lOperateType)</span><br><span class="line">	&#123;</span><br><span class="line">	// 修改键值之前</span><br><span class="line">	case RegNtPreSetValueKey:</span><br><span class="line">	&#123;</span><br><span class="line">		// 获取注册表路径</span><br><span class="line">		GetFullPath(&amp;ustrRegPath, ((PREG_DELETE_VALUE_KEY_INFORMATION)Argument2)-&gt;Object);</span><br><span class="line"></span><br><span class="line">		// 拦截创建</span><br><span class="line">		PWCH pszRegister = L&quot;\\REGISTRY\\MACHINE\\SOFTWARE\\lyshark.com&quot;;</span><br><span class="line">		if (wcscmp(ustrRegPath.Buffer, pszRegister) == 0)</span><br><span class="line">		&#123;</span><br><span class="line">			DbgPrint(&quot;[lyshark] 注册表项创建操作已被拦截! \n&quot;);</span><br><span class="line">			status = STATUS_ACCESS_DENIED;</span><br><span class="line">		&#125;</span><br><span class="line">		break;</span><br><span class="line">	&#125;</span><br><span class="line">	default:</span><br><span class="line">		break;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 释放内存</span><br><span class="line">	if (NULL != ustrRegPath.Buffer)</span><br><span class="line">	&#123;</span><br><span class="line">		ExFreePool(ustrRegPath.Buffer);</span><br><span class="line">		ustrRegPath.Buffer = NULL;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>加载驱动保护，然后我们尝试在<code>\\LyShark\HKEY_LOCAL_MACHINE\SOFTWARE\lyshark.com</code>里面创建一个子项，则会提示创建失败。</p>
+<p><a target="_blank" rel="noopener" href="https://www.lyshark.com/image/1379525-20221024132620309-1718246807.png" title="img" class="gallery-item" style="box-shadow: none;"> <img src="https://www.lyshark.com/image/1379525-20221024132620309-1718246807.png" alt="img"></a></p>
+<p>文章大部分复制粘贴<a target="_blank" rel="noopener" href="https://www.lyshark.com/post/4e0f6bde.html%EF%BC%8C%E5%B9%B6%E4%B8%94%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E8%BF%99%E4%B8%80%E6%A8%A1%E5%9D%97%EF%BC%8C%E6%88%91%E6%9B%BE%E7%BB%8F%E9%82%AE%E4%BB%B6%E8%BF%87%E4%BD%9C%E8%80%85%E5%8F%96%E5%BE%97%E6%8E%88%E6%9D%83%EF%BC%8C%E4%BD%86%E6%98%AF%E8%A6%81%E8%AF%B4%E6%98%8E%E6%98%AF%E4%BD%9C%E8%80%85%E7%9A%84%EF%BC%8C%E5%89%8D%E5%87%A0%E7%AF%87%E6%B2%A1%E5%81%9A%E6%A0%87%E8%AE%B0%EF%BC%8C%E8%BF%99%E9%87%8C%E9%83%91%E9%87%8D%E8%AF%B4%E6%98%8E%EF%BC%8C%E5%A4%A7%E9%83%A8%E5%88%86%E4%BB%A3%E7%A0%81%E5%92%8C%E6%88%AA%E5%9B%BE%E4%BD%BF%E7%94%A8https://www.lyshark.com/%E6%84%9F%E5%85%B4%E8%B6%A3%E5%8F%AF%E4%BB%A5%E5%8E%BB%E5%A4%A7%E4%BD%AC%E7%9A%84%E5%AE%98%E7%BD%91%E8%BF%9B%E8%A1%8C%E5%AD%A6%E4%B9%A0%E3%80%82">https://www.lyshark.com/post/4e0f6bde.html，并且驱动开发这一模块，我曾经邮件过作者取得授权，但是要说明是作者的，前几篇没做标记，这里郑重说明，大部分代码和截图使用https://www.lyshark.com/感兴趣可以去大佬的官网进行学习。</a></p>
+<h2 id="windbg进行手动致盲"><a href="#windbg进行手动致盲" class="headerlink" title="windbg进行手动致盲"></a>windbg进行手动致盲</h2><p>注册表回调则有点不同，所有回调函数都保存在一个叫 nt!CallbackListHead的链表</p>
+<p>首先我们需要找到一个使用 <code>nt！CallbackListHead</code> 的函数，理想情况下还要有一个导出函数，用于字节搜索。</p>
+<p>首先，让我们计算 nt 的偏移量！从 nt 基底的 <code>CallbackListHead</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lkd&gt; ? nt!CallbackListHead - nt</span><br><span class="line">Evaluate expression: <span class="number">15691152</span> = <span class="number">00000000</span>`<span class="number">00</span>ef6d90</span><br></pre></td></tr></table></figure>
+
+<p>然后在 IDA 中，我们通过跳<code>跃=&gt; 跳转到地址 </code>，并使用 <code>00ef6d90 来到达该地址。</code></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal/raw/main/NotifyRoutineKernelBypass/screenshots/JumpToAddress.png" title="Jump To Address" class="gallery-item" style="box-shadow: none;"> <img src="https://github.com/V-i-x-x/kernel-callback-removal/raw/main/NotifyRoutineKernelBypass/screenshots/JumpToAddress.png" alt="Jump To Address"></a></p>
+<p>现在我们可以把鼠标悬停在 <code>CallbackListHead</code> &#x3D;&gt; 上，点击它&#x3D;&gt;，然后按 X 进行交叉比对，这样我们就能知道到底是谁在使用这个列表。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal/raw/main/NotifyRoutineKernelBypass/screenshots/crossReference.png" title="Cross Reference" class="gallery-item" style="box-shadow: none;"> <img src="https://github.com/V-i-x-x/kernel-callback-removal/raw/main/NotifyRoutineKernelBypass/screenshots/crossReference.png" alt="Cross Reference"></a></p>
+<p>幸运的是，第一个函数 <code>CmUnRegisterCallback</code> 也是导出函数，因此我们可以用以下函数作为搜索的起点和结尾。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal/raw/main/NotifyRoutineKernelBypass/screenshots/ExportTableRegistry.png" title="Export Table 3" class="gallery-item" style="box-shadow: none;"> <img src="https://github.com/V-i-x-x/kernel-callback-removal/raw/main/NotifyRoutineKernelBypass/screenshots/ExportTableRegistry.png" alt="Export Table 3"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/0edbceac05814a4affbb49c77fdc9877.jpg" title="0edbceac05814a4affbb49c77fdc9877" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/0edbceac05814a4affbb49c77fdc9877.jpg" alt="0edbceac05814a4affbb49c77fdc9877"></a></p>
+<p><code>nt！CallbackListHead</code> 是一个链表，其中偏移量 0x28 处的每个条目是被调用的函数。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/ac783038fe85f2b5f778ed1f53bbf4f0.png" title="ac783038fe85f2b5f778ed1f53bbf4f0" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/ac783038fe85f2b5f778ed1f53bbf4f0.png" alt="ac783038fe85f2b5f778ed1f53bbf4f0"></a></p>
+<p>加载上我们编译好的驱动。看效果。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/2645c0fe7e79ab78d9b4a1434698fbc0.jpg" title="2645c0fe7e79ab78d9b4a1434698fbc0" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/2645c0fe7e79ab78d9b4a1434698fbc0.jpg" alt="2645c0fe7e79ab78d9b4a1434698fbc0"></a></p>
+<hr>
+<h2 id="完整链表结构"><a href="#完整链表结构" class="headerlink" title="完整链表结构"></a>完整链表结构</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Head (49048590)</span><br><span class="line">  ↓ Flink</span><br><span class="line">71ce0d90  MyLySharkCallback    Blink→Head</span><br><span class="line">  ↓ Flink</span><br><span class="line">6b3f4140  UCPD+0x7470          Blink→71ce0d90</span><br><span class="line">  ↓ Flink</span><br><span class="line">72a2e510  VrpRegistryCallback  Blink→6b3f4140</span><br><span class="line">  ↓ Flink</span><br><span class="line">Head (49048590)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="摘除"><a href="#摘除" class="headerlink" title="摘除"></a>摘除</h2><p>需要改<strong>两处</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">; 1. Head.Flink 跳过 71ce0d90，直接指向 6b3f4140</span><br><span class="line">eq fffff807`49048590 ffffa60d`6b3f4140</span><br><span class="line"></span><br><span class="line">; 2. 6b3f4140.Blink 跳过 71ce0d90，指回 Head</span><br><span class="line">eq ffffa60d`6b3f4148 fffff807`49048590</span><br></pre></td></tr></table></figure>
+
+<p>验证：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dq fffff807`49048590 L2</span><br><span class="line">dq ffffa60d`6b3f4140 L2</span><br></pre></td></tr></table></figure>
+
+<p>期望结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Head:      ffffa60d`6b3f4140  ffffa60d`72a2e510</span><br><span class="line">6b3f4140:  ffffa60d`72a2e510  fffff807`49048590</span><br></pre></td></tr></table></figure>
+
+<p>这样 <code>71ce0d90</code> 就从链表中孤立了，<code>g</code> 之后不会崩溃。</p>
+<p>此时的链表。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/c4e5c73787ce2f84ccc7752ea51d800a.png" title="c4e5c73787ce2f84ccc7752ea51d800a" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/c4e5c73787ce2f84ccc7752ea51d800a.png" alt="c4e5c73787ce2f84ccc7752ea51d800a"></a></p>
+<p>重新弄了一个图</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/87b886710110eceee19e667ad1c6c20a.jpg" title="87b886710110eceee19e667ad1c6c20a" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/87b886710110eceee19e667ad1c6c20a.jpg" alt="87b886710110eceee19e667ad1c6c20a"></a></p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-04-25</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/'>
+                            驱动开发
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/04/25/%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8%E7%9B%91%E5%90%ACLoadImage%E6%98%A0%E5%83%8F%E5%9B%9E%E8%B0%83/">内核驱动监听LoadImage映像回调</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>

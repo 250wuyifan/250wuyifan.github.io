@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="内核驱动监听LoadImage映像回调" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    内核驱动监听LoadImage映像回调
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-04-25</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：635</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：3分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%A1%88%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="post-toc-text">案例代码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#windbg%E6%89%8B%E5%8A%A8%E8%87%B4%E7%9B%B2"><span class="post-toc-text">windbg手动致盲</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><p>就是一个调用api的操作，具体可以查微软和百度具体含义</p>
+<h2 id="案例代码"><a href="#案例代码" class="headerlink" title="案例代码"></a>案例代码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ntddk.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ntimage.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 未导出函数声明</span></span><br><span class="line">PUCHAR <span class="title function_">PsGetProcessImageFileName</span><span class="params">(PEPROCESS pEProcess)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取到镜像装载基地址</span></span><br><span class="line">PVOID <span class="title function_">GetDriverEntryByImageBase</span><span class="params">(PVOID ImageBase)</span></span><br><span class="line">&#123;</span><br><span class="line">	PIMAGE_DOS_HEADER pDOSHeader;</span><br><span class="line">	PIMAGE_NT_HEADERS64 pNTHeader;</span><br><span class="line">	PVOID pEntryPoint;</span><br><span class="line">	pDOSHeader = (PIMAGE_DOS_HEADER)ImageBase;</span><br><span class="line">	pNTHeader = (PIMAGE_NT_HEADERS64)((ULONG64)ImageBase + pDOSHeader-&gt;e_lfanew);</span><br><span class="line">	pEntryPoint = (PVOID)((ULONG64)ImageBase + pNTHeader-&gt;OptionalHeader.AddressOfEntryPoint);</span><br><span class="line">	<span class="keyword">return</span> pEntryPoint;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取当前进程名</span></span><br><span class="line">UCHAR* <span class="title function_">GetCurrentProcessName</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	PEPROCESS pEProcess = PsGetCurrentProcess();</span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">NULL</span> != pEProcess)</span><br><span class="line">	&#123;</span><br><span class="line">		UCHAR *lpszProcessName = PsGetProcessImageFileName(pEProcess);</span><br><span class="line">		<span class="keyword">if</span> (<span class="literal">NULL</span> != lpszProcessName)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> lpszProcessName;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置自己的回调函数</span></span><br><span class="line">VOID <span class="title function_">MyLySharkLoadImageNotifyRoutine</span><span class="params">(PUNICODE_STRING FullImageName, HANDLE ModuleStyle, PIMAGE_INFO ImageInfo)</span></span><br><span class="line">&#123;</span><br><span class="line">	PVOID pDrvEntry;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// MmIsAddress 验证地址可用性</span></span><br><span class="line">	<span class="keyword">if</span> (FullImageName != <span class="literal">NULL</span> &amp;&amp; MmIsAddressValid(FullImageName))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// ModuleStyle为零表示加载sys</span></span><br><span class="line">		<span class="keyword">if</span> (ModuleStyle == <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">// 得到装载主进程名</span></span><br><span class="line">			UCHAR *load_name = GetCurrentProcessName();</span><br><span class="line">			pDrvEntry = GetDriverEntryByImageBase(ImageInfo-&gt;ImageBase);</span><br><span class="line">			DbgPrint(<span class="string">&quot;[LyShark SYS加载] 模块名称:%wZ --&gt; 装载基址:%p --&gt; 镜像长度: %d --&gt; 装载主进程: %s \n&quot;</span>, FullImageName, pDrvEntry, ImageInfo-&gt;ImageSize, load_name);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// ModuleStyle非零表示加载DLL</span></span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">// 得到装载主进程名</span></span><br><span class="line">			UCHAR *load_name = GetCurrentProcessName();</span><br><span class="line">			pDrvEntry = GetDriverEntryByImageBase(ImageInfo-&gt;ImageBase);</span><br><span class="line">			DbgPrint(<span class="string">&quot;[LyShark DLL加载] 模块名称:%wZ --&gt; 装载基址:%p --&gt; 镜像长度: %d --&gt; 装载主进程: %s \n&quot;</span>, FullImageName, pDrvEntry, ImageInfo-&gt;ImageSize, load_name);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">VOID <span class="title function_">UnDriver</span><span class="params">(PDRIVER_OBJECT driver)</span></span><br><span class="line">&#123;</span><br><span class="line">	PsRemoveLoadImageNotifyRoutine((PLOAD_IMAGE_NOTIFY_ROUTINE)MyLySharkLoadImageNotifyRoutine);</span><br><span class="line">	DbgPrint(<span class="string">&quot;[LyShark.com] 驱动卸载完成...&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NTSTATUS <span class="title function_">DriverEntry</span><span class="params">(IN PDRIVER_OBJECT Driver, PUNICODE_STRING RegistryPath)</span></span><br><span class="line">&#123;</span><br><span class="line">	DbgPrint(<span class="string">&quot;hello lyshark.com \n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	PsSetLoadImageNotifyRoutine((PLOAD_IMAGE_NOTIFY_ROUTINE)MyLySharkLoadImageNotifyRoutine);</span><br><span class="line">	DbgPrint(<span class="string">&quot;[LyShark.com] 驱动加载完成...&quot;</span>);</span><br><span class="line">	Driver-&gt;DriverUnload = UnDriver;</span><br><span class="line">	<span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://www.lyshark.com/image/1379525-20221023182622522-2080921397.png" title="img" class="gallery-item" style="box-shadow: none;"> <img src="https://www.lyshark.com/image/1379525-20221023182622522-2080921397.png" alt="img"></a></p>
+<h2 id="windbg手动致盲"><a href="#windbg手动致盲" class="headerlink" title="windbg手动致盲"></a>windbg手动致盲</h2><p>这个数组与前面的进程和线程是一样的，致盲方式也是一样的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">  lkd&gt; u nt!PsSetLoadImageNotifyRoutineEx L15</span><br><span class="line">nt!PsSetLoadImageNotifyRoutineEx:</span><br><span class="line">fffff800`a4e5c970 48895c2408      mov     qword ptr [rsp+8],rbx</span><br><span class="line">fffff800`a4e5c975 48896c2410      mov     qword ptr [rsp+10h],rbp</span><br><span class="line">fffff800`a4e5c97a 4889742418      mov     qword ptr [rsp+18h],rsi</span><br><span class="line">fffff800`a4e5c97f 57              push    rdi</span><br><span class="line">fffff800`a4e5c980 4883ec20        sub     rsp,20h</span><br><span class="line">fffff800`a4e5c984 488be9          mov     rbp,rcx</span><br><span class="line">fffff800`a4e5c987 48f7c2feffffff  test    rdx,0FFFFFFFFFFFFFFFEh</span><br><span class="line">fffff800`a4e5c98e 7569            jne     nt!PsSetLoadImageNotifyRoutineEx+0x89 (fffff800`a4e5c9f9)</span><br><span class="line">fffff800`a4e5c990 e81b010000      call    nt!ExAllocateCallBack (fffff800`a4e5cab0)</span><br><span class="line">fffff800`a4e5c995 33db            xor     ebx,ebx</span><br><span class="line">fffff800`a4e5c997 488bf0          mov     rsi,rax</span><br><span class="line">fffff800`a4e5c99a 4885c0          test    rax,rax</span><br><span class="line">fffff800`a4e5c99d 7476            je      nt!PsSetLoadImageNotifyRoutineEx+0xa5 (fffff800`a4e5ca15)</span><br><span class="line">fffff800`a4e5c99f 8bfb            mov     edi,ebx</span><br><span class="line">fffff800`a4e5c9a1 83ff40          cmp     edi,40h</span><br><span class="line">fffff800`a4e5c9a4 7365            jae     nt!PsSetLoadImageNotifyRoutineEx+0x9b (fffff800`a4e5ca0b)</span><br><span class="line">fffff800`a4e5c9a6 8bc7            mov     eax,edi</span><br><span class="line">fffff800`a4e5c9a8 488d0dd17c4a00  lea     rcx,[nt!PspLoadImageNotifyRoutine (fffff800`a5304680)]</span><br><span class="line">fffff800`a4e5c9af 4533c0          xor     r8d,r8d</span><br><span class="line">fffff800`a4e5c9b2 488bd6          mov     rdx,rsi</span><br><span class="line">fffff800`a4e5c9b5 488d0cc1        lea     rcx,[rcx+rax*8]</span><br></pre></td></tr></table></figure>
+
+<p>和其他方法一样，我们需要确保字节正确 <code>，偏</code>移量 <code>0x8d48d68b48c03345 保持 0x04</code>，并且找到两个接近 nt 的函数！用于字节搜索的 <code>PsSetLoadImageNotifyRoutineEx</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lkd&gt; dq fffff800`a4e5c9af L1</span><br><span class="line">fffff800`a4e5c9af 8d48d68b`48c03345</span><br><span class="line">lkd&gt; ? nt!PsSetLoadImageNotifyRoutineEx - nt</span><br><span class="line">Evaluate expression: 10865008 = 00000000`00a5c970</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal/raw/main/NotifyRoutineKernelBypass/screenshots/ExportTableImage.png" title="Export Table 2" class="gallery-item" style="box-shadow: none;"> <img src="https://github.com/V-i-x-x/kernel-callback-removal/raw/main/NotifyRoutineKernelBypass/screenshots/ExportTableImage.png" alt="Export Table 2"></a></p>
+<p>根据截图，导出了 <code>PsSetLoadImageNotifyRoutineEx</code> 函数，我们可以直接使用它，但 Windows 版本之间并非总是这样。所以我仍然会用 <code>RtlAppendStringToString</code> 作为起始，<code>IoInitializeMiniCompletionPacket</code> 作为结尾。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/b5556a3c1fa183a00acf21c83d9d8f02.png" title="b5556a3c1fa183a00acf21c83d9d8f02" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/b5556a3c1fa183a00acf21c83d9d8f02.png" alt="b5556a3c1fa183a00acf21c83d9d8f02"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/a25613c4a4f3217d68217907572eb7bf.png" title="a25613c4a4f3217d68217907572eb7bf" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/a25613c4a4f3217d68217907572eb7bf.png" alt="a25613c4a4f3217d68217907572eb7bf"></a></p>
+<p>致盲成功。</p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-04-25</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/'>
+                            驱动开发
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+                    <span>上一篇：<a href='/2026/04/25/%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8%E7%9B%91%E5%90%ACRegister%E6%B3%A8%E5%86%8C%E8%A1%A8%E5%9B%9E%E8%B0%83/'>内核驱动监听Register注册表回调</a></span>
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/04/25/%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8%E7%9B%91%E5%90%AC%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E4%B8%8E%E9%80%80%E5%87%BA/">内核驱动监听线程创建与退出</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
