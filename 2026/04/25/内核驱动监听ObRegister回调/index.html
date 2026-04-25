@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="内核驱动监听ObRegister回调" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    内核驱动监听ObRegister回调
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-04-25</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：1.7k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：7分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Pre-%E5%92%8C-Post-%E4%B8%A4%E7%A7%8D%E5%9B%9E%E8%B0%83"><span class="post-toc-text">Pre 和 Post 两种回调</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E8%AE%BE%E8%AE%A1%E7%9B%AE%E7%9A%84"><span class="post-toc-text">设计目的</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PreOperation"><span class="post-toc-text">PreOperation</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PostOperation"><span class="post-toc-text">PostOperation</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Operations-%E5%AD%97%E6%AE%B5%E7%9A%84%E5%90%AB%E4%B9%89"><span class="post-toc-text">Operations 字段的含义</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E6%95%B4%E4%BD%93%E5%85%B3%E7%B3%BB%E5%9B%BE"><span class="post-toc-text">整体关系图</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E6%80%BB%E7%BB%93"><span class="post-toc-text">总结</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%A1%88%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="post-toc-text">案例代码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#windbg%E6%89%8B%E5%8A%A8Object-%E5%9B%9E%E8%B0%83%E8%87%B4%E7%9B%B2%E5%85%A8%E8%BF%87%E7%A8%8B"><span class="post-toc-text">windbg手动Object 回调致盲全过程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E4%B8%80%E3%80%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="post-toc-text">一、数据结构</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E4%BA%8C%E3%80%81%E5%AE%9A%E4%BD%8D%E8%BF%87%E7%A8%8B"><span class="post-toc-text">二、定位过程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E4%B8%89%E3%80%81%E8%87%B4%E7%9B%B2%E6%93%8D%E4%BD%9C"><span class="post-toc-text">三、致盲操作</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E5%9B%9B%E3%80%81%E6%9C%AC%E6%AC%A1%E5%AE%9E%E9%AA%8C%E5%85%B7%E4%BD%93%E5%9C%B0%E5%9D%80"><span class="post-toc-text">四、本次实验具体地址</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E4%BA%94%E3%80%81%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="post-toc-text">五、注意事项</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%A6%82%E4%BD%95%E5%AF%BB%E6%89%BE%E6%89%80%E9%9C%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="post-toc-text">如何寻找所需数据结构</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><h2 id="Pre-和-Post-两种回调"><a href="#Pre-和-Post-两种回调" class="headerlink" title="Pre 和 Post 两种回调"></a>Pre 和 Post 两种回调</h2><h3 id="设计目的"><a href="#设计目的" class="headerlink" title="设计目的"></a>设计目的</h3><p>ObRegisterCallbacks 是 Windows 提供给内核驱动的句柄操作拦截机制，在进程&#x2F;线程句柄被创建或复制时触发。<br>Pre 和 Post 分别对应操作的前后两个时机：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">调用方请求 OpenProcess()</span><br><span class="line">        ↓</span><br><span class="line">  [PreOperation]    ← 句柄还没创建，可以修改权限</span><br><span class="line">        ↓</span><br><span class="line">   内核创建句柄</span><br><span class="line">        ↓</span><br><span class="line">  [PostOperation]   ← 句柄已创建，只能观察</span><br><span class="line">        ↓</span><br><span class="line">  句柄返回给调用方</span><br></pre></td></tr></table></figure>
+
+<h3 id="PreOperation"><a href="#PreOperation" class="headerlink" title="PreOperation"></a>PreOperation</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">OB_PREOP_CALLBACK_STATUS PreOperationCallback(</span><br><span class="line">    PVOID RegContext,</span><br><span class="line">    POB_PRE_OPERATION_INFORMATION OpInfo</span><br><span class="line">)</span><br><span class="line">时机：句柄创建/复制之前</span><br><span class="line">能做什么：</span><br><span class="line"></span><br><span class="line">读取 DesiredAccess（调用方请求的权限）</span><br><span class="line">修改 DesiredAccess，去掉危险权限</span><br><span class="line">记录谁在访问什么进程</span><br><span class="line"></span><br><span class="line">典型用途：</span><br><span class="line">c// EDR 常见操作：去掉 lsass 的读内存权限</span><br><span class="line">if (IsLsass(targetProcess)) &#123;</span><br><span class="line">    OpInfo-&gt;Parameters-&gt;CreateHandleInformation.DesiredAccess</span><br><span class="line">        &amp;= ~PROCESS_VM_READ;  // 强制去掉读内存权限</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="PostOperation"><a href="#PostOperation" class="headerlink" title="PostOperation"></a>PostOperation</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">VOID PostOperationCallback(</span><br><span class="line">    PVOID RegContext,</span><br><span class="line">    POB_POST_OPERATION_INFORMATION OpInfo</span><br><span class="line">)</span><br><span class="line">时机：句柄创建/复制之后</span><br><span class="line">能做什么：</span><br><span class="line"></span><br><span class="line">观察最终授予的权限</span><br><span class="line">记录日志</span><br><span class="line">不能再修改权限（句柄已经发出去了）</span><br><span class="line"></span><br><span class="line">典型用途：纯审计/日志场景</span><br></pre></td></tr></table></figure>
+
+<h3 id="Operations-字段的含义"><a href="#Operations-字段的含义" class="headerlink" title="Operations 字段的含义"></a>Operations 字段的含义</h3><p>注册时指定触发哪些操作：我们的驱动注册的是两种</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">OB_OPERATION_HANDLE_CREATE      // OpenProcess/OpenThread</span><br><span class="line">OB_OPERATION_HANDLE_DUPLICATE   // DuplicateHandle</span><br></pre></td></tr></table></figure>
+
+<p>对应节点里 +0x10 Operations &#x3D; 00000001’00000003：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0x1 = OB_OPERATION_HANDLE_CREATE</span><br><span class="line">0x2 = OB_OPERATION_HANDLE_DUPLICATE</span><br><span class="line">0x3 = 两者都有（0x1 | 0x2）</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="整体关系图"><a href="#整体关系图" class="headerlink" title="整体关系图"></a>整体关系图</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ObRegisterCallbacks()</span><br><span class="line">        ↓</span><br><span class="line">  注册一个 CALLBACK_ENTRY</span><br><span class="line">        ↓</span><br><span class="line">  对应 PsProcessType 和 PsThreadType</span><br><span class="line">  各挂一个 CALLBACK_ENTRY_ITEM 到 CallbackList</span><br><span class="line">        ↓</span><br><span class="line">  每次 OpenProcess / DuplicateHandle</span><br><span class="line">        ↓</span><br><span class="line">  内核遍历 CallbackList</span><br><span class="line">  依次调用每个节点的 PreOperation</span><br><span class="line">        ↓</span><br><span class="line">  执行句柄操作</span><br><span class="line">        ↓</span><br><span class="line">  依次调用每个节点的 PostOperation</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>PreOperation时机句柄创建前能修改权限✅，只能降权不能完全阻止，用途保护 lsass、防注入</p>
+<p>PostOperation句柄创建后不能阻止操作，不能修改权限，用途审计日志</p>
+<p>这就是为什么 EDR 主要使用 PreOperation——只有在这个时机才能真正干预句柄权限。</p>
+<h2 id="案例代码"><a href="#案例代码" class="headerlink" title="案例代码"></a>案例代码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ntifs.h&gt;</span>   <span class="comment">// ← 加这一行，IoThreadToProcess 在这里声明</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// -------------------------------------------------------</span></span><br><span class="line"><span class="comment">// 全局变量</span></span><br><span class="line"><span class="comment">// -------------------------------------------------------</span></span><br><span class="line">PVOID   g_CallbackHandle = <span class="literal">NULL</span>;</span><br><span class="line">UNICODE_STRING g_Altitude;</span><br><span class="line">WCHAR   g_AltitudeBuffer[] = <span class="string">L&quot;388888&quot;</span>;  <span class="comment">// 海拔高度，随意取一个未被占用的值</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// -------------------------------------------------------</span></span><br><span class="line"><span class="comment">// Pre-Operation 回调</span></span><br><span class="line"><span class="comment">// -------------------------------------------------------</span></span><br><span class="line">OB_PREOP_CALLBACK_STATUS</span><br><span class="line"><span class="title function_">PreOperationCallback</span><span class="params">(</span></span><br><span class="line"><span class="params">    _In_ PVOID RegContext,</span></span><br><span class="line"><span class="params">    _In_ POB_PRE_OPERATION_INFORMATION OpInfo</span></span><br><span class="line"><span class="params">)</span></span><br><span class="line">&#123;</span><br><span class="line">    UNREFERENCED_PARAMETER(RegContext);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (OpInfo == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> OB_PREOP_SUCCESS;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断对象类型</span></span><br><span class="line">    <span class="type">const</span> BOOLEAN isProcess = (OpInfo-&gt;ObjectType == *PsProcessType);</span><br><span class="line">    <span class="type">const</span> BOOLEAN isThread = (OpInfo-&gt;ObjectType == *PsThreadType);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!isProcess &amp;&amp; !isThread) &#123;</span><br><span class="line">        <span class="keyword">return</span> OB_PREOP_SUCCESS;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取调用方 PID</span></span><br><span class="line">    HANDLE callerPid = PsGetCurrentProcessId();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取目标 PID</span></span><br><span class="line">    HANDLE targetPid = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (isProcess &amp;&amp; OpInfo-&gt;Object) &#123;</span><br><span class="line">        targetPid = PsGetProcessId((PEPROCESS)OpInfo-&gt;Object);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (isThread &amp;&amp; OpInfo-&gt;Object) &#123;</span><br><span class="line">        PEPROCESS targetProc = IoThreadToProcess((PETHREAD)OpInfo-&gt;Object);</span><br><span class="line">        <span class="keyword">if</span> (targetProc) &#123;</span><br><span class="line">            targetPid = PsGetProcessId(targetProc);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取 DesiredAccess</span></span><br><span class="line">    ACCESS_MASK desired = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (OpInfo-&gt;Operation == OB_OPERATION_HANDLE_CREATE) &#123;</span><br><span class="line">        desired = OpInfo-&gt;Parameters-&gt;CreateHandleInformation.DesiredAccess;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (OpInfo-&gt;Operation == OB_OPERATION_HANDLE_DUPLICATE) &#123;</span><br><span class="line">        desired = OpInfo-&gt;Parameters-&gt;DuplicateHandleInformation.DesiredAccess;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    DbgPrint(<span class="string">&quot;[ObDemo] %s op=%s caller=%llu target=%llu access=0x%08X\n&quot;</span>,</span><br><span class="line">        isProcess ? <span class="string">&quot;PROCESS&quot;</span> : <span class="string">&quot;THREAD&quot;</span>,</span><br><span class="line">        OpInfo-&gt;Operation == OB_OPERATION_HANDLE_CREATE ? <span class="string">&quot;CREATE&quot;</span> : <span class="string">&quot;DUPLICATE&quot;</span>,</span><br><span class="line">        (ULONG64)(ULONG_PTR)callerPid,</span><br><span class="line">        (ULONG64)(ULONG_PTR)targetPid,</span><br><span class="line">        desired</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> OB_PREOP_SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// -------------------------------------------------------</span></span><br><span class="line"><span class="comment">// 注册 Object 回调</span></span><br><span class="line"><span class="comment">// -------------------------------------------------------</span></span><br><span class="line">NTSTATUS <span class="title function_">RegisterCallbacks</span><span class="params">(VOID)</span></span><br><span class="line">&#123;</span><br><span class="line">    OB_CALLBACK_REGISTRATION  cbReg = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">    OB_OPERATION_REGISTRATION opRegs[<span class="number">2</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line"></span><br><span class="line">    g_Altitude.Buffer = g_AltitudeBuffer;</span><br><span class="line">    g_Altitude.Length = (USHORT)(wcslen(g_AltitudeBuffer) * <span class="keyword">sizeof</span>(WCHAR));</span><br><span class="line">    g_Altitude.MaximumLength = g_Altitude.Length + <span class="keyword">sizeof</span>(WCHAR);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Process 回调</span></span><br><span class="line">    opRegs[<span class="number">0</span>].ObjectType = PsProcessType;</span><br><span class="line">    opRegs[<span class="number">0</span>].Operations = OB_OPERATION_HANDLE_CREATE | OB_OPERATION_HANDLE_DUPLICATE;</span><br><span class="line">    opRegs[<span class="number">0</span>].PreOperation = PreOperationCallback;</span><br><span class="line">    opRegs[<span class="number">0</span>].PostOperation = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Thread 回调</span></span><br><span class="line">    opRegs[<span class="number">1</span>].ObjectType = PsThreadType;</span><br><span class="line">    opRegs[<span class="number">1</span>].Operations = OB_OPERATION_HANDLE_CREATE | OB_OPERATION_HANDLE_DUPLICATE;</span><br><span class="line">    opRegs[<span class="number">1</span>].PreOperation = PreOperationCallback;</span><br><span class="line">    opRegs[<span class="number">1</span>].PostOperation = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    cbReg.Version = OB_FLT_REGISTRATION_VERSION;</span><br><span class="line">    cbReg.OperationRegistrationCount = <span class="number">2</span>;</span><br><span class="line">    cbReg.Altitude = g_Altitude;</span><br><span class="line">    cbReg.RegistrationContext = <span class="literal">NULL</span>;</span><br><span class="line">    cbReg.OperationRegistration = opRegs;</span><br><span class="line"></span><br><span class="line">    NTSTATUS status = ObRegisterCallbacks(&amp;cbReg, &amp;g_CallbackHandle);</span><br><span class="line">    <span class="keyword">if</span> (NT_SUCCESS(status)) &#123;</span><br><span class="line">        DbgPrint(<span class="string">&quot;[ObDemo] ObRegisterCallbacks OK handle=%p\n&quot;</span>, g_CallbackHandle);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        DbgPrint(<span class="string">&quot;[ObDemo] ObRegisterCallbacks FAILED status=0x%08X\n&quot;</span>, status);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> status;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// -------------------------------------------------------</span></span><br><span class="line"><span class="comment">// 驱动卸载</span></span><br><span class="line"><span class="comment">// -------------------------------------------------------</span></span><br><span class="line">VOID <span class="title function_">DriverUnload</span><span class="params">(_In_ PDRIVER_OBJECT DriverObject)</span></span><br><span class="line">&#123;</span><br><span class="line">    UNREFERENCED_PARAMETER(DriverObject);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (g_CallbackHandle) &#123;</span><br><span class="line">        ObUnRegisterCallbacks(g_CallbackHandle);</span><br><span class="line">        g_CallbackHandle = <span class="literal">NULL</span>;</span><br><span class="line">        DbgPrint(<span class="string">&quot;[ObDemo] ObUnRegisterCallbacks OK\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    DbgPrint(<span class="string">&quot;[ObDemo] Driver unloaded\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绕过签名检查</span></span><br><span class="line">BOOLEAN <span class="title function_">BypassCheckSign</span><span class="params">(PDRIVER_OBJECT pDriverObject)</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> _WIN64</span></span><br><span class="line">    <span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">KLDR_DATA_TABLE_ENTRY</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line">        LIST_ENTRY listEntry;</span><br><span class="line">        ULONG64 __Undefined1;</span><br><span class="line">        ULONG64 __Undefined2;</span><br><span class="line">        ULONG64 __Undefined3;</span><br><span class="line">        ULONG64 NonPagedDebugInfo;</span><br><span class="line">        ULONG64 DllBase;</span><br><span class="line">        ULONG64 EntryPoint;</span><br><span class="line">        ULONG SizeOfImage;</span><br><span class="line">        UNICODE_STRING path;</span><br><span class="line">        UNICODE_STRING name;</span><br><span class="line">        ULONG   Flags;</span><br><span class="line">        USHORT  LoadCount;</span><br><span class="line">        USHORT  __Undefined5;</span><br><span class="line">        ULONG64 __Undefined6;</span><br><span class="line">        ULONG   CheckSum;</span><br><span class="line">        ULONG   __padding1;</span><br><span class="line">        ULONG   TimeDateStamp;</span><br><span class="line">        ULONG   __padding2;</span><br><span class="line">    &#125; KLDR_DATA_TABLE_ENTRY, * PKLDR_DATA_TABLE_ENTRY;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    <span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">KLDR_DATA_TABLE_ENTRY</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line">        LIST_ENTRY listEntry;</span><br><span class="line">        ULONG unknown1;</span><br><span class="line">        ULONG unknown2;</span><br><span class="line">        ULONG unknown3;</span><br><span class="line">        ULONG unknown4;</span><br><span class="line">        ULONG unknown5;</span><br><span class="line">        ULONG unknown6;</span><br><span class="line">        ULONG unknown7;</span><br><span class="line">        UNICODE_STRING path;</span><br><span class="line">        UNICODE_STRING name;</span><br><span class="line">        ULONG   Flags;</span><br><span class="line">    &#125; KLDR_DATA_TABLE_ENTRY, * PKLDR_DATA_TABLE_ENTRY;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    PKLDR_DATA_TABLE_ENTRY pLdrData = (PKLDR_DATA_TABLE_ENTRY)pDriverObject-&gt;DriverSection;</span><br><span class="line">    pLdrData-&gt;Flags = pLdrData-&gt;Flags | <span class="number">0x20</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// -------------------------------------------------------</span></span><br><span class="line"><span class="comment">// 驱动入口</span></span><br><span class="line"><span class="comment">// -------------------------------------------------------</span></span><br><span class="line">NTSTATUS <span class="title function_">DriverEntry</span><span class="params">(</span></span><br><span class="line"><span class="params">    _In_ PDRIVER_OBJECT  DriverObject,</span></span><br><span class="line"><span class="params">    _In_ PUNICODE_STRING RegistryPath</span></span><br><span class="line"><span class="params">)</span></span><br><span class="line">&#123;</span><br><span class="line">    UNREFERENCED_PARAMETER(RegistryPath);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绕过签名检查</span></span><br><span class="line"><span class="comment">// LINKER_FLAGS=/INTEGRITYCHECK</span></span><br><span class="line">    BypassCheckSign(DriverObject);</span><br><span class="line"></span><br><span class="line">    DbgPrint(<span class="string">&quot;[ObDemo] DriverEntry\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    DriverObject-&gt;DriverUnload = DriverUnload;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> RegisterCallbacks();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/10528bf0474599075702541447a06e22.jpg" title="10528bf0474599075702541447a06e22" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/10528bf0474599075702541447a06e22.jpg" alt="10528bf0474599075702541447a06e22"></a></p>
+<hr>
+<h2 id="windbg手动Object-回调致盲全过程"><a href="#windbg手动Object-回调致盲全过程" class="headerlink" title="windbg手动Object 回调致盲全过程"></a>windbg手动Object 回调致盲全过程</h2><h3 id="一、数据结构"><a href="#一、数据结构" class="headerlink" title="一、数据结构"></a>一、数据结构</h3><p><strong><code>_OBJECT_TYPE</code></strong>（偏移 Win10&#x2F;Win11）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+0x000  TypeList</span><br><span class="line">+0x010  Name</span><br><span class="line">+0x0c8  CallbackList    ← LIST_ENTRY，回调链表头</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>_CALLBACK_ENTRY_ITEM</code></strong>（未公开结构）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+0x00  EntryItemList.Flink   ← 链表前向指针</span><br><span class="line">+0x08  EntryItemList.Blink   ← 链表后向指针</span><br><span class="line">+0x10  Operations            ← CREATE/DUPLICATE 标志</span><br><span class="line">+0x18  CallbackEntry         ← 指向注册块</span><br><span class="line">+0x20  ObjectType            ← 指向所属 OBJECT_TYPE</span><br><span class="line">+0x28  PreOperation          ← 操作前回调函数指针  ← 目标</span><br><span class="line">+0x30  PostOperation         ← 操作后回调函数指针  ← 目标</span><br><span class="line">+0x38  unk</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="二、定位过程"><a href="#二、定位过程" class="headerlink" title="二、定位过程"></a>二、定位过程</h3><p><strong>第一步：找 CallbackList 头</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dt nt!_OBJECT_TYPE poi(PsProcessType)</span><br><span class="line">dt nt!_OBJECT_TYPE poi(PsThreadType)</span><br></pre></td></tr></table></figure>
+<p>读取 <code>+0x0c8 CallbackList</code> 的地址。</p>
+<p><strong>第二步：找链表头的真实地址</strong></p>
+<p><code>CallbackList</code> 本身是嵌入在 <code>_OBJECT_TYPE</code> 里的 <code>LIST_ENTRY</code>，它的地址 &#x3D; <code>_OBJECT_TYPE基址 + 0xc8</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dx -r1 (*((ntkrnlmp!_LIST_ENTRY *)0x&lt;CallbackList地址&gt;))</span><br></pre></td></tr></table></figure>
+
+<p>读出 <code>Flink</code>，即第一个 <code>_CALLBACK_ENTRY_ITEM</code> 的地址。</p>
+<p><strong>第三步：确认节点内容</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dqs &lt;Flink地址&gt; L8</span><br></pre></td></tr></table></figure>
+<p>确认 <code>+0x28</code> 处是你要致盲的回调函数地址。</p>
+<hr>
+<h3 id="三、致盲操作"><a href="#三、致盲操作" class="headerlink" title="三、致盲操作"></a>三、致盲操作</h3><p><strong>方法一：清零回调函数指针（推荐，不破坏链表结构）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">eq &lt;节点地址&gt;+28 0    ← 清零 PreOperation</span><br><span class="line">eq &lt;节点地址&gt;+30 0    ← 清零 PostOperation</span><br></pre></td></tr></table></figure>
+
+<p><a href="/Users/changmen/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files/wxid_2kp1yqn61s4x22_5ddd/temp/RWTemp/2026-04/440882318e1eb40fef64dcd7431fa0ea/44b1a39c8c6bbdf67d3ce6c43ba4c1fd.png" title="44b1a39c8c6bbdf67d3ce6c43ba4c1fd" class="gallery-item" style="box-shadow: none;"> <img src="/Users/changmen/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files/wxid_2kp1yqn61s4x22_5ddd/temp/RWTemp/2026-04/440882318e1eb40fef64dcd7431fa0ea/44b1a39c8c6bbdf67d3ce6c43ba4c1fd.png" alt="44b1a39c8c6bbdf67d3ce6c43ba4c1fd"></a></p>
+<p><strong>方法二：摘链（让链表头自指，节点孤立）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">eq &lt;CallbackList地址&gt; &lt;CallbackList地址&gt;      ← Flink 自指</span><br><span class="line">eq &lt;CallbackList地址+8&gt; &lt;CallbackList地址&gt;    ← Blink 自指</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/44b1a39c8c6bbdf67d3ce6c43ba4c1fd.png" title="44b1a39c8c6bbdf67d3ce6c43ba4c1fd" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/44b1a39c8c6bbdf67d3ce6c43ba4c1fd.png" alt="44b1a39c8c6bbdf67d3ce6c43ba4c1fd"></a></p>
+<h3 id="四、本次实验具体地址"><a href="#四、本次实验具体地址" class="headerlink" title="四、本次实验具体地址"></a>四、本次实验具体地址</h3><table>
+<thead>
+<tr>
+<th>对象</th>
+<th>CallbackList头</th>
+<th>节点地址</th>
+<th>PreOperation偏移地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Process</td>
+<td><code>ffffca0f&#39;2e0d8208</code></td>
+<td><code>ffffa60d&#39;768697c0</code></td>
+<td><code>768697c0+28</code></td>
+</tr>
+<tr>
+<td>Thread</td>
+<td><code>ffffca0f&#39;2e0d84c8</code></td>
+<td><code>ffffa60d&#39;76869800</code></td>
+<td><code>76869800+28</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="五、注意事项"><a href="#五、注意事项" class="headerlink" title="五、注意事项"></a>五、注意事项</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Win7 CallbackList偏移</td>
+<td><code>+0x0c0</code></td>
+</tr>
+<tr>
+<td>Win10&#x2F;Win11 CallbackList偏移</td>
+<td><code>+0x0c8</code></td>
+</tr>
+<tr>
+<td>清零指针 vs 摘链</td>
+<td>清零更安全，不破坏链表结构</td>
+</tr>
+<tr>
+<td>重启后恢复</td>
+<td>所有修改只在运行时内存，重启自动恢复</td>
+</tr>
+<tr>
+<td>驱动卸载</td>
+<td><code>ObUnRegisterCallbacks</code> 正常卸载不受影响</td>
+</tr>
+</tbody></table>
+<h2 id="如何寻找所需数据结构"><a href="#如何寻找所需数据结构" class="headerlink" title="如何寻找所需数据结构"></a>如何寻找所需数据结构</h2><p>那么现在知道了回调函数的位置在哪儿，新的问题是如何通过代码定位PsProcessType和PsThreadType 这两个全局内核变量。</p>
+<p>通过IDA 的交叉引用可以找到调用了PsProcessType 和PsThreadType 的函数，并且还这个函数还需要是ntoskrnl.exe 的导出函数，因为这样我们就可以像上篇文章中删除进程回调那样去获取PsProcessType 和PsThreadType 的地址。</p>
+<p><a target="_blank" rel="noopener" href="https://mmbiz.qpic.cn/sz_mmbiz_png/srMupvHFktzW4BkTwiaibDJXcJHQB43u9eEss0ZpIcKSDmznmESpOhf8o6ibSbs41R391M02wlk0qeU32rdeUpdqA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=1" title="图片" class="gallery-item" style="box-shadow: none;"> <img src="https://mmbiz.qpic.cn/sz_mmbiz_png/srMupvHFktzW4BkTwiaibDJXcJHQB43u9eEss0ZpIcKSDmznmESpOhf8o6ibSbs41R391M02wlk0qeU32rdeUpdqA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=1" alt="图片"></a></p>
+<p>通过分析发现NtDuplicateObject()函数中引用了PsProcessType 全局内核变量，而在NtOpenThreadTokenEx() 函数中引用了<code>PsThreadType</code> 全局内核变量。并且这两个函数在win7上也引用了相应的变量，同时也是ntoskrnl.exe 的导出函数。</p>
+<p>这样代码逻辑就通了：首先定位PsProcessType 和PsThreadType全局内核变量地址，根据偏移获得CALLBACK_ENTRY_ITEM的双向链表结构，遍历此结构将PreOperation 和PostOperation 指向的地址置0。</p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-04-25</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/'>
+                            驱动开发
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/04/25/%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8%E7%9B%91%E5%90%ACRegister%E6%B3%A8%E5%86%8C%E8%A1%A8%E5%9B%9E%E8%B0%83/">内核驱动监听Register注册表回调</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
