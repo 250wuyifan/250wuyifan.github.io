@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="内核驱动MiniFilter Callback" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    内核驱动MiniFilter Callback
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-04-30</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：1.8k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：9分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E8%A7%A3%E5%86%B3-FltEnumerateFilters-%E5%B9%B6%E8%8E%B7%E5%8F%96-FLTMGR-FltGlobals-%E5%9C%B0%E5%9D%80"><span class="post-toc-text">解决 FltEnumerateFilters 并获取 FLTMGR!FltGlobals 地址</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%9F%A5%E7%9C%8BFLTMGR-GLOBALS-%E7%BB%93%E6%9E%84"><span class="post-toc-text">查看FLTMGR!_GLOBALS 结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#GetFilterByName-%E5%87%BD%E6%95%B0"><span class="post-toc-text">GetFilterByName 函数</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#GetOperationsForFilter-%E5%87%BD%E6%95%B0"><span class="post-toc-text">GetOperationsForFilter 函数</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#EnumFrameVolumes-%E5%87%BD%E6%95%B0"><span class="post-toc-text">EnumFrameVolumes 函数</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#UnLinksForVolumesAndCallbacks-%E5%87%BD%E6%95%B0"><span class="post-toc-text">UnLinksForVolumesAndCallbacks 函数</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><p>具体的介绍可以看<a target="_blank" rel="noopener" href="https://www.lyshark.com/post/6f58192d.html%EF%BC%8C%E8%BF%99%E4%B8%AA%E6%98%AF%E6%AF%94%E8%BE%83%E5%A4%8D%E6%9D%82%E7%9A%84%EF%BC%8C%E4%B8%8D%E5%83%8F%E7%9B%91%E6%8E%A7%E8%BF%9B%E7%A8%8B%EF%BC%8C%E7%BA%BF%E7%A8%8B%E9%82%A3%E4%BA%9B%EF%BC%8C%E5%8F%AA%E9%9C%80%E8%A6%81%E4%B8%80%E4%B8%AAapi+%E4%B8%80%E4%B8%AA%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%E3%80%82">https://www.lyshark.com/post/6f58192d.html，这个是比较复杂的，不像监控进程，线程那些，只需要一个api+一个回调函数。</a></p>
+<p>我们自己写的文件过滤驱动为这个</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430110322994.png" title="image-20260430110322994" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430110322994.png" alt="image-20260430110322994"></a></p>
+<p>现在我们去windbg去找一下关于文件过滤的一系列内核数据结构。</p>
+<p>参考<a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal/tree/main/MiniFilterFileCallbackKernelBypass">https://github.com/V-i-x-x/kernel-callback-removal/tree/main/MiniFilterFileCallbackKernelBypass</a></p>
+<p>这个项目很好，但是需要手动进行修改一些偏移，不然直接蓝屏。</p>
+<h2 id="解决-FltEnumerateFilters-并获取-FLTMGR-FltGlobals-地址"><a href="#解决-FltEnumerateFilters-并获取-FLTMGR-FltGlobals-地址" class="headerlink" title="解决 FltEnumerateFilters 并获取 FLTMGR!FltGlobals 地址"></a>解决 FltEnumerateFilters 并获取 FLTMGR!FltGlobals 地址</h2><p>我们可以通过以下导出函数 FLTMGR!FltEnumerateFilters进行二分查找获得该FLTMGR!FltGlobals地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">u FLTMGR!FltEnumerateFilters L50</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430111318854.png" title="image-20260430111318854" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430111318854.png" alt="image-20260430111318854"></a></p>
+<p>根据特征码找到此位置，然后获取这个地址减去0x58即可。</p>
+<h2 id="查看FLTMGR-GLOBALS-结构"><a href="#查看FLTMGR-GLOBALS-结构" class="headerlink" title="查看FLTMGR!_GLOBALS 结构"></a>查看FLTMGR!_GLOBALS 结构</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">0: kd&gt; dt FLTMGR!_GLOBALS fffff801`7ead9600</span><br><span class="line">   +0x000 DebugFlags       : 0</span><br><span class="line">   +0x008 TraceFlags       : 0</span><br><span class="line">   +0x010 GFlags           : 0x143</span><br><span class="line">   +0x018 RegHandle        : 0xffffbb08`8dd66110</span><br><span class="line">   +0x020 NumProcessors    : 2</span><br><span class="line">   +0x024 CacheLineSize    : 0x40</span><br><span class="line">   +0x028 AlignedInstanceTrackingListSize : 0x40</span><br><span class="line">   +0x030 ControlDeviceObject : 0xffffbb08`8da9b290 _DEVICE_OBJECT</span><br><span class="line">   +0x038 DriverObject     : 0xffffbb08`8da9d800 _DRIVER_OBJECT</span><br><span class="line">   +0x040 KtmTransactionManagerHandle : 0xffffffff`80000234 Void</span><br><span class="line">   +0x048 TxVolKtmResourceManagerHandle : 0xffffffff`80002fbc Void</span><br><span class="line">   +0x050 TxVolKtmResourceManager : 0xffffbb08`93d11d60 _KRESOURCEMANAGER</span><br><span class="line">   +0x058 FrameList        : _FLT_RESOURCE_LIST_HEAD</span><br><span class="line">   +0x0d8 Phase2InitLock   : _FAST_MUTEX</span><br><span class="line">   +0x110 RegistryPath     : _UNICODE_STRING &quot;\Registry\Machine\System\CurrentControlSet\Services\FltMgr&quot;</span><br><span class="line">   +0x120 RegistryPathBuffer : [160]  &quot;\Registry\Machine\System\CurrentControlSet\Services\FltMgr&quot;</span><br><span class="line">   +0x260 GlobalVolumeOperationLock : 0xffffbb08`8dd69590 _EX_PUSH_LOCK_CACHE_AWARE_LEGACY</span><br><span class="line">   +0x268 FltpServerPortObjectType : 0xffffbb08`8d3f12a0 _OBJECT_TYPE</span><br><span class="line">   +0x270 FltpCommunicationPortObjectType : 0xffffbb08`8d3f1400 _OBJECT_TYPE</span><br><span class="line">   +0x278 MsgDeviceObject  : 0xffffbb08`8da9b060 _DEVICE_OBJECT</span><br><span class="line">   +0x280 ManualDeviceAttachTimer : (null) </span><br><span class="line">   +0x288 ManualDeviceAttachWork : _WORK_QUEUE_ITEM</span><br><span class="line">   +0x2a8 ManualDeviceAttachLimit : 0n0</span><br><span class="line">   +0x2ac ManualAttachDelayCounter : 0n0</span><br><span class="line">   +0x2b0 FastManualAttachTimerPeriod : 5</span><br><span class="line">   +0x2b4 ManualAttachTimerPeriod : 0xf</span><br><span class="line">   +0x2b8 ManualAttachDelay : 0</span><br><span class="line">   +0x2bc ManualAttachIgnoredDevices : 0 &#x27;&#x27;</span><br><span class="line">   +0x2bd ManualAttachOnlyOnceDevices : 0 &#x27;&#x27;</span><br><span class="line">   +0x2be ManualAttachFastAttachDevices : 0 &#x27;&#x27;</span><br><span class="line">   +0x2c0 CallbackStackSwapThreshold : 0x2000</span><br><span class="line">   +0x300 TargetedIoCtrlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x380 IoDeviceHintLookasideList : _PAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x400 StreamListCtrlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x480 FileListCtrlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x500 NameCacheCreateCtrlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x580 AsyncIoContextLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x600 WorkItemLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x680 NameControlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x700 OperationStatusCtrlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x780 NameGenerationContextLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x800 FileLockLookasideList : _PAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x880 TxnParameterBlockLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x900 TxCtxExtensionNPagedLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x980 TxVolCtxLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0xa00 TxVolStreamListCtrlEntryLookasideList : _PAGED_LOOKASIDE_LIST</span><br><span class="line">   +0xa80 SectionListCtrlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0xb00 SectionCtxExtensionLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0xb80 OpenReparseListLookasideList : _PAGED_LOOKASIDE_LIST</span><br><span class="line">   +0xc00 OpenReparseListEntryLookasideList : _PAGED_LOOKASIDE_LIST</span><br><span class="line">   +0xc80 QueryOnCreateLookasideList : _PAGED_LOOKASIDE_LIST</span><br><span class="line">   +0xd00 NameBufferLookasideList : _PAGED_LOOKASIDE_LIST</span><br><span class="line">   +0xd80 NameCacheNodeLookasideLists : [7] _PAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x1100 FltpParameterOffsetTable : [28] &lt;anonymous-tag&gt;</span><br><span class="line">   +0x11e0 ThrottledWorkCtrl : _THROTTLED_WORK_ITEM_CTRL</span><br><span class="line">   +0x1230 LostItemDelayInSeconds : 0x1e</span><br><span class="line">   +0x1238 VerifiedFiltersList : _LIST_ENTRY [ 0xfffff801`7eada838 - 0xfffff801`7eada838 ]</span><br><span class="line">   +0x1248 VerifiedFiltersLock : 0</span><br><span class="line">   +0x1250 VerifiedResourceLinkFailures : 0n0</span><br><span class="line">   +0x1254 VerifiedResourceUnlinkFailures : 0n0</span><br><span class="line">   +0x1258 PerfTraceRoutines : 0xfffff801`7fa00eb0 _WMI_FLTIO_NOTIFY_ROUTINES</span><br><span class="line">   +0x1260 DummyPerfTraceRoutines : _WMI_FLTIO_NOTIFY_ROUTINES</span><br><span class="line">   +0x1290 RenameCounter    : _LARGE_INTEGER 0x1865a</span><br><span class="line">   +0x1298 FilterSupportedFeaturesMode : 0n0</span><br><span class="line">   +0x12a0 InitialRundownSize : 0xd8</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="GetFilterByName-函数"><a href="#GetFilterByName-函数" class="headerlink" title="GetFilterByName 函数"></a>GetFilterByName 函数</h2><p>+0x058 FrameList        : _FLT_RESOURCE_LIST_HEAD</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">0: kd&gt; dx -id 0,0,ffffbb088d28a040 -r1 (*((FLTMGR!_FLT_RESOURCE_LIST_HEAD *)0xfffff8017ead9658))</span><br><span class="line">(*((FLTMGR!_FLT_RESOURCE_LIST_HEAD *)0xfffff8017ead9658))                 [Type: _FLT_RESOURCE_LIST_HEAD]</span><br><span class="line">    [+0x000] rLock            : Unowned Resource [Type: _ERESOURCE]</span><br><span class="line">    [+0x068] rList            [Type: _LIST_ENTRY]</span><br><span class="line">    [+0x078] rCount           : 0x1 [Type: unsigned long]</span><br><span class="line">0: kd&gt; dx -id 0,0,ffffbb088d28a040 -r1 (*((FLTMGR!_LIST_ENTRY *)0xfffff8017ead96c0))</span><br><span class="line">(*((FLTMGR!_LIST_ENTRY *)0xfffff8017ead96c0))                 [Type: _LIST_ENTRY]</span><br><span class="line">    [+0x000] Flink            : 0xffffbb088dacc038 [Type: _LIST_ENTRY *]</span><br><span class="line">    [+0x008] Blink            : 0xffffbb088dacc038 [Type: _LIST_ENTRY *]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">0: kd&gt; dt FLTMGR!_FLTP_FRAME 0xffffbb088dacc030</span><br><span class="line">   +0x000 Type             : _FLT_TYPE</span><br><span class="line">   +0x008 Links            : _LIST_ENTRY [ 0xfffff801`7ead96c0 - 0xfffff801`7ead96c0 ]</span><br><span class="line">   +0x018 FrameID          : 0</span><br><span class="line">   +0x020 AltitudeIntervalLow : _UNICODE_STRING &quot;0&quot;</span><br><span class="line">   +0x030 AltitudeIntervalHigh : _UNICODE_STRING &quot;409800&quot;</span><br><span class="line">   +0x040 LargeIrpCtrlStackSize : 0x7 &#x27;&#x27;</span><br><span class="line">   +0x041 SmallIrpCtrlStackSize : 0x1 &#x27;&#x27;</span><br><span class="line">   +0x048 RegisteredFilters : _FLT_RESOURCE_LIST_HEAD</span><br><span class="line">   +0x0c8 AttachedVolumes  : _FLT_RESOURCE_LIST_HEAD</span><br><span class="line">   +0x148 MountingVolumes  : _LIST_ENTRY [ 0xffffbb08`8dacc178 - 0xffffbb08`8dacc178 ]</span><br><span class="line">   +0x158 AttachedFileSystems : _FLT_MUTEX_LIST_HEAD</span><br><span class="line">   +0x1a8 ZombiedFltObjectContexts : _FLT_MUTEX_LIST_HEAD</span><br><span class="line">   +0x1f8 KtmResourceManagerHandle : 0xffffffff`8000023c Void</span><br><span class="line">   +0x200 KtmResourceManager : 0xffffbb08`8f30a300 _KRESOURCEMANAGER</span><br><span class="line">   +0x208 FilterUnloadLock : _ERESOURCE</span><br><span class="line">   +0x270 DeviceObjectAttachLock : _FAST_MUTEX</span><br><span class="line">   +0x2a8 Prcb             : 0xffffbb08`8d3f5d80 _FLT_PRCB</span><br><span class="line">   +0x2b0 PrcbPoolToFree   : 0xffffbb08`8d3f5d60 Void</span><br><span class="line">   +0x2b8 LookasidePoolToFree : 0xffffbb08`8da9d9c0 Void</span><br><span class="line">   +0x2c0 IrpCtrlStackProfiler : _FLTP_IRPCTRL_STACK_PROFILER</span><br><span class="line">   +0x400 SmallIrpCtrlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x480 LargeIrpCtrlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x500 ReserveIrpCtrls  : _RESERVE_IRPCTRL</span><br><span class="line">0: kd&gt; dx -id 0,0,ffffbb088d28a040 -r1 (*((FLTMGR!_FLT_RESOURCE_LIST_HEAD *)0xffffbb088dacc078))</span><br><span class="line">(*((FLTMGR!_FLT_RESOURCE_LIST_HEAD *)0xffffbb088dacc078))                 [Type: _FLT_RESOURCE_LIST_HEAD]</span><br><span class="line">    [+0x000] rLock            : Unowned Resource [Type: _ERESOURCE]</span><br><span class="line">    [+0x068] rList            [Type: _LIST_ENTRY]</span><br><span class="line">    [+0x078] rCount           : 0xc [Type: unsigned long]</span><br><span class="line">0: kd&gt; dx -id 0,0,ffffbb088d28a040 -r1 (*((FLTMGR!_LIST_ENTRY *)0xffffbb088dacc0e0))</span><br><span class="line">(*((FLTMGR!_LIST_ENTRY *)0xffffbb088dacc0e0))                 [Type: _LIST_ENTRY]</span><br><span class="line">    [+0x000] Flink            : 0xffffbb088d344660 [Type: _LIST_ENTRY *]</span><br><span class="line">    [+0x008] Blink            : 0xffffbb088f3084d0 [Type: _LIST_ENTRY *]</span><br><span class="line">0: kd&gt; dt _FLT_FILTER 0xffffbb088d344650</span><br><span class="line">FLTMGR!_FLT_FILTER</span><br><span class="line">   +0x000 Base             : _FLT_OBJECT</span><br><span class="line">   +0x030 Frame            : 0xffffbb08`8dacc030 _FLTP_FRAME</span><br><span class="line">   +0x038 Name             : _UNICODE_STRING &quot;bindflt&quot;</span><br><span class="line">   +0x048 DefaultAltitude  : _UNICODE_STRING &quot;409800&quot;</span><br><span class="line">   +0x058 Flags            : 0x16 (No matching name)</span><br><span class="line">   +0x060 DriverObject     : 0xffffbb08`90d21a70 _DRIVER_OBJECT</span><br><span class="line">   +0x068 InstanceList     : _FLT_RESOURCE_LIST_HEAD</span><br><span class="line">   +0x0e8 VerifierExtension : (null) </span><br><span class="line">   +0x0f0 VerifiedFiltersLink : _LIST_ENTRY [ 0x00000000`00000000 - 0x00000000`00000000 ]</span><br><span class="line">   +0x100 FilterUnload     : 0xfffff801`8ed11c70     long  +fffff8018ed11c70</span><br><span class="line">   +0x108 InstanceSetup    : 0xfffff801`8ed07810     long  +fffff8018ed07810</span><br><span class="line">   +0x110 InstanceQueryTeardown : 0xfffff801`8ed07720     long  +fffff8018ed07720</span><br><span class="line">   +0x118 InstanceTeardownStart : 0xfffff801`8ed07c20     void  +fffff8018ed07c20</span><br><span class="line">   +0x120 InstanceTeardownComplete : 0xfffff801`8ed07c10     void  +fffff8018ed07c10</span><br><span class="line">   +0x128 SupportedContextsListHead : 0xffffbb08`90f032f0 _ALLOCATE_CONTEXT_HEADER</span><br><span class="line">   +0x130 SupportedContexts : [7] (null) </span><br><span class="line">   +0x168 PreVolumeMount   : 0xfffff801`8ed04ef0     _FLT_PREOP_CALLBACK_STATUS  +fffff8018ed04ef0</span><br><span class="line">   +0x170 PostVolumeMount  : (null) </span><br><span class="line">   +0x178 GenerateFileName : 0xfffff801`8ecfdd90     long  +fffff8018ecfdd90</span><br><span class="line">   +0x180 NormalizeNameComponent : (null) </span><br><span class="line">   +0x188 NormalizeNameComponentEx : 0xfffff801`8ed10980     long  +fffff8018ed10980</span><br><span class="line">   +0x190 NormalizeContextCleanup : (null) </span><br><span class="line">   +0x198 KtmNotification  : (null) </span><br><span class="line">   +0x1a0 SectionNotification : (null) </span><br><span class="line">   +0x1a8 Operations       : 0xffffbb08`8d344900 _FLT_OPERATION_REGISTRATION</span><br><span class="line">   +0x1b0 OldDriverUnload  : (null) </span><br><span class="line">   +0x1b8 ActiveOpens      : _FLT_MUTEX_LIST_HEAD</span><br><span class="line">   +0x208 ConnectionList   : _FLT_MUTEX_LIST_HEAD</span><br><span class="line">   +0x258 PortList         : _FLT_MUTEX_LIST_HEAD</span><br><span class="line">   +0x2a8 PortLock         : _EX_PUSH_LOCK</span><br></pre></td></tr></table></figure>
+
+<p>跟着链表就能找到我们的驱动</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430112247730.png" title="image-20260430112247730" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430112247730.png" alt="image-20260430112247730"></a></p>
+<h2 id="GetOperationsForFilter-函数"><a href="#GetOperationsForFilter-函数" class="headerlink" title="GetOperationsForFilter 函数"></a>GetOperationsForFilter 函数</h2><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430112427781.png" title="image-20260430112427781" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430112427781.png" alt="image-20260430112427781"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430112447515.png" title="image-20260430112447515" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430112447515.png" alt="image-20260430112447515"></a></p>
+<p> 开头第一个就是这个</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430110322994.png" title="image-20260430110322994" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430110322994.png" alt="image-20260430110322994"></a></p>
+<p>比如我们看到是0，那么就是代表IRP_MJ_CREATE操作，然后pre和post就是回调FSCreatePreCallback和FSCreatePostCallback</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">static std::unordered_map&lt;BYTE, const char*&gt; g_IrpMjMap&#123;</span><br><span class="line">	&#123;0, &quot;IRP_MJ_CREATE&quot;&#125;,</span><br><span class="line">	&#123;1, &quot;IRP_MJ_CREATE_NAMED_PIPE&quot;&#125;,</span><br><span class="line">	&#123;2, &quot;IRP_MJ_CLOSE&quot;&#125;,</span><br><span class="line">	&#123;3, &quot;IRP_MJ_READ&quot;&#125;,</span><br><span class="line">	&#123;4, &quot;IRP_MJ_WRITE&quot;&#125;,</span><br><span class="line">	&#123;5, &quot;IRP_MJ_QUERY_INFORMATION&quot;&#125;,</span><br><span class="line">	&#123;6, &quot;IRP_MJ_SET_INFORMATION&quot;&#125;,</span><br><span class="line">	&#123;7, &quot;IRP_MJ_QUERY_EA&quot;&#125;,</span><br><span class="line">	&#123;8, &quot;IRP_MJ_SET_EA&quot;&#125;,</span><br><span class="line">	&#123;9, &quot;IRP_MJ_FLUSH_BUFFERS&quot;&#125;,</span><br><span class="line">	&#123;0xa, &quot;IRP_MJ_QUERY_VOLUME_INFORMATION&quot;&#125;,</span><br><span class="line">	&#123;0xb, &quot;IRP_MJ_SET_VOLUME_INFORMATION&quot;&#125;,</span><br><span class="line">	&#123;0xc, &quot;IRP_MJ_DIRECTORY_CONTROL&quot;&#125;,</span><br><span class="line">	&#123;0xd, &quot;IRP_MJ_FILE_SYSTEM_CONTROL&quot;&#125;,</span><br><span class="line">	&#123;0xe, &quot;IRP_MJ_DEVICE_CONTROL&quot;&#125;,</span><br><span class="line">	&#123;0xf, &quot;IRP_MJ_INTERNAL_DEVICE_CONTROL&quot;&#125;,</span><br><span class="line">	&#123;0x10, &quot;IRP_MJ_SHUTDOWN&quot;&#125;,</span><br><span class="line">	&#123;0x11, &quot;IRP_MJ_LOCK_CONTROL&quot;&#125;,</span><br><span class="line">	&#123;0x12, &quot;IRP_MJ_CLEANUP&quot;&#125;,</span><br><span class="line">	&#123;0x13, &quot;IRP_MJ_CREATE_MAILSLOT&quot;&#125;,</span><br><span class="line">	&#123;0x14, &quot;IRP_MJ_QUERY_SECURITY&quot;&#125;,</span><br><span class="line">	&#123;0x15, &quot;IRP_MJ_SET_SECURITY&quot;&#125;,</span><br><span class="line">	&#123;0x16, &quot;IRP_MJ_POWER&quot;&#125;,</span><br><span class="line">	&#123;0x17, &quot;IRP_MJ_SYSTEM_CONTROL&quot;&#125;,</span><br><span class="line">	&#123;0x18, &quot;IRP_MJ_DEVICE_CHANGE&quot;&#125;,</span><br><span class="line">	&#123;0x19, &quot;IRP_MJ_QUERY_QUOTA&quot;&#125;,</span><br><span class="line">	&#123;0x1a, &quot;IRP_MJ_SET_QUOTA&quot;&#125;,</span><br><span class="line">	&#123;0x1b, &quot;IRP_MJ_PNP&quot;&#125;,</span><br><span class="line">	&#123;0x1b, &quot;IRP_MJ_PNP_POWER&quot;&#125;,</span><br><span class="line">	&#123;0x1b, &quot;IRP_MJ_MAXIMUM_FUNCTION&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-1), &quot;IRP_MJ_ACQUIRE_FOR_SECTION_SYNCHRONIZATION&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-2), &quot;IRP_MJ_RELEASE_FOR_SECTION_SYNCHRONIZATION&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-3), &quot;IRP_MJ_ACQUIRE_FOR_MOD_WRITE&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-4), &quot;IRP_MJ_RELEASE_FOR_MOD_WRITE&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-5), &quot;IRP_MJ_ACQUIRE_FOR_CC_FLUSH&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-6), &quot;IRP_MJ_RELEASE_FOR_CC_FLUSH&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-7), &quot;IRP_MJ_QUERY_OPEN&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-13), &quot;IRP_MJ_FAST_IO_CHECK_IF_POSSIBLE&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-14), &quot;IRP_MJ_NETWORK_QUERY_OPEN&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-15), &quot;IRP_MJ_MDL_READ&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-16), &quot;IRP_MJ_MDL_READ_COMPLETE&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-17), &quot;IRP_MJ_PREPARE_MDL_WRITE&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-18), &quot;IRP_MJ_MDL_WRITE_COMPLETE&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-19), &quot;IRP_MJ_VOLUME_MOUNT&quot;&#125;,</span><br><span class="line">	&#123;((UCHAR)-20), &quot;IRP_MJ_VOLUME_DISMOUNT&quot;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这边加0x20，看下一个IRP。</p>
+<p><strong>终止条件要注意：数组最后一个 entry 的 <code>MajorFunction</code> 是 <code>IRP_MJ_OPERATION_END (0x80)</code>，遍历时碰到 0x80 就停止，这是 FltMgr 的约定标志。</strong></p>
+<p>那么下一个0x4，就是IRP_MJ_WRITE。继续遍历即可</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430112852384.png" title="image-20260430112852384" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430112852384.png" alt="image-20260430112852384"></a></p>
+<h2 id="EnumFrameVolumes-函数"><a href="#EnumFrameVolumes-函数" class="headerlink" title="EnumFrameVolumes 函数"></a>EnumFrameVolumes 函数</h2><p>每个帧也连接到卷。你可以把卷作为设备名称。</p>
+<p>文件过滤器可以设置为仅激活并监控特定卷的 I&#x2F;O 操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">0: kd&gt; dt FLTMGR!_FLTP_FRAME 0xffffbb088dacc030</span><br><span class="line">   +0x000 Type             : _FLT_TYPE</span><br><span class="line">   +0x008 Links            : _LIST_ENTRY [ 0xfffff801`7ead96c0 - 0xfffff801`7ead96c0 ]</span><br><span class="line">   +0x018 FrameID          : 0</span><br><span class="line">   +0x020 AltitudeIntervalLow : _UNICODE_STRING &quot;0&quot;</span><br><span class="line">   +0x030 AltitudeIntervalHigh : _UNICODE_STRING &quot;409800&quot;</span><br><span class="line">   +0x040 LargeIrpCtrlStackSize : 0x7 &#x27;&#x27;</span><br><span class="line">   +0x041 SmallIrpCtrlStackSize : 0x1 &#x27;&#x27;</span><br><span class="line">   +0x048 RegisteredFilters : _FLT_RESOURCE_LIST_HEAD</span><br><span class="line">   +0x0c8 AttachedVolumes  : _FLT_RESOURCE_LIST_HEAD</span><br><span class="line">   +0x148 MountingVolumes  : _LIST_ENTRY [ 0xffffbb08`8dacc178 - 0xffffbb08`8dacc178 ]</span><br><span class="line">   +0x158 AttachedFileSystems : _FLT_MUTEX_LIST_HEAD</span><br><span class="line">   +0x1a8 ZombiedFltObjectContexts : _FLT_MUTEX_LIST_HEAD</span><br><span class="line">   +0x1f8 KtmResourceManagerHandle : 0xffffffff`8000023c Void</span><br><span class="line">   +0x200 KtmResourceManager : 0xffffbb08`8f30a300 _KRESOURCEMANAGER</span><br><span class="line">   +0x208 FilterUnloadLock : _ERESOURCE</span><br><span class="line">   +0x270 DeviceObjectAttachLock : _FAST_MUTEX</span><br><span class="line">   +0x2a8 Prcb             : 0xffffbb08`8d3f5d80 _FLT_PRCB</span><br><span class="line">   +0x2b0 PrcbPoolToFree   : 0xffffbb08`8d3f5d60 Void</span><br><span class="line">   +0x2b8 LookasidePoolToFree : 0xffffbb08`8da9d9c0 Void</span><br><span class="line">   +0x2c0 IrpCtrlStackProfiler : _FLTP_IRPCTRL_STACK_PROFILER</span><br><span class="line">   +0x400 SmallIrpCtrlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x480 LargeIrpCtrlLookasideList : _NPAGED_LOOKASIDE_LIST</span><br><span class="line">   +0x500 ReserveIrpCtrls  : _RESERVE_IRPCTRL</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430113304510.png" title="image-20260430113304510" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430113304510.png" alt="image-20260430113304510"></a></p>
+<p>需要从我们获得的卷地址中减去 10，才能到达卷结构 <code>FLTMGR！_FLT_VOLUME</code> 的起点</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430113248199.png" title="image-20260430113248199" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430113248199.png" alt="image-20260430113248199"></a></p>
+<h2 id="UnLinksForVolumesAndCallbacks-函数"><a href="#UnLinksForVolumesAndCallbacks-函数" class="headerlink" title="UnLinksForVolumesAndCallbacks 函数"></a>UnLinksForVolumesAndCallbacks 函数</h2><p>每个卷将包含一个回调列表，按其mj+22进行索引。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430113454119.png" title="image-20260430113454119" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430113454119.png" alt="image-20260430113454119"></a></p>
+<p>意思就是从22开始，对应我们的g_IrpMjMap，比如22就是{0, “IRP_MJ_CREATE”}</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dt FLTMGR!_CALLBACK_NODE</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430113654392.png" title="image-20260430113654392" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430113654392.png" alt="image-20260430113654392"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430114230393.png" title="image-20260430114230393" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430114230393.png" alt="image-20260430114230393"></a></p>
+<p>那么我们之前看到的，0x0的回调，跟这个是对应的，pre post都是一样的。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430114356816.png" title="image-20260430114356816" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430114356816.png" alt="image-20260430114356816"></a></p>
+<p>所以这个寻找的逻辑，就是遍历这些卷，然后进行找Callbacks，从50个链表的第22个开始，然后遍历我们之前获取到的指定驱动的mj几种类型的。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430115246353.png" title="image-20260430115246353" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430115246353.png" alt="image-20260430115246353"></a></p>
+<p>比如这是第21个，就是0xff {((UCHAR)-1), “IRP_MJ_ACQUIRE_FOR_SECTION_SYNCHRONIZATION”}，都对上了。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430115938502.png" title="image-20260430115938502" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430115938502.png" alt="image-20260430115938502"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430115657682.png" title="image-20260430115657682" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430115657682.png" alt="image-20260430115657682"></a></p>
+<p>该函数将具体操作如下：</p>
+<ul>
+<li>先循环我们从<code>过滤器（GetOperationsForFilter</code>）得到的操作。</li>
+<li>在第一个循环内，循环浏览各卷。</li>
+<li>获取操作 Entry（在卷结构的操作列表中）基于<code>主要函数（步骤 1 操作）+ 22</code>。操作 entry 将包含为该卷设置的所有回调</li>
+<li>循环我们所在的 operationLists 条目的 CallbackLinks。</li>
+<li>检查操作内的前后回调条目是否与过滤操作（步骤1）中的条目匹配。</li>
+<li>如果是这样，我们就把整个链表从操作中的链表（卷结构）中移除。</li>
+</ul>
+<p>意思就是从那50个里面，每一个都是一个链表，如果进去链表看里面数据FLTMGR!_CALLBACK_NODE我们循环对应上了这个pre和post，那么就进行这个从这个链表里面摘除。比如刚刚我们看的，这个就是第21个的链表。这个只有一个节点，如果我们摘除了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0: kd&gt; dx -id 0,0,ffffbb088d28a040 -r1 (*((FLTMGR!_LIST_ENTRY *)0xffffbb088da9e280))</span><br><span class="line">(*((FLTMGR!_LIST_ENTRY *)0xffffbb088da9e280))                 [Type: _LIST_ENTRY]</span><br><span class="line">    [+0x000] Flink            : 0xffffbb088fa31f00 [Type: _LIST_ENTRY *]</span><br><span class="line">    [+0x008] Blink            : 0xffffbb088fa31f00 [Type: _LIST_ENTRY *]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430120425141.png" title="image-20260430120425141" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430120425141.png" alt="image-20260430120425141"></a></p>
+<p>此时链表空了</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430120702158.png" title="image-20260430120702158" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260430120702158.png" alt="image-20260430120702158"></a></p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-04-30</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/'>
+                            驱动开发
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/04/25/%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8%E7%9B%91%E5%90%ACObRegister%E5%9B%9E%E8%B0%83/">内核驱动监听ObRegister回调</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
