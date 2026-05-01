@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="WFP_Callout_深度研究" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    WFP_Callout_深度研究
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-05-01</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：7.9k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：33分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="post-toc-text">目录</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B8%80%E3%80%81WFP-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="post-toc-text">一、WFP 基础概念</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF-WFP"><span class="post-toc-text">1.1 什么是 WFP</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-%E6%A0%B8%E5%BF%83%E6%9C%AF%E8%AF%AD"><span class="post-toc-text">1.2 核心术语</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%BA%8C%E3%80%81Callout-%E6%B3%A8%E5%86%8C%E6%9C%BA%E5%88%B6%EF%BC%88%E5%85%AC%E5%BC%80%E8%A7%86%E8%A7%92%EF%BC%89"><span class="post-toc-text">二、Callout 注册机制（公开视角）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-1-%E6%B3%A8%E5%86%8C%E6%B5%81%E7%A8%8B"><span class="post-toc-text">2.1 注册流程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-2-%E7%94%A8%E6%88%B7%E6%80%81%E6%9E%9A%E4%B8%BE-API"><span class="post-toc-text">2.2 用户态枚举 API</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B8%89%E3%80%81%E5%86%85%E6%A0%B8%E5%86%85%E9%83%A8%E5%AE%9E%E7%8E%B0%EF%BC%88%E9%80%86%E5%90%91%E8%A7%86%E8%A7%92%EF%BC%89"><span class="post-toc-text">三、内核内部实现（逆向视角）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-1-%E9%80%86%E5%90%91%E6%96%B9%E6%B3%95%E8%AE%BA"><span class="post-toc-text">3.1 逆向方法论</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-2-%E8%BF%BD%E8%B0%83%E7%94%A8%E9%93%BE"><span class="post-toc-text">3.2 追调用链</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-3-%E6%A0%B8%E5%BF%83%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AgWfpGlobal"><span class="post-toc-text">3.3 核心数据结构：gWfpGlobal</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-4-CalloutEntry-%E7%BB%93%E6%9E%84%E4%BD%93%E5%B8%83%E5%B1%80"><span class="post-toc-text">3.4 CalloutEntry 结构体布局</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-5-%E6%95%B0%E7%BB%84%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F"><span class="post-toc-text">3.5 数组的组织方式</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%9B%9B%E3%80%81%E8%B7%A8%E7%89%88%E6%9C%AC%E5%B7%AE%E5%BC%82%E4%B8%8E%E9%80%9A%E7%94%A8%E6%96%B9%E6%B3%95%E8%AE%BA"><span class="post-toc-text">四、跨版本差异与通用方法论</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-1-%E5%B7%B2%E7%9F%A5%E7%89%88%E6%9C%AC%E5%B7%AE%E5%BC%82"><span class="post-toc-text">4.1 已知版本差异</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-2-%E9%80%9A%E7%94%A8%E9%80%82%E9%85%8D%E6%96%B9%E6%B3%95%EF%BC%9A%E6%B0%B8%E8%BF%9C%E4%BB%8E%E6%B1%87%E7%BC%96%E8%AF%BB%E5%81%8F%E7%A7%BB"><span class="post-toc-text">4.2 通用适配方法：永远从汇编读偏移</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-3-%E5%9C%A8%E9%A9%B1%E5%8A%A8%E4%BB%A3%E7%A0%81%E4%B8%AD%E5%8A%A8%E6%80%81%E9%80%82%E9%85%8D"><span class="post-toc-text">4.3 在驱动代码中动态适配</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%BA%94%E3%80%81%E5%AE%9E%E6%88%98%EF%BC%9AWinDbg-%E6%9E%9A%E4%B8%BE%E6%89%80%E6%9C%89-Callout"><span class="post-toc-text">五、实战：WinDbg 枚举所有 Callout</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-1-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="post-toc-text">5.1 准备工作</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-2-Step-by-Step-%E5%AE%8C%E6%95%B4%E6%B5%81%E7%A8%8B"><span class="post-toc-text">5.2 Step-by-Step 完整流程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-3-%E5%AE%9E%E9%99%85%E8%BE%93%E5%87%BA%E7%A4%BA%E4%BE%8B"><span class="post-toc-text">5.3 实际输出示例</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-4-%E5%B8%B8%E8%A7%81%E9%99%B7%E9%98%B1"><span class="post-toc-text">5.4 常见陷阱</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%85%AD%E3%80%81%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0%E6%9E%9A%E4%B8%BE%EF%BC%88%E9%A9%B1%E5%8A%A8%E5%B1%82%EF%BC%89"><span class="post-toc-text">六、编程实现枚举（驱动层）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-1-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="post-toc-text">6.1 架构设计</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81%E6%A1%86%E6%9E%B6"><span class="post-toc-text">6.2 内核驱动核心代码框架</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-3-%E7%89%88%E6%9C%AC%E9%80%82%E9%85%8D%E7%AD%96%E7%95%A5"><span class="post-toc-text">6.3 版本适配策略</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B8%83%E3%80%81%E5%BB%B6%E4%BC%B8%EF%BC%9ACallout-%E7%9A%84%E5%AE%89%E5%85%A8%E5%90%AB%E4%B9%89"><span class="post-toc-text">七、延伸：Callout 的安全含义</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9E%9A%E4%B8%BE-Callout"><span class="post-toc-text">7.1 为什么要枚举 Callout</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-2-Callout-%E7%9A%84%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E6%9C%BA%E5%88%B6"><span class="post-toc-text">7.2 Callout 的引用计数机制</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-3-Callout-%E7%9A%84-Flag-%E5%90%AB%E4%B9%89"><span class="post-toc-text">7.3 Callout 的 Flag 含义</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%85%AB%E3%80%81%E7%A0%94%E7%A9%B6%E6%A1%88%E4%BE%8B%EF%BC%9ANetworkKernelBypass-%E5%88%86%E6%9E%90"><span class="post-toc-text">八、研究案例：NetworkKernelBypass 分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-1-%E9%A1%B9%E7%9B%AE%E5%9C%A8%E6%95%B4%E4%B8%AA%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB%E4%B8%AD%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="post-toc-text">8.1 项目在整个知识体系中的位置</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-2-%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF%EF%BC%9AclassifyFn-%E6%9B%BF%E6%8D%A2"><span class="post-toc-text">8.2 核心思路：classifyFn 替换</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-3-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9-FeDefaultClassifyCallback"><span class="post-toc-text">8.3 为什么选择 FeDefaultClassifyCallback</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-4-FeDefaultClassifyCallback-%E7%9A%84%E5%AE%9A%E4%BD%8D%E6%96%B9%E5%BC%8F"><span class="post-toc-text">8.4 FeDefaultClassifyCallback 的定位方式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-5-%E5%AE%8C%E6%95%B4%E6%9B%BF%E6%8D%A2%E6%B5%81%E7%A8%8B%EF%BC%88%E6%80%9D%E8%B7%AF%E5%B1%82%E9%9D%A2%EF%BC%89"><span class="post-toc-text">8.5 完整替换流程（思路层面）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-6-%E8%BF%99%E4%B8%AA%E9%A1%B9%E7%9B%AE%E8%A7%A3%E5%86%B3%E7%9A%84%E5%B7%A5%E7%A8%8B%E9%97%AE%E9%A2%98"><span class="post-toc-text">8.6 这个项目解决的工程问题</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B9%9D%E3%80%81WinDbg-%E8%B0%83%E8%AF%95%E5%AE%9E%E9%AA%8C%EF%BC%9A%E8%A7%82%E5%AF%9F-Entry-%E7%8A%B6%E6%80%81%E5%8F%98%E5%8C%96"><span class="post-toc-text">九、WinDbg 调试实验：观察 Entry 状态变化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-1-%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="post-toc-text">9.1 实验环境搭建</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-2-%E5%AE%9E%E9%AA%8C%E4%B8%80%EF%BC%9A%E8%A7%82%E5%AF%9F-Callout-%E6%B3%A8%E5%86%8C%E8%BF%87%E7%A8%8B"><span class="post-toc-text">9.2 实验一：观察 Callout 注册过程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-3-%E5%AE%9E%E9%AA%8C%E4%BA%8C%EF%BC%9A%E5%BF%AB%E7%85%A7%E6%9B%BF%E6%8D%A2%E5%89%8D%E5%90%8E%E7%9A%84-Entry-%E7%8A%B6%E6%80%81"><span class="post-toc-text">9.3 实验二：快照替换前后的 Entry 状态</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-4-%E5%AE%9E%E9%AA%8C%E4%B8%89%EF%BC%9A%E5%9C%A8-classifyFn-%E8%A2%AB%E8%B0%83%E7%94%A8%E5%A4%84%E8%A7%82%E5%AF%9F%E8%A1%8C%E4%B8%BA"><span class="post-toc-text">9.4 实验三：在 classifyFn 被调用处观察行为</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-5-%E5%AE%9E%E9%AA%8C%E5%9B%9B%EF%BC%9A%E7%94%A8%E6%9D%A1%E4%BB%B6%E6%96%AD%E7%82%B9%E8%A7%82%E5%AF%9F-WFP-%E5%86%99%E9%94%81"><span class="post-toc-text">9.5 实验四：用条件断点观察 WFP 写锁</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-6-%E8%B0%83%E8%AF%95%E6%97%B6%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="post-toc-text">9.6 调试时的注意事项</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8D%81%E3%80%81%E9%98%B2%E5%BE%A1%E6%A3%80%E6%B5%8B%EF%BC%9A%E8%93%9D%E9%98%9F%E8%A7%86%E8%A7%92%E7%9A%84%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A0%A1%E9%AA%8C"><span class="post-toc-text">十、防御检测：蓝队视角的完整性校验</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-1-%E6%A0%B8%E5%BF%83%E6%A3%80%E6%B5%8B%E5%8E%9F%E7%90%86"><span class="post-toc-text">10.1 核心检测原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-2-%E6%A3%80%E6%B5%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91"><span class="post-toc-text">10.2 检测驱动的核心逻辑</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-3-%E6%A3%80%E6%B5%8B%E7%9A%84%E5%AE%8C%E6%95%B4%E8%A6%86%E7%9B%96%E9%9D%A2"><span class="post-toc-text">10.3 检测的完整覆盖面</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-4-WinDbg-%E6%89%8B%E5%8A%A8%E9%AA%8C%E8%AF%81%EF%BC%88%E5%BF%AB%E9%80%9F%E6%A3%80%E6%B5%8B%EF%BC%89"><span class="post-toc-text">10.4 WinDbg 手动验证（快速检测）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-5-%E6%9B%B4%E9%9A%BE%E6%A3%80%E6%B5%8B%E7%9A%84%E5%8F%98%E4%BD%93%EF%BC%9Afilter-%E7%BB%93%E6%9E%84%E7%AF%A1%E6%94%B9"><span class="post-toc-text">10.5 更难检测的变体：filter 结构篡改</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-6-%E9%98%B2%E5%BE%A1%E6%80%BB%E7%BB%93"><span class="post-toc-text">10.6 防御总结</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E9%99%84%E5%BD%95-A%EF%BC%9A%E5%85%B3%E9%94%AE-WinDbg-%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5"><span class="post-toc-text">附录 A：关键 WinDbg 命令速查</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E9%99%84%E5%BD%95-B%EF%BC%9A%E8%B0%83%E7%94%A8%E9%93%BE%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="post-toc-text">附录 B：调用链速查表</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E9%99%84%E5%BD%95-C%EF%BC%9AgWfpGlobal-%E5%B7%B2%E7%9F%A5%E5%81%8F%E7%A7%BB%E6%B1%87%E6%80%BB"><span class="post-toc-text">附录 C：gWfpGlobal 已知偏移汇总</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E9%99%84%E5%BD%95-D%EF%BC%9ACalloutEntry-%E5%81%8F%E7%A7%BB%E6%B1%87%E6%80%BB%EF%BC%88%E5%A4%9A%E7%89%88%E6%9C%AC%E5%AF%B9%E7%85%A7%EF%BC%89"><span class="post-toc-text">附录 D：CalloutEntry 偏移汇总（多版本对照）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E9%99%84%E5%BD%95-E%EF%BC%9A%E7%A0%94%E7%A9%B6%E9%A1%B9%E7%9B%AE%E5%8F%82%E8%80%83"><span class="post-toc-text">附录 E：研究项目参考</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><blockquote>
+<p><strong>作者说明</strong>：本文记录了对 WFP Callout 内核机制的完整逆向研究过程，包括如何从公开 API 出发，通过反汇编推导未公开的内核数据结构，以及如何在不同 Windows 版本间适配。研究工具：IDA Pro、WinDbg 内核调试器。</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://github.com/0mWindyBug/WFPCalloutReserach">0mWindyBug&#x2F;WFPCalloutReserach</a> | <a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal">V-i-x-x&#x2F;kernel-callback-removal</a></p>
+</blockquote>
+<hr>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li>WFP 基础概念</li>
+<li>Callout 注册机制（公开视角）</li>
+<li>内核内部实现（逆向视角）</li>
+<li>跨版本差异与通用方法论</li>
+<li>实战：WinDbg 枚举所有 Callout</li>
+<li>编程实现枚举（驱动层）</li>
+<li>延伸：Callout 的安全含义</li>
+<li>研究案例：NetworkKernelBypass 分析</li>
+<li>WinDbg 调试实验：观察 Entry 状态变化</li>
+<li>防御检测：蓝队视角的完整性校验</li>
+</ol>
+<hr>
+<h2 id="一、WFP-基础概念"><a href="#一、WFP-基础概念" class="headerlink" title="一、WFP 基础概念"></a>一、WFP 基础概念</h2><h3 id="1-1-什么是-WFP"><a href="#1-1-什么是-WFP" class="headerlink" title="1.1 什么是 WFP"></a>1.1 什么是 WFP</h3><p>Windows Filtering Platform（WFP）是 Windows Vista 引入的内核网络过滤框架，替代了旧有的 NDIS 和 TDI 过滤机制。它同时提供用户态和内核态 API，允许开发者对网络流量进行拦截、检查、修改和记录。</p>
+<p>Windows 防火墙、各大安全产品的网络模块（AV、EDR、AC）均基于 WFP 构建。</p>
+<h3 id="1-2-核心术语"><a href="#1-2-核心术语" class="headerlink" title="1.2 核心术语"></a>1.2 核心术语</h3><p><strong>Layer（层）</strong></p>
+<p>Layer 代表网络栈中的一个过滤点，由 GUID 标识。例如：</p>
+<table>
+<thead>
+<tr>
+<th>Layer GUID 常量</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FWPM_LAYER_INBOUND_TRANSPORT_V4</code></td>
+<td>IPv4 入站传输层（传输头解析后）</td>
+</tr>
+<tr>
+<td><code>FWPM_LAYER_OUTBOUND_TRANSPORT_V4</code></td>
+<td>IPv4 出站传输层</td>
+</tr>
+<tr>
+<td><code>FWPM_LAYER_ALE_AUTH_CONNECT_V4</code></td>
+<td>应用层连接授权（connect 时触发）</td>
+</tr>
+<tr>
+<td><code>FWPM_LAYER_ALE_FLOW_ESTABLISHED_V4</code></td>
+<td>流建立时触发</td>
+</tr>
+<tr>
+<td><code>FWPM_LAYER_STREAM_V4</code></td>
+<td>TCP 流数据层</td>
+</tr>
+</tbody></table>
+<p><strong>Filter（过滤器）</strong></p>
+<p>Filter 由条件（源&#x2F;目标 IP、端口、进程等）和动作（permit、block、callout）组成。当 filter 的条件匹配时，触发对应动作。动作为 callout 时，会调用注册的驱动回调。</p>
+<p>Filter 的 callout 动作有三种类型：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FWP_ACTION_CALLOUT_TERMINATING</code></td>
+<td>callout 必须返回 permit 或 block，具有最终决定权</td>
+</tr>
+<tr>
+<td><code>FWP_ACTION_CALLOUT_INSPECTION</code></td>
+<td>callout 只能返回 continue，仅做旁路检查</td>
+</tr>
+<tr>
+<td><code>FWP_ACTION_CALLOUT_UNKNOWN</code></td>
+<td>callout 可以自行决定行为</td>
+</tr>
+</tbody></table>
+<p><strong>Callout（回调）</strong></p>
+<p>Callout 是驱动注册的一组函数指针，WFP 在 filter 匹配时调用。一个 callout 包含三个回调：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">FWPS_CALLOUT0_</span> &#123;</span></span><br><span class="line">    GUID                                calloutKey;    <span class="comment">// callout 的 GUID 标识</span></span><br><span class="line">    UINT32                              flags;         <span class="comment">// 标志位</span></span><br><span class="line">    FWPS_CALLOUT_CLASSIFY_FN0           classifyFn;    <span class="comment">// 核心：每个匹配包都会调用</span></span><br><span class="line">    FWPS_CALLOUT_NOTIFY_FN0             notifyFn;      <span class="comment">// filter 增删时通知</span></span><br><span class="line">    FWPS_CALLOUT_FLOW_DELETE_NOTIFY_FN0 flowDeleteFn;  <span class="comment">// 关联流结束时调用</span></span><br><span class="line">&#125; FWPS_CALLOUT0;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Sublayer（子层）</strong></p>
+<p>用于在同一 Layer 内对 filter 分组，每个 sublayer 有独立的 weight（优先级）。同一 layer 内所有 sublayer 都会被遍历，block 优先于 permit。</p>
+<p><strong>Shim（垫片）</strong></p>
+<p>内核组件，负责在每个 layer 触发 classification 过程。由 <code>tcpip.sys</code> 在数据包到达各层时调用。</p>
+<hr>
+<h2 id="二、Callout-注册机制（公开视角）"><a href="#二、Callout-注册机制（公开视角）" class="headerlink" title="二、Callout 注册机制（公开视角）"></a>二、Callout 注册机制（公开视角）</h2><h3 id="2-1-注册流程"><a href="#2-1-注册流程" class="headerlink" title="2.1 注册流程"></a>2.1 注册流程</h3><p>驱动注册一个 callout 需要以下步骤：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Step 1: 向过滤引擎注册 callout（内核态，建立函数指针映射）</span></span><br><span class="line">FWPS_CALLOUT0 sCallout = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">sCallout.calloutKey  = MY_CALLOUT_GUID;</span><br><span class="line">sCallout.classifyFn  = MyClassifyFn;</span><br><span class="line">sCallout.notifyFn    = MyNotifyFn;</span><br><span class="line">sCallout.flowDeleteFn = MyFlowDeleteFn;</span><br><span class="line"></span><br><span class="line">UINT32 calloutId = <span class="number">0</span>;</span><br><span class="line">FwpsCalloutRegister0(deviceObject, &amp;sCallout, &amp;calloutId);</span><br><span class="line"><span class="comment">// calloutId 是内核分配的整数 ID，后续用于 filter 引用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Step 2: 向过滤引擎添加 callout（管理层，建立 GUID→ID 映射）</span></span><br><span class="line">FWPM_CALLOUT0 mCallout = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">mCallout.calloutKey = MY_CALLOUT_GUID;</span><br><span class="line">mCallout.applicableLayer = FWPM_LAYER_ALE_AUTH_CONNECT_V4;</span><br><span class="line">FwpmCalloutAdd0(engineHandle, &amp;mCallout, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Step 3: 添加 filter，将 callout 与具体条件绑定</span></span><br><span class="line">FWPM_FILTER0 filter = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">filter.layerKey = FWPM_LAYER_ALE_AUTH_CONNECT_V4;</span><br><span class="line">filter.action.type = FWP_ACTION_CALLOUT_TERMINATING;</span><br><span class="line">filter.action.calloutKey = MY_CALLOUT_GUID;</span><br><span class="line">FwpmFilterAdd0(engineHandle, &amp;filter, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+
+<p>注意 <code>FwpsCalloutRegister</code> 和 <code>FwpmCalloutAdd</code> 的顺序可以互换，但 <code>FwpmFilterAdd</code> 之前两者都需完成。</p>
+<h3 id="2-2-用户态枚举-API"><a href="#2-2-用户态枚举-API" class="headerlink" title="2.2 用户态枚举 API"></a>2.2 用户态枚举 API</h3><p>WFP 提供了用户态枚举 API，但只能获取管理层信息（GUID、Layer、名称），<strong>无法获取实际函数指针地址</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">HANDLE engineHandle;</span><br><span class="line">FwpmEngineOpen0(<span class="literal">NULL</span>, RPC_C_AUTHN_WINNT, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;engineHandle);</span><br><span class="line"></span><br><span class="line">HANDLE enumHandle;</span><br><span class="line">FwpmCalloutCreateEnumHandle0(engineHandle, <span class="literal">NULL</span>, &amp;enumHandle);</span><br><span class="line"></span><br><span class="line">FWPM_CALLOUT0 **entries;</span><br><span class="line">UINT32 count;</span><br><span class="line">FwpmCalloutEnum0(engineHandle, enumHandle, <span class="number">100</span>, &amp;entries, &amp;count);</span><br><span class="line"></span><br><span class="line"><span class="comment">// entries[i]-&gt;calloutKey  → GUID</span></span><br><span class="line"><span class="comment">// entries[i]-&gt;calloutId   → 整数 ID  ← 这个 ID 就是内核数组的下标！</span></span><br></pre></td></tr></table></figure>
+
+<p><code>calloutId</code> 是后续内核逆向的关键桥梁。</p>
+<hr>
+<h2 id="三、内核内部实现（逆向视角）"><a href="#三、内核内部实现（逆向视角）" class="headerlink" title="三、内核内部实现（逆向视角）"></a>三、内核内部实现（逆向视角）</h2><h3 id="3-1-逆向方法论"><a href="#3-1-逆向方法论" class="headerlink" title="3.1 逆向方法论"></a>3.1 逆向方法论</h3><p>当没有内核源码时，推导内部结构的标准路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">公开 API 函数名</span><br><span class="line">    │</span><br><span class="line">    │  IDA / WinDbg uf 追调用链</span><br><span class="line">    ▼</span><br><span class="line">找到最终执行写内存操作的函数</span><br><span class="line">    │</span><br><span class="line">    │  读反编译伪代码里的 *(ptr + offset) = value</span><br><span class="line">    ▼</span><br><span class="line">每一个写操作 → 一个结构体字段</span><br><span class="line">    │</span><br><span class="line">    │  找初始化函数确认数组大小</span><br><span class="line">    ▼</span><br><span class="line">完整结构体布局</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-追调用链"><a href="#3-2-追调用链" class="headerlink" title="3.2 追调用链"></a>3.2 追调用链</h3><p>从 <code>FwpsCalloutRegister0</code>（位于 <code>fwpkclnt.sys</code>）出发：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fwpkclnt!FwpsCalloutRegister0</span><br><span class="line">    └─&gt; fwpkclnt!FwppCalloutRegister</span><br><span class="line">            └─&gt; netio!KfdRegisterCalloutEntry   (跨模块，netio 导出)</span><br><span class="line">                    └─&gt; netio!FeRegisterCalloutEntry  ← 真正写入函数指针</span><br></pre></td></tr></table></figure>
+
+<p>不同版本中间层可能不同（有的版本是 <code>KfdAddCalloutEntry → FeAddCalloutEntry</code>），但最终都落到 <code>netio.sys</code> 里的 <code>FeXxxCalloutEntry</code> 系列函数。</p>
+<p><strong>在 IDA 里找跨模块调用</strong>：</p>
+<p>在 <code>fwpkclnt.sys</code> 的 Imports 窗口搜索 <code>Kfd</code>，可以看到所有调用 netio 的接口，包括 <code>KfdRegisterCalloutEntry</code>、<code>KfdAddCalloutEntry</code>、<code>KfdGetRefCallout</code> 等。</p>
+<h3 id="3-3-核心数据结构：gWfpGlobal"><a href="#3-3-核心数据结构：gWfpGlobal" class="headerlink" title="3.3 核心数据结构：gWfpGlobal"></a>3.3 核心数据结构：gWfpGlobal</h3><p><code>netio!gWfpGlobal</code> 是 WFP 的全局控制结构指针，所有 callout、filter 的管理都以它为根。</p>
+<p>在 <code>FeRegisterCalloutEntry</code>（或各版本对应函数）的反编译代码里，可以直接读出两个关键偏移：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 伪代码</span></span><br><span class="line">CalloutEntryPtr = *(gWfpGlobal + OFFSET_ARRAY_PTR) + ENTRY_SIZE * calloutId;</span><br></pre></td></tr></table></figure>
+
+<p>通过反汇编 <code>netio!GetCalloutEntry</code> 可以更直接地确认这两个偏移：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">; GetCalloutEntry(calloutId, &amp;outPtr)</span><br><span class="line">mov  r8,  qword ptr [netio!gWfpGlobal]   ; r8 = 全局结构基址</span><br><span class="line">cmp  ecx, dword ptr [r8 + OFFSET_COUNT]  ; 越界检查</span><br><span class="line">lea  rcx, [rax + rax*4]                  ; index * 5</span><br><span class="line">shl  rcx, N                              ; * (1 &lt;&lt; N) = entry size</span><br><span class="line">add  rcx, qword ptr [r8 + OFFSET_ARRAY]  ; + 数组基址</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>OFFSET_COUNT</code> 是数组容量偏移，<code>OFFSET_ARRAY</code> 是数组基址偏移。</p>
+<h3 id="3-4-CalloutEntry-结构体布局"><a href="#3-4-CalloutEntry-结构体布局" class="headerlink" title="3.4 CalloutEntry 结构体布局"></a>3.4 CalloutEntry 结构体布局</h3><p>通过逐行阅读 <code>FeRegisterCalloutEntry</code>&#x2F;<code>FeAddCalloutEntry</code> 的写入操作，还原出结构体：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 以下偏移通过读伪代码里的 *(v14 + N) = xxx 推导</span></span><br><span class="line"><span class="comment">// 注意：不同 Windows 版本 entry 大小和偏移可能不同！</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">WFP_CALLOUT_ENTRY</span> &#123;</span></span><br><span class="line">    <span class="comment">/* +0x00 */</span> DWORD  calloutType;       <span class="comment">// a1，callout 类型（3=fast path）</span></span><br><span class="line">    <span class="comment">/* +0x04 */</span> DWORD  isActive;          <span class="comment">// 1=有效，0=空槽</span></span><br><span class="line">    <span class="comment">/* +0x08 */</span> BYTE   unknown[<span class="number">8</span>];        <span class="comment">// 保留/其他字段</span></span><br><span class="line">    <span class="comment">/* +0x10 */</span> PVOID  classifyFn;        <span class="comment">// 普通 callout 的过滤回调 ← 最关键</span></span><br><span class="line">    <span class="comment">/* +0x18 */</span> PVOID  notifyFn;          <span class="comment">// 通知回调</span></span><br><span class="line">    <span class="comment">/* +0x20 */</span> PVOID  flowDeleteFn;      <span class="comment">// 流删除回调</span></span><br><span class="line">    <span class="comment">/* +0x28 */</span> PVOID  classifyFnFast;    <span class="comment">// 类型3(fast path)的过滤回调</span></span><br><span class="line">    <span class="comment">/* +0x30 */</span> DWORD  flags;             <span class="comment">// FWP_CALLOUT_FLAG_xxx</span></span><br><span class="line">    <span class="comment">/* +0x34 */</span> BYTE   pad[<span class="number">12</span>];</span><br><span class="line">    <span class="comment">/* +0x40 */</span> PVOID  deviceObject;      <span class="comment">// 注册此 callout 的驱动设备对象 ← 反查驱动名</span></span><br><span class="line">    <span class="comment">/* +0x48 */</span> BYTE   more[...];</span><br><span class="line">    <span class="comment">/* +0x4C */</span> WORD   layerInfo;         <span class="comment">// layer 相关</span></span><br><span class="line">    <span class="comment">/* +0x4E */</span> BYTE   isTfoIncompat;     <span class="comment">// TFO 不兼容标志</span></span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 总大小：视版本而定，已知有 0x50 和 0x60 两种</span></span><br></pre></td></tr></table></figure>
+
+<p>从 <code>FeRegisterCalloutEntry</code> 里读出的关键赋值（这是真相，不依赖任何博客）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">*(_DWORD *)(v14 + <span class="number">0</span>)  = v12;     <span class="comment">// calloutType</span></span><br><span class="line">*(_DWORD *)(v14 + <span class="number">4</span>)  = <span class="number">1</span>;       <span class="comment">// isActive = 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ( v12 == <span class="number">3</span> )</span><br><span class="line">    *(_QWORD *)(v14 + <span class="number">40</span>) = a2;  <span class="comment">// +0x28 fast-path classifyFn</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    *(_QWORD *)(v14 + <span class="number">16</span>) = a2;  <span class="comment">// +0x10 普通 classifyFn</span></span><br><span class="line"></span><br><span class="line">*(_QWORD *)(v14 + <span class="number">24</span>) = a3;      <span class="comment">// +0x18 notifyFn</span></span><br><span class="line">*(_QWORD *)(v14 + <span class="number">32</span>) = a4;      <span class="comment">// +0x20 flowDeleteFn</span></span><br><span class="line">*(_DWORD *)(v14 + <span class="number">48</span>) = a5;      <span class="comment">// +0x30 flags</span></span><br><span class="line">*(_QWORD *)(v14 + <span class="number">64</span>) = Object;  <span class="comment">// +0x40 deviceObject</span></span><br><span class="line">*(_WORD *) (v14 + <span class="number">76</span>) = a9;      <span class="comment">// +0x4C layerInfo</span></span><br><span class="line">*(_BYTE *) (v14 + <span class="number">78</span>) = a6;      <span class="comment">// +0x4E isTfoIncompat</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-5-数组的组织方式"><a href="#3-5-数组的组织方式" class="headerlink" title="3.5 数组的组织方式"></a>3.5 数组的组织方式</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">gWfpGlobal</span><br><span class="line">    │</span><br><span class="line">    ├─ [+0x190]  maxCalloutId / count（DWORD，初始值 1024 = 0x400）</span><br><span class="line">    └─ [+0x198]  calloutArray（QWORD 指针，指向 callout entry 数组）</span><br><span class="line"></span><br><span class="line">calloutArray:</span><br><span class="line">    [0x00]  entry[0]   大小 ENTRY_SIZE</span><br><span class="line">    [ENTRY_SIZE]  entry[1]</span><br><span class="line">    [ENTRY_SIZE*2] entry[2]</span><br><span class="line">    ...</span><br><span class="line">    [ENTRY_SIZE * calloutId] = entry[calloutId]</span><br><span class="line"></span><br><span class="line">ENTRY_SIZE 计算（从 GetCalloutEntry 汇编读出）：</span><br><span class="line">    lea rcx, [rax + rax*4]   → index * 5</span><br><span class="line">    shl rcx, 4               → * 16</span><br><span class="line">    结果：5 * 16 = 80 = 0x50   （某些版本）</span><br><span class="line"></span><br><span class="line">    或者直接在 FeRegisterCalloutEntry 里看：</span><br><span class="line">    v14 = base + 96LL * a7   → 96 = 0x60   （另一些版本）</span><br></pre></td></tr></table></figure>
+
+<p><strong>初始数组大小</strong>：<code>0x14000</code> 字节 ÷ <code>ENTRY_SIZE</code> &#x3D; 最大初始 callout 数。当注册数量超出时，WFP 会重新分配更大的内存，复制数据，释放旧内存。</p>
+<hr>
+<h2 id="四、跨版本差异与通用方法论"><a href="#四、跨版本差异与通用方法论" class="headerlink" title="四、跨版本差异与通用方法论"></a>四、跨版本差异与通用方法论</h2><h3 id="4-1-已知版本差异"><a href="#4-1-已知版本差异" class="headerlink" title="4.1 已知版本差异"></a>4.1 已知版本差异</h3><table>
+<thead>
+<tr>
+<th>Windows 版本</th>
+<th>Entry 大小</th>
+<th>写入函数名</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Win10 早期版本</td>
+<td>0x50</td>
+<td><code>FeAddCalloutEntry</code></td>
+<td>博客 0mWindyBug 研究的版本</td>
+</tr>
+<tr>
+<td>Win10&#x2F;11 新版本</td>
+<td>0x60</td>
+<td><code>FeRegisterCalloutEntry</code></td>
+<td>本文实验版本</td>
+</tr>
+<tr>
+<td>其他版本</td>
+<td>待测</td>
+<td>待测</td>
+<td>需自行逆向确认</td>
+</tr>
+</tbody></table>
+<p><code>gWfpGlobal + 0x190</code>（count）和 <code>gWfpGlobal + 0x198</code>（array ptr）这两个偏移在已测版本中稳定，但不保证所有版本一致。</p>
+<h3 id="4-2-通用适配方法：永远从汇编读偏移"><a href="#4-2-通用适配方法：永远从汇编读偏移" class="headerlink" title="4.2 通用适配方法：永远从汇编读偏移"></a>4.2 通用适配方法：永远从汇编读偏移</h3><p><strong>不要硬编码偏移，每次都从目标系统的汇编里读。</strong> 具体步骤：</p>
+<p><strong>Step 1</strong>：确认 <code>gWfpGlobal</code> 地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x netio!gWfpGlobal</span><br><span class="line">dp netio!gWfpGlobal L1   → 得到全局结构基址 BASE</span><br></pre></td></tr></table></figure>
+
+<p><strong>Step 2</strong>：反汇编 <code>GetCalloutEntry</code>，读出 count 偏移和 array 偏移</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uf netio!GetCalloutEntry</span><br></pre></td></tr></table></figure>
+
+<p>找汇编里 <code>[r8 + XXX]</code> 的两处引用：</p>
+<ul>
+<li><code>cmp ecx, [r8 + OFFSET_A]</code> → <code>OFFSET_A</code> 是 count 的偏移</li>
+<li><code>add rcx, [r8 + OFFSET_B]</code> → <code>OFFSET_B</code> 是 array 指针的偏移</li>
+</ul>
+<p><strong>Step 3</strong>：找 entry 大小</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uf netio!GetCalloutEntry</span><br></pre></td></tr></table></figure>
+
+<p>看 <code>lea</code> + <code>shl</code> 组合，计算出乘数即为 entry 大小。或者在 <code>FeRegisterCalloutEntry</code> 里找 <code>base + N * calloutId</code> 的形式。</p>
+<p><strong>Step 4</strong>：反编译 <code>FeRegisterCalloutEntry</code>（或同类函数），读出所有 <code>*(v14 + offset) = xxx</code> 的赋值，得到 entry 内部布局。</p>
+<p><strong>Step 5</strong>：dump 第一个有效 entry 验证</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dqs arrayBase L0x14</span><br></pre></td></tr></table></figure>
+
+<p>找到第一个 <code>[+0x04] != 0</code> 的 entry，对照偏移布局验证 classifyFn 是否指向合理地址（用 <code>ln</code> 确认）。</p>
+<h3 id="4-3-在驱动代码中动态适配"><a href="#4-3-在驱动代码中动态适配" class="headerlink" title="4.3 在驱动代码中动态适配"></a>4.3 在驱动代码中动态适配</h3><p>如果要编写适配多版本的驱动，不应硬编码偏移。正确做法是使用 netio 导出的函数 <code>FeGetWfpGlobalPtr</code> 和 <code>KfdGetRefCallout</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// netio 导出函数（需要动态解析）</span></span><br><span class="line"><span class="comment">// FeGetWfpGlobalPtr：返回 gWfpGlobal 的值</span></span><br><span class="line"><span class="comment">// KfdGetRefCallout(calloutId, &amp;entryPtr)：返回指定 callout 的 entry 指针</span></span><br><span class="line"><span class="comment">// KfdDeRefCallout(entryPtr)：释放引用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 动态解析 netio 导出</span></span><br><span class="line">UNICODE_STRING funcName;</span><br><span class="line">RtlInitUnicodeString(&amp;funcName, <span class="string">L&quot;KfdGetRefCallout&quot;</span>);</span><br><span class="line">pKfdGetRefCallout = MmGetSystemRoutineAddress(&amp;funcName);</span><br></pre></td></tr></table></figure>
+
+<p>用 <code>KfdGetRefCallout</code> 获取 entry 后，仍然需要知道 entry 内部的偏移才能读出 classifyFn。此时可以结合特征码扫描 <code>FeRegisterCalloutEntry</code> 来动态提取偏移，或使用版本号判断表。</p>
+<hr>
+<h2 id="五、实战：WinDbg-枚举所有-Callout"><a href="#五、实战：WinDbg-枚举所有-Callout" class="headerlink" title="五、实战：WinDbg 枚举所有 Callout"></a>五、实战：WinDbg 枚举所有 Callout</h2><h3 id="5-1-准备工作"><a href="#5-1-准备工作" class="headerlink" title="5.1 准备工作"></a>5.1 准备工作</h3><p>确保符号正确加载：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.symfix</span><br><span class="line">.reload /f netio.sys</span><br><span class="line">lm m netio</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-Step-by-Step-完整流程"><a href="#5-2-Step-by-Step-完整流程" class="headerlink" title="5.2 Step-by-Step 完整流程"></a>5.2 Step-by-Step 完整流程</h3><p><strong>第一步：找全局结构基址</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp netio!gWfpGlobal L1</span><br></pre></td></tr></table></figure>
+
+<p>记录输出值，假设为 <code>BASE</code>。</p>
+<p><strong>第二步：反汇编确认偏移（每次必做，不要假设）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uf netio!GetCalloutEntry</span><br></pre></td></tr></table></figure>
+
+<p><strong>第三步：读 count 和 array 基址</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dd BASE+0x190 L1    → count（DWORD）</span><br><span class="line">dq BASE+0x198 L1    → arrayBase（QWORD）</span><br></pre></td></tr></table></figure>
+
+<p><strong>第四步：确认 entry 大小（看 GetCalloutEntry 汇编的乘法）</strong></p>
+<p><strong>第五步：dump 前几个 entry 确认结构</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dqs arrayBase L0x20</span><br></pre></td></tr></table></figure>
+
+<p>找到第一个 <code>+0x04 != 0</code> 的 entry，用 <code>ln</code> 验证 <code>+0x10</code> 处的地址是否是函数。</p>
+<p><strong>第六步：遍历所有有效 callout</strong></p>
+<p>适配 entry 大小为 0x60 的版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">r $t1=0</span><br><span class="line">.for (; @$t1 &lt; COUNT; r $t1=@$t1+1) &#123;</span><br><span class="line">    r $t2=ARRAY_BASE+@$t1*0x60;</span><br><span class="line">    .if (by(@$t2+4) != 0) &#123;</span><br><span class="line">        .printf &quot;\n==== callout id=%d entry=%p ====\n&quot;, @$t1, @$t2;</span><br><span class="line">        .printf &quot;  [+0x10] classifyFn   : &quot;; ln poi(@$t2+0x10);</span><br><span class="line">        .printf &quot;  [+0x18] notifyFn     : &quot;; ln poi(@$t2+0x18);</span><br><span class="line">        .printf &quot;  [+0x20] flowDeleteFn : &quot;; ln poi(@$t2+0x20);</span><br><span class="line">        .printf &quot;  [+0x40] DeviceObject : %p\n&quot;, poi(@$t2+0x40)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>适配 entry 大小为 0x50 的版本（将 <code>0x60</code> 替换为 <code>0x50</code>，<code>0x40</code> 替换为 <code>0x38</code>）。</p>
+<p><strong>第七步：反查驱动身份</strong></p>
+<p>对感兴趣的 classifyFn 地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ln 函数地址            → 显示模块名+偏移</span><br><span class="line">lmvm 模块名            → 显示驱动文件路径、编译时间、大小</span><br><span class="line">!drvobj poi(entry+0x40) 2   → 通过 DeviceObject 看驱动详情</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-实际输出示例"><a href="#5-3-实际输出示例" class="headerlink" title="5.3 实际输出示例"></a>5.3 实际输出示例</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">==== callout id=290 entry=ffffbb088ddf1aa0 ====</span><br><span class="line">  [+0x10] classifyFn   : (fffff8018f522a70) ChangmenWfp+0x2a70</span><br><span class="line">  [+0x18] notifyFn     : (fffff8018f523150) ChangmenWfp+0x3150</span><br><span class="line">  [+0x20] flowDeleteFn : (fffff8018f523140) ChangmenWfp+0x3140</span><br><span class="line">  [+0x40] DeviceObject : ffffbb0895fc62c0</span><br><span class="line"></span><br><span class="line">0: kd&gt; lmvm ChangmenWfp</span><br><span class="line">start: fffff801`8f520000  end: fffff801`8f529000</span><br><span class="line">Image path: ChangmenWfp.sys</span><br><span class="line">Timestamp:  Tue Apr 21 05:49:50 2026</span><br><span class="line">ImageSize:  00009000</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-4-常见陷阱"><a href="#5-4-常见陷阱" class="headerlink" title="5.4 常见陷阱"></a>5.4 常见陷阱</h3><p><strong>陷阱1</strong>：<code>.for</code> 里不能用反引号地址，不能逗号同时初始化两个伪寄存器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">; 错误</span><br><span class="line">.for (r $t0=ffffbb08`94dde090, r $t1=0; ...)</span><br><span class="line"></span><br><span class="line">; 正确：循环外赋值，地址用 0x 前缀</span><br><span class="line">r $t0=0xffffbb0894dde090</span><br><span class="line">r $t1=0</span><br><span class="line">.for (; @$t1 &lt; 20; r $t1=@$t1+1) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>陷阱2</strong>：<code>by()</code> 只读 1 字节，<code>poi()</code> 读完整指针</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">by(addr)   → BYTE（1字节）</span><br><span class="line">wo(addr)   → WORD（2字节）</span><br><span class="line">dwo(addr)  → DWORD（4字节）</span><br><span class="line">poi(addr)  → QWORD（8字节，64位下）</span><br></pre></td></tr></table></figure>
+
+<p><strong>陷阱3</strong>：entry 大小版本差异导致地址错位</p>
+<p>如果遍历结果大量 classifyFn 指向 null 或无效地址，第一件事是重新检查 entry 大小。</p>
+<hr>
+<h2 id="六、编程实现枚举（驱动层）"><a href="#六、编程实现枚举（驱动层）" class="headerlink" title="六、编程实现枚举（驱动层）"></a>六、编程实现枚举（驱动层）</h2><h3 id="6-1-架构设计"><a href="#6-1-架构设计" class="headerlink" title="6.1 架构设计"></a>6.1 架构设计</h3><p>最实用的架构是 0mWindyBug 提出的两层结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">用户态进程 (WFPEnumUM)</span><br><span class="line">    │  FwpmCalloutEnum0() → 得到所有 calloutId</span><br><span class="line">    │  DeviceIoControl(IOCTL_GET_CALLOUT_INFO, calloutId)</span><br><span class="line">    ▼</span><br><span class="line">内核驱动 (WFPEnumDriver)</span><br><span class="line">    │  接收 calloutId</span><br><span class="line">    │  KfdGetRefCallout(calloutId, &amp;entry) 或手动计算地址</span><br><span class="line">    │  读取 entry 内偏移</span><br><span class="line">    │  返回 classifyFn、notifyFn、DeviceObject 等</span><br><span class="line">    ▼</span><br><span class="line">用户态显示完整信息</span><br></pre></td></tr></table></figure>
+
+<p>用户态 API <code>FwpmCalloutEnum0</code> 能枚举所有已注册的 calloutId，但不提供函数指针。驱动层通过 calloutId 找到内核 entry，读出实际地址，通过 IOCTL 传回用户态。</p>
+<h3 id="6-2-内核驱动核心代码框架"><a href="#6-2-内核驱动核心代码框架" class="headerlink" title="6.2 内核驱动核心代码框架"></a>6.2 内核驱动核心代码框架</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 动态解析 netio 导出函数</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">NTSTATUS</span><span class="params">(*pfnKfdGetRefCallout)</span><span class="params">(UINT32 calloutId, PVOID* ppEntry)</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">VOID</span><span class="params">(*pfnKfdDeRefCallout)</span><span class="params">(PVOID pEntry)</span>;</span><br><span class="line"></span><br><span class="line">pfnKfdGetRefCallout  g_KfdGetRefCallout  = <span class="literal">NULL</span>;</span><br><span class="line">pfnKfdDeRefCallout   g_KfdDeRefCallout   = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">NTSTATUS <span class="title function_">ResolveNetioExports</span><span class="params">()</span> &#123;</span><br><span class="line">    UNICODE_STRING name1, name2;</span><br><span class="line">    RtlInitUnicodeString(&amp;name1, <span class="string">L&quot;KfdGetRefCallout&quot;</span>);</span><br><span class="line">    RtlInitUnicodeString(&amp;name2, <span class="string">L&quot;KfdDeRefCallout&quot;</span>);</span><br><span class="line">    g_KfdGetRefCallout = MmGetSystemRoutineAddress(&amp;name1);</span><br><span class="line">    g_KfdDeRefCallout  = MmGetSystemRoutineAddress(&amp;name2);</span><br><span class="line">    <span class="keyword">if</span> (!g_KfdGetRefCallout || !g_KfdDeRefCallout)</span><br><span class="line">        <span class="keyword">return</span> STATUS_NOT_FOUND;</span><br><span class="line">    <span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// IOCTL 处理：根据 calloutId 返回 entry 信息</span></span><br><span class="line">NTSTATUS <span class="title function_">GetCalloutInfo</span><span class="params">(UINT32 calloutId, CALLOUT_INFO* outInfo)</span> &#123;</span><br><span class="line">    PVOID pEntry = <span class="literal">NULL</span>;</span><br><span class="line">    NTSTATUS status = g_KfdGetRefCallout(calloutId, &amp;pEntry);</span><br><span class="line">    <span class="keyword">if</span> (!NT_SUCCESS(status) || !pEntry)</span><br><span class="line">        <span class="keyword">return</span> STATUS_NOT_FOUND;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 读取 entry 内偏移（需根据当前 Windows 版本确定）</span></span><br><span class="line">    <span class="comment">// 以 +0x10 = classifyFn, +0x40 = DeviceObject 为例</span></span><br><span class="line">    outInfo-&gt;classifyFn    = *(PVOID*)((PUCHAR)pEntry + <span class="number">0x10</span>);</span><br><span class="line">    outInfo-&gt;notifyFn      = *(PVOID*)((PUCHAR)pEntry + <span class="number">0x18</span>);</span><br><span class="line">    outInfo-&gt;flowDeleteFn  = *(PVOID*)((PUCHAR)pEntry + <span class="number">0x20</span>);</span><br><span class="line">    outInfo-&gt;deviceObject  = *(PVOID*)((PUCHAR)pEntry + <span class="number">0x40</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过 DeviceObject 获取驱动名</span></span><br><span class="line">    <span class="keyword">if</span> (outInfo-&gt;deviceObject) &#123;</span><br><span class="line">        PDRIVER_OBJECT drvObj = </span><br><span class="line">            ((PDEVICE_OBJECT)outInfo-&gt;deviceObject)-&gt;DriverObject;</span><br><span class="line">        <span class="keyword">if</span> (drvObj &amp;&amp; drvObj-&gt;DriverName.Buffer) &#123;</span><br><span class="line">            wcsncpy(outInfo-&gt;driverName,</span><br><span class="line">                    drvObj-&gt;DriverName.Buffer,</span><br><span class="line">                    drvObj-&gt;DriverName.Length / <span class="keyword">sizeof</span>(WCHAR));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    g_KfdDeRefCallout(pEntry);  <span class="comment">// 必须配对调用！</span></span><br><span class="line">    <span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>重要</strong>：<code>KfdGetRefCallout</code> 会增加 entry 的引用计数，<code>KfdDeRefCallout</code> 必须配对调用，否则驱动无法正常卸载（WFP 通过引用计数防止驱动提前卸载）。</p>
+<h3 id="6-3-版本适配策略"><a href="#6-3-版本适配策略" class="headerlink" title="6.3 版本适配策略"></a>6.3 版本适配策略</h3><p>推荐用特征码扫描动态确定偏移，而不是用版本号硬编码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 扫描 FeRegisterCalloutEntry，找 classifyFn 的写入偏移</span></span><br><span class="line"><span class="comment">// 特征：mov qword ptr [rbx + N], rXX 且 N 在合理范围内</span></span><br><span class="line"><span class="comment">// 这部分需要根据具体版本的汇编特征实现，此处仅示意</span></span><br><span class="line">ULONG <span class="title function_">FindClassifyFnOffset</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 找到 FeRegisterCalloutEntry 的地址（从 KfdRegisterCalloutEntry 追调用）</span></span><br><span class="line">    <span class="comment">// 2. 扫描函数体，找模式 48 89 43 XX（mov [rbx+XX], rax）</span></span><br><span class="line">    <span class="comment">// 3. 验证：在写入前是否有对 a2（classifyFn 参数）的引用</span></span><br><span class="line">    <span class="comment">// 4. 返回 XX</span></span><br><span class="line">    <span class="comment">// 实际实现需要反汇编引擎或手写模式匹配</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0x10</span>; <span class="comment">// fallback</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、延伸：Callout-的安全含义"><a href="#七、延伸：Callout-的安全含义" class="headerlink" title="七、延伸：Callout 的安全含义"></a>七、延伸：Callout 的安全含义</h2><h3 id="7-1-为什么要枚举-Callout"><a href="#7-1-为什么要枚举-Callout" class="headerlink" title="7.1 为什么要枚举 Callout"></a>7.1 为什么要枚举 Callout</h3><p>从安全研究角度，能够枚举所有 callout 及其实际函数地址，有以下价值：</p>
+<p><strong>防御&#x2F;检测侧</strong>：</p>
+<ul>
+<li>检测未知驱动注册的 callout（非白名单驱动）</li>
+<li>验证已知安全产品的 callout 地址是否被篡改（hook 检测）</li>
+<li>分析 callout 注册的 layer，推断驱动的监控范围</li>
+</ul>
+<p><strong>研究侧</strong>：</p>
+<ul>
+<li>理解安全产品的网络过滤逻辑</li>
+<li>分析 callout 注册了哪些 layer，对应什么网络行为</li>
+<li>结合 filter 条件（端口、IP、进程），了解完整过滤规则</li>
+</ul>
+<h3 id="7-2-Callout-的引用计数机制"><a href="#7-2-Callout-的引用计数机制" class="headerlink" title="7.2 Callout 的引用计数机制"></a>7.2 Callout 的引用计数机制</h3><p>WFP 通过引用计数保护正在执行的 callout：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">驱动调用 FwpsCalloutRegister</span><br><span class="line">    └─&gt; WFP 调用 ObReferenceObject(deviceObject)</span><br><span class="line">            └─&gt; 驱动的引用计数 +1</span><br><span class="line"></span><br><span class="line">每次 classifyFn 被调用时</span><br><span class="line">    └─&gt; WFP 内部持有引用（防止 classifyFn 执行中驱动被卸载）</span><br><span class="line"></span><br><span class="line">驱动调用 FwpsCalloutUnregisterById</span><br><span class="line">    └─&gt; WFP 等待所有 pending classify 完成</span><br><span class="line">    └─&gt; ObDereferenceObject(deviceObject)</span><br></pre></td></tr></table></figure>
+
+<p>这意味着：只要有 callout 正在执行，驱动就无法卸载。<code>IopCheckUnloadDriver</code> 检查引用计数，非零则阻止卸载。</p>
+<h3 id="7-3-Callout-的-Flag-含义"><a href="#7-3-Callout-的-Flag-含义" class="headerlink" title="7.3 Callout 的 Flag 含义"></a>7.3 Callout 的 Flag 含义</h3><p><code>FWPS_CALLOUT0.flags</code> 中几个重要标志：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 仅当数据流有关联 context 时才调用 classifyFn</span></span><br><span class="line"><span class="comment">// 若 classifyFn 内没有调用 FwpsFlowAssociateContext，</span></span><br><span class="line"><span class="comment">// 设置此 flag 后该 callout 对所有包都会被跳过</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FWP_CALLOUT_FLAG_CONDITIONAL_ON_FLOW  0x00000001</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// callout 支持对 lookahead 数据进行检查</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FWP_CALLOUT_FLAG_ALLOW_OFFLOAD        0x00000002</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 entry 的 +0x30 偏移处，对应 flags 字段</span></span><br><span class="line"><span class="comment">// +0x48 偏移处存有展开的兼容性标志</span></span><br></pre></td></tr></table></figure>
+
+<p><code>FWP_CALLOUT_FLAG_CONDITIONAL_ON_FLOW</code> 值得特别关注：如果一个 callout 设置了这个 flag，而对应的流没有通过 <code>FwpsFlowAssociateContext</code> 关联 context，WFP 会直接跳过这个 callout 的 <code>classifyFn</code> 调用。</p>
+<hr>
+<h2 id="八、研究案例：NetworkKernelBypass-分析"><a href="#八、研究案例：NetworkKernelBypass-分析" class="headerlink" title="八、研究案例：NetworkKernelBypass 分析"></a>八、研究案例：NetworkKernelBypass 分析</h2><blockquote>
+<p>来源：<a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal">V-i-x-x&#x2F;kernel-callback-removal&#x2F;NetworkKernelBypass</a></p>
+<p>定位：这个项目是前述逆向研究（0mWindyBug）的<strong>工程落地实现</strong>，代表了”理解内核结构之后能做什么”这一研究阶段的典型案例。</p>
+</blockquote>
+<h3 id="8-1-项目在整个知识体系中的位置"><a href="#8-1-项目在整个知识体系中的位置" class="headerlink" title="8.1 项目在整个知识体系中的位置"></a>8.1 项目在整个知识体系中的位置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">【理论层】0mWindyBug 博客</span><br><span class="line">    逆向 FeRegisterCalloutEntry</span><br><span class="line">    推导 gWfpGlobal + 0x198 = callout 数组基址</span><br><span class="line">    发现 entry + 0x10 = classifyFn 可被读写</span><br><span class="line">    提出三种 callout 静默手法（理论）</span><br><span class="line">            │</span><br><span class="line">            │  理论 → 工程实现</span><br><span class="line">            ▼</span><br><span class="line">【实现层】V-i-x-x / NetworkKernelBypass</span><br><span class="line">    实现了 classifyFn 替换手法</span><br><span class="line">    解决了博客未完整处理的 KCFG 问题</span><br><span class="line">    提供了可调试的 PoC 代码</span><br><span class="line">            │</span><br><span class="line">            ├──→ 【攻击研究】理解篡改路径</span><br><span class="line">            └──→ 【防御研究】理解检测点</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-2-核心思路：classifyFn-替换"><a href="#8-2-核心思路：classifyFn-替换" class="headerlink" title="8.2 核心思路：classifyFn 替换"></a>8.2 核心思路：classifyFn 替换</h3><p>整个项目围绕一个核心操作：<strong>将目标 callout entry 的 <code>classifyFn</code> 指针替换成一个”无害”函数</strong>，使原有的过滤逻辑失效，同时避免产生副作用。</p>
+<p>替换前后的状态对比：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">【替换前】</span><br><span class="line">entry + 0x10 → TargetDriver!ClassifyCallback</span><br><span class="line">    ↓ WFP 调用</span><br><span class="line">    ↓ 执行过滤逻辑（检查、拦截、记录）</span><br><span class="line">    ↓ 返回 permit / block / continue</span><br><span class="line"></span><br><span class="line">【替换后】</span><br><span class="line">entry + 0x10 → netio!FeDefaultClassifyCallback</span><br><span class="line">    ↓ WFP 调用</span><br><span class="line">    ↓ 几乎无条件返回 continue/permit</span><br><span class="line">    ↓ 原有过滤逻辑完全被跳过</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-3-为什么选择-FeDefaultClassifyCallback"><a href="#8-3-为什么选择-FeDefaultClassifyCallback" class="headerlink" title="8.3 为什么选择 FeDefaultClassifyCallback"></a>8.3 为什么选择 FeDefaultClassifyCallback</h3><p>这是项目最关键的设计决策，原因有三层：</p>
+<p><strong>原因一：避免 KCFG（Kernel Control Flow Guard）拦截</strong></p>
+<p>Windows 10 1703+ 引入了 Kernel CFG，它在内核调用函数指针前会验证目标地址是否在合法跳转表中。如果把 classifyFn 替换成任意地址（比如自己写的 shellcode 或普通函数），KCFG 验证会失败，直接触发 BSOD。</p>
+<p><code>FeDefaultClassifyCallback</code> 已经存在于 <code>netio.sys</code> 内部，<strong>天然在 KCFG 合法表中</strong>，替换后调用路径完全合规：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">【非法替换（KCFG 拦截）】</span><br><span class="line">WFP 调用 entry+0x10 → 自定义函数地址</span><br><span class="line">    ↓ KCFG 检查：目标不在合法表</span><br><span class="line">    ↓ KeBugCheck → BSOD ❌</span><br><span class="line"></span><br><span class="line">【合法替换（KCFG 放行）】</span><br><span class="line">WFP 调用 entry+0x10 → FeDefaultClassifyCallback</span><br><span class="line">    ↓ KCFG 检查：目标在 netio.sys 合法表中</span><br><span class="line">    ↓ 正常执行，返回 permit ✓</span><br></pre></td></tr></table></figure>
+
+<p><strong>原因二：避免清零 entry 的副作用</strong></p>
+<p>最简单的手法是把整个 entry 清零（memset 0），但这会导致严重副作用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">filter action = CALLOUT_TERMINATING 时：</span><br><span class="line">    callout entry 为空 → WFP 把它当作&quot;未注册&quot;</span><br><span class="line">    → 未注册的 TERMINATING callout 等价于 BLOCK</span><br><span class="line">    → 所有匹配该 filter 的流量被直接拦截</span><br><span class="line">    → 系统网络行为异常，极易被察觉</span><br></pre></td></tr></table></figure>
+
+<p>替换为 <code>FeDefaultClassifyCallback</code> 则不同：entry 仍然”有效”（isActive &#x3D; 1，函数指针非空），WFP 会正常调用它，只是它的行为变成了放行，不会触发”未注册”逻辑。</p>
+<p><strong>原因三：FeDefaultClassifyCallback 的行为已知且稳定</strong></p>
+<p>从 <code>FeDeleteCalloutEntry</code> 的逆向可以看到，WFP 在删除一个 callout 时，会先将其 classifyFn 替换为 <code>FeDefaultClassifyCallback</code>，然后等待引用计数归零再释放内存。这说明这个函数本来就是 WFP 用来”标记 callout 无效但不崩溃”的内部机制，行为非常稳定。</p>
+<h3 id="8-4-FeDefaultClassifyCallback-的定位方式"><a href="#8-4-FeDefaultClassifyCallback-的定位方式" class="headerlink" title="8.4 FeDefaultClassifyCallback 的定位方式"></a>8.4 FeDefaultClassifyCallback 的定位方式</h3><p><code>FeDefaultClassifyCallback</code> 不是导出函数，需要间接定位。项目中的思路：</p>
+<p><strong>方式一：通过 gFeCallout 指针</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">; gFeCallout 是 netio 的全局变量，指向默认 callout entry</span><br><span class="line">x netio!gFeCallout</span><br><span class="line">dp netio!gFeCallout L1         → 得到默认 entry 地址</span><br><span class="line">dq 默认entry地址+0x10          → 就是 FeDefaultClassifyCallback 地址</span><br></pre></td></tr></table></figure>
+
+<p><strong>方式二：特征码扫描</strong></p>
+<p>在 <code>netio.sys</code> 的代码段中搜索 <code>FeDefaultClassifyCallback</code> 的特征字节序列（在已知版本中固定），适合在驱动代码里动态定位。</p>
+<p><strong>方式三：从 FeDeleteCalloutEntry 追调用</strong></p>
+<p>反汇编 <code>netio!FeDeleteCalloutEntry</code>，找到它写入 classifyFn 的那条赋值语句，右侧的常量地址就是 <code>FeDefaultClassifyCallback</code>。</p>
+<h3 id="8-5-完整替换流程（思路层面）"><a href="#8-5-完整替换流程（思路层面）" class="headerlink" title="8.5 完整替换流程（思路层面）"></a>8.5 完整替换流程（思路层面）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Step 1: 用户态 FwpmCalloutEnum0() 枚举所有 calloutId</span><br><span class="line">            ↓</span><br><span class="line">Step 2: 通过 calloutId 计算或查询 entry 地址</span><br><span class="line">        方式A: 手动计算 gWfpGlobal[+0x198] + calloutId * ENTRY_SIZE</span><br><span class="line">        方式B: 调用 KfdGetRefCallout(calloutId, &amp;entry)</span><br><span class="line">            ↓</span><br><span class="line">Step 3: 读取 entry + 0x10（classifyFn），确认指向目标驱动</span><br><span class="line">        用 ln / MmGetSystemRoutineAddress 验证所属模块</span><br><span class="line">            ↓</span><br><span class="line">Step 4: 定位 FeDefaultClassifyCallback 地址</span><br><span class="line">        通过 gFeCallout → 默认entry → +0x10 读取</span><br><span class="line">            ↓</span><br><span class="line">Step 5: 写入替换</span><br><span class="line">        *(PVOID*)(entry + 0x10) = FeDefaultClassifyCallback</span><br><span class="line">            ↓</span><br><span class="line">Step 6: (可选) 同样替换 notifyFn 和 flowDeleteFn</span><br><span class="line">        使 callout 完全静默，不留任何执行痕迹</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-6-这个项目解决的工程问题"><a href="#8-6-这个项目解决的工程问题" class="headerlink" title="8.6 这个项目解决的工程问题"></a>8.6 这个项目解决的工程问题</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>KCFG 验证阻止替换自定义函数</td>
+<td>替换为已在 KCFG 表中的 netio 内部函数</td>
+</tr>
+<tr>
+<td>清零 entry 导致流量被 block</td>
+<td>替换为放行函数而非清零</td>
+</tr>
+<tr>
+<td>引用计数导致驱动无法卸载</td>
+<td>不修改引用计数字段，WFP 仍认为 callout 有效</td>
+</tr>
+<tr>
+<td>定位 FeDefaultClassifyCallback</td>
+<td>通过 gFeCallout 全局变量间接读取</td>
+</tr>
+<tr>
+<td>多版本 entry 大小差异</td>
+<td>在驱动初始化时动态解析偏移</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="九、WinDbg-调试实验：观察-Entry-状态变化"><a href="#九、WinDbg-调试实验：观察-Entry-状态变化" class="headerlink" title="九、WinDbg 调试实验：观察 Entry 状态变化"></a>九、WinDbg 调试实验：观察 Entry 状态变化</h2><p>本节描述如何在调试环境中，用 WinDbg 亲眼观察 callout entry 被修改前后的状态变化，加深对整个机制的理解。<strong>所有实验均在本地内核调试环境（VM + WinDbg）中进行。</strong></p>
+<h3 id="9-1-实验环境搭建"><a href="#9-1-实验环境搭建" class="headerlink" title="9.1 实验环境搭建"></a>9.1 实验环境搭建</h3><p>推荐使用双机调试（Host + Guest VM）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Host（运行 WinDbg）</span><br><span class="line">    │  串口 / 网络 KD 连接</span><br><span class="line">    ▼</span><br><span class="line">Guest VM（运行被调试内核）</span><br><span class="line">    │  加载测试驱动（WFPCalloutDriver PoC）</span><br><span class="line">    │  加载 NetworkKernelBypass 驱动</span><br></pre></td></tr></table></figure>
+
+<p>Guest VM 配置（在 Guest 管理员 cmd 中执行）：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">; 开启内核调试</span><br><span class="line">bcdedit /debug on</span><br><span class="line">bcdedit /dbgsettings <span class="built_in">net</span> hostip:HOST_IP port:<span class="number">50000</span> key:<span class="number">1</span>.<span class="number">2</span>.<span class="number">3</span>.<span class="number">4</span></span><br><span class="line"></span><br><span class="line">; 或者用串口</span><br><span class="line">bcdedit /dbgsettings serial debugport:<span class="number">1</span> baudrate:<span class="number">115200</span></span><br><span class="line"></span><br><span class="line">; 关闭驱动签名强制（测试环境）</span><br><span class="line">bcdedit /<span class="built_in">set</span> testsigning on</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-2-实验一：观察-Callout-注册过程"><a href="#9-2-实验一：观察-Callout-注册过程" class="headerlink" title="9.2 实验一：观察 Callout 注册过程"></a>9.2 实验一：观察 Callout 注册过程</h3><p><strong>目标</strong>：在 <code>FeRegisterCalloutEntry</code> 写入 classifyFn 的位置下断点，捕获注册瞬间。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">; 1. 在写入 classifyFn 的指令下断点</span><br><span class="line">; 先找到 FeRegisterCalloutEntry 的地址</span><br><span class="line">x netio!FeRegisterCalloutEntry</span><br><span class="line"></span><br><span class="line">; 反汇编，找 mov qword ptr [rbx+10h], rXX 的位置</span><br><span class="line">uf netio!FeRegisterCalloutEntry</span><br><span class="line"></span><br><span class="line">; 在写入指令处下断点（假设地址为 ADDR）</span><br><span class="line">bp ADDR</span><br><span class="line"></span><br><span class="line">; 2. 在 Guest 里加载测试驱动，触发注册</span><br><span class="line">; WinDbg 命中断点后查看寄存器和内存</span><br><span class="line"></span><br><span class="line">; 此时 rbx 指向 entry 基址，查看写入前的状态</span><br><span class="line">dqs @rbx L0xc</span><br><span class="line"></span><br><span class="line">; g 执行写入</span><br><span class="line">p</span><br><span class="line"></span><br><span class="line">; 查看写入后</span><br><span class="line">dqs @rbx L0xc</span><br><span class="line"></span><br><span class="line">; 确认 +0x10 已经是 classifyFn 地址</span><br><span class="line">ln poi(@rbx+0x10)</span><br></pre></td></tr></table></figure>
+
+<p><strong>预期输出</strong>：断点命中后，可以看到 entry 从全零变成有效状态，<code>+0x10</code> 处写入了测试驱动的 classifyFn 地址。</p>
+<h3 id="9-3-实验二：快照替换前后的-Entry-状态"><a href="#9-3-实验二：快照替换前后的-Entry-状态" class="headerlink" title="9.3 实验二：快照替换前后的 Entry 状态"></a>9.3 实验二：快照替换前后的 Entry 状态</h3><p><strong>目标</strong>：在替换发生前后各 dump 一次 entry，对比变化。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">; 前提：已知目标 callout 的 entry 地址（通过枚举获得）</span><br><span class="line">; 假设 entry 地址为 TARGET_ENTRY</span><br><span class="line"></span><br><span class="line">; === 替换前快照 ===</span><br><span class="line">.printf &quot;=== BEFORE ===\n&quot;</span><br><span class="line">dqs TARGET_ENTRY L0xc</span><br><span class="line"></span><br><span class="line">; 特别记录 classifyFn</span><br><span class="line">.printf &quot;classifyFn before: &quot;</span><br><span class="line">ln poi(TARGET_ENTRY+0x10)</span><br><span class="line"></span><br><span class="line">; 记录 DeviceObject（应指向目标驱动）</span><br><span class="line">.printf &quot;DeviceObject: %p\n&quot;, poi(TARGET_ENTRY+0x40)</span><br><span class="line">!drvobj poi(TARGET_ENTRY+0x40) 1</span><br><span class="line"></span><br><span class="line">; === 触发替换 ===</span><br><span class="line">; 在 Guest 里执行 NetworkKernelBypass，然后回到 WinDbg</span><br><span class="line"></span><br><span class="line">; === 替换后快照 ===</span><br><span class="line">.printf &quot;=== AFTER ===\n&quot;</span><br><span class="line">dqs TARGET_ENTRY L0xc</span><br><span class="line"></span><br><span class="line">; 对比 classifyFn</span><br><span class="line">.printf &quot;classifyFn after: &quot;</span><br><span class="line">ln poi(TARGET_ENTRY+0x10)</span><br><span class="line"></span><br><span class="line">; 验证：应该指向 netio!FeDefaultClassifyCallback 附近</span><br><span class="line">; DeviceObject 应该没有变化（entry 仍然&quot;有效&quot;）</span><br><span class="line">.printf &quot;DeviceObject: %p\n&quot;, poi(TARGET_ENTRY+0x40)</span><br></pre></td></tr></table></figure>
+
+<p><strong>预期看到的变化</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">=== BEFORE ===</span><br><span class="line">TARGET_ENTRY+0x00  00000001`00000004   (type=4, active=1)</span><br><span class="line">TARGET_ENTRY+0x08  00000000`00000000</span><br><span class="line">TARGET_ENTRY+0x10  fffff801`8f522a70   ← ChangmenWfp!ClassifyFn</span><br><span class="line">TARGET_ENTRY+0x18  fffff801`8f523150   ← ChangmenWfp!NotifyFn</span><br><span class="line">TARGET_ENTRY+0x20  fffff801`8f523140   ← ChangmenWfp!FlowDeleteFn</span><br><span class="line">TARGET_ENTRY+0x40  ffffbb08`95fc62c0   ← DeviceObject</span><br><span class="line"></span><br><span class="line">=== AFTER ===</span><br><span class="line">TARGET_ENTRY+0x00  00000001`00000004   (不变)</span><br><span class="line">TARGET_ENTRY+0x08  00000000`00000000   (不变)</span><br><span class="line">TARGET_ENTRY+0x10  fffff801`850808xx   ← netio!FeDefaultClassifyCallback ← 已替换！</span><br><span class="line">TARGET_ENTRY+0x18  fffff801`8f523150   (未替换，视实现而定)</span><br><span class="line">TARGET_ENTRY+0x20  fffff801`8f523140   (未替换)</span><br><span class="line">TARGET_ENTRY+0x40  ffffbb08`95fc62c0   (不变，DeviceObject 未动)</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-4-实验三：在-classifyFn-被调用处观察行为"><a href="#9-4-实验三：在-classifyFn-被调用处观察行为" class="headerlink" title="9.4 实验三：在 classifyFn 被调用处观察行为"></a>9.4 实验三：在 classifyFn 被调用处观察行为</h3><p><strong>目标</strong>：在替换前后分别对 classifyFn 下断，观察调用频率和参数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">; === 替换前：对原始 classifyFn 下断 ===</span><br><span class="line">; 获取原始地址</span><br><span class="line">r $t0=poi(TARGET_ENTRY+0x10)</span><br><span class="line">bp @$t0 &quot;.printf \&quot;[BEFORE] classifyFn called!\n\&quot;; g&quot;</span><br><span class="line"></span><br><span class="line">; 产生网络流量触发 classify</span><br><span class="line">; 观察断点命中次数（应该频繁触发）</span><br><span class="line">bl    ; 列出断点</span><br><span class="line">bc 0  ; 清除断点</span><br><span class="line"></span><br><span class="line">; === 替换后：对 FeDefaultClassifyCallback 下断 ===</span><br><span class="line">; 先找到 FeDefaultClassifyCallback 地址</span><br><span class="line">dp netio!gFeCallout L1</span><br><span class="line">; 结果假设为 DEFAULT_ENTRY_ADDR</span><br><span class="line">r $t1=poi(DEFAULT_ENTRY_ADDR+0x10)</span><br><span class="line">bp @$t1 &quot;.printf \&quot;[AFTER] default classify called!\n\&quot;; g&quot;</span><br><span class="line"></span><br><span class="line">; 同样产生网络流量</span><br><span class="line">; 观察：FeDefaultClassifyCallback 现在被调用了</span><br><span class="line">; 而原始 classifyFn 不再被调用</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-5-实验四：用条件断点观察-WFP-写锁"><a href="#9-5-实验四：用条件断点观察-WFP-写锁" class="headerlink" title="9.5 实验四：用条件断点观察 WFP 写锁"></a>9.5 实验四：用条件断点观察 WFP 写锁</h3><p><code>FeRegisterCalloutEntry</code> 和任何修改 entry 的操作都需要持有 WFP 的写锁（<code>FeAcquireWriteEngineLock</code>）。可以观察写锁的争用情况：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">; 在写锁获取处下断点</span><br><span class="line">x netio!FeAcquireWriteEngineLock</span><br><span class="line">bp netio!FeAcquireWriteEngineLock &quot;.printf \&quot;WFP write lock acquired by: \&quot;; k 3; g&quot;</span><br><span class="line"></span><br><span class="line">; 在写锁释放处下断点</span><br><span class="line">x netio!WfpReleaseFastWriteLock</span><br><span class="line">bp netio!WfpReleaseFastWriteLock &quot;.printf \&quot;WFP write lock released\n\&quot;; g&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这可以帮助理解：为什么替换操作需要在持有写锁的情况下进行，以及并发场景下的安全性。</p>
+<h3 id="9-6-调试时的注意事项"><a href="#9-6-调试时的注意事项" class="headerlink" title="9.6 调试时的注意事项"></a>9.6 调试时的注意事项</h3><p><strong>注意1：不要在生产系统上调试</strong></p>
+<p>所有实验必须在 VM 内核调试环境中进行。在真实系统上修改内核内存会导致不可预知的系统不稳定。</p>
+<p><strong>注意2：WinDbg 冻结内核时 WFP 写锁可能已持有</strong></p>
+<p>如果在 WFP 持有写锁时中断内核（Ctrl+Break），再尝试读写 callout entry 可能遇到不一致状态。建议在安静状态（无大量网络流量）时操作。</p>
+<p><strong>注意3：符号影响 ln 的输出质量</strong></p>
+<p>如果 netio 符号未加载，<code>ln</code> 只会显示最近的公开符号。确保符号路径正确：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.sympath srv*C:\Symbols*https://msdl.microsoft.com/download/symbols</span><br><span class="line">.reload /f netio.sys</span><br><span class="line">x netio!gWfpGlobal   ; 验证符号已加载</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意4：每次系统重启后地址会变（KASLR）</strong></p>
+<p>内核地址随机化（KASLR）意味着每次重启后 <code>gWfpGlobal</code>、数组基址等地址都会变。每次调试都要重新执行枚举步骤，不要缓存地址。</p>
+<hr>
+<h2 id="十、防御检测：蓝队视角的完整性校验"><a href="#十、防御检测：蓝队视角的完整性校验" class="headerlink" title="十、防御检测：蓝队视角的完整性校验"></a>十、防御检测：蓝队视角的完整性校验</h2><p>理解了攻击手法之后，防御侧的检测逻辑就自然地推导出来了。</p>
+<h3 id="10-1-核心检测原理"><a href="#10-1-核心检测原理" class="headerlink" title="10.1 核心检测原理"></a>10.1 核心检测原理</h3><p>替换手法有一个无法消除的特征：</p>
+<blockquote>
+<p><strong>classifyFn 所在模块</strong> 与 <strong>DeviceObject 所属驱动</strong> 不一致</p>
+</blockquote>
+<p>正常状态下，一个驱动注册的 callout，其 classifyFn 一定指向自身的代码段。替换后 classifyFn 指向 <code>netio.sys</code>，但 DeviceObject 仍然属于原驱动，这个矛盾是检测的基础。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">正常：</span><br><span class="line">    classifyFn → DriverA.sys 代码段</span><br><span class="line">    DeviceObject → DriverA 的设备对象</span><br><span class="line">    ✓ 模块一致</span><br><span class="line"></span><br><span class="line">被替换后：</span><br><span class="line">    classifyFn → netio.sys（FeDefaultClassifyCallback）</span><br><span class="line">    DeviceObject → DriverA 的设备对象（未修改）</span><br><span class="line">    ✗ 模块不一致 → 异常</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-2-检测驱动的核心逻辑"><a href="#10-2-检测驱动的核心逻辑" class="headerlink" title="10.2 检测驱动的核心逻辑"></a>10.2 检测驱动的核心逻辑</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">CALLOUT_INTEGRITY_RESULT</span> &#123;</span></span><br><span class="line">    UINT32  calloutId;</span><br><span class="line">    BOOLEAN isTampered;</span><br><span class="line">    WCHAR   registeredDriver[<span class="number">256</span>];   <span class="comment">// DeviceObject 所属驱动</span></span><br><span class="line">    WCHAR   classifyFnModule[<span class="number">256</span>];   <span class="comment">// classifyFn 所在模块</span></span><br><span class="line">    PVOID   classifyFn;</span><br><span class="line">    PVOID   deviceObject;</span><br><span class="line">&#125; CALLOUT_INTEGRITY_RESULT;</span><br><span class="line"></span><br><span class="line">NTSTATUS <span class="title function_">CheckCalloutIntegrity</span><span class="params">(UINT32 calloutId,</span></span><br><span class="line"><span class="params">                               CALLOUT_INTEGRITY_RESULT* result)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 获取 entry</span></span><br><span class="line">    PVOID pEntry = <span class="literal">NULL</span>;</span><br><span class="line">    NTSTATUS status = g_KfdGetRefCallout(calloutId, &amp;pEntry);</span><br><span class="line">    <span class="keyword">if</span> (!NT_SUCCESS(status) || !pEntry) <span class="keyword">return</span> STATUS_NOT_FOUND;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 读取字段</span></span><br><span class="line">    PVOID classifyFn   = *(PVOID*)((PUCHAR)pEntry + <span class="number">0x10</span>);</span><br><span class="line">    PVOID deviceObject = *(PVOID*)((PUCHAR)pEntry + <span class="number">0x40</span>);</span><br><span class="line"></span><br><span class="line">    result-&gt;classifyFn   = classifyFn;</span><br><span class="line">    result-&gt;deviceObject = deviceObject;</span><br><span class="line"></span><br><span class="line">    g_KfdDeRefCallout(pEntry);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!classifyFn || !deviceObject) <span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 找 classifyFn 所在模块</span></span><br><span class="line">    PLDR_DATA_TABLE_ENTRY classifyModule = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="comment">// 遍历 PsLoadedModuleList 找包含 classifyFn 的模块</span></span><br><span class="line">    FindModuleByAddress(classifyFn, &amp;classifyModule);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 找 DeviceObject 所属驱动</span></span><br><span class="line">    PDRIVER_OBJECT drvObj =</span><br><span class="line">        ((PDEVICE_OBJECT)deviceObject)-&gt;DriverObject;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 比对模块名</span></span><br><span class="line">    <span class="keyword">if</span> (classifyModule &amp;&amp; drvObj) &#123;</span><br><span class="line">        BOOLEAN match = RtlEqualUnicodeString(</span><br><span class="line">            &amp;classifyModule-&gt;BaseDllName,</span><br><span class="line">            &amp;drvObj-&gt;DriverName,</span><br><span class="line">            TRUE);</span><br><span class="line"></span><br><span class="line">        result-&gt;isTampered = !match;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 额外检查：classifyFn 是否是已知的 &quot;bypass&quot; 函数</span></span><br><span class="line">        <span class="keyword">if</span> (classifyFn == g_FeDefaultClassifyCallback) &#123;</span><br><span class="line">            result-&gt;isTampered = TRUE;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> STATUS_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-3-检测的完整覆盖面"><a href="#10-3-检测的完整覆盖面" class="headerlink" title="10.3 检测的完整覆盖面"></a>10.3 检测的完整覆盖面</h3><p>仅检测 classifyFn 还不够，完整的检测应覆盖所有三个回调：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对每个 entry 的三个函数指针都做模块一致性检查</span></span><br><span class="line">PVOID classifyFn    = *(PVOID*)((PUCHAR)pEntry + <span class="number">0x10</span>);</span><br><span class="line">PVOID notifyFn      = *(PVOID*)((PUCHAR)pEntry + <span class="number">0x18</span>);</span><br><span class="line">PVOID flowDeleteFn  = *(PVOID*)((PUCHAR)pEntry + <span class="number">0x20</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 三者都应该指向同一个驱动（或为 NULL）</span></span><br><span class="line"><span class="comment">// 任何一个指向不同模块都是异常</span></span><br></pre></td></tr></table></figure>
+
+<p>还有一个隐蔽的变体：只替换 classifyFn，保留 notifyFn 指向原驱动。这种情况下检测需要以 DeviceObject 所属驱动为基准，分别验证三个指针。</p>
+<h3 id="10-4-WinDbg-手动验证（快速检测）"><a href="#10-4-WinDbg-手动验证（快速检测）" class="headerlink" title="10.4 WinDbg 手动验证（快速检测）"></a>10.4 WinDbg 手动验证（快速检测）</h3><p>在调试环境中，可以用以下命令快速验证所有 callout 的完整性：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">; 遍历所有有效 entry，对比 classifyFn 模块和 DeviceObject 所属驱动</span><br><span class="line">r $t1=0</span><br><span class="line">.for (; @$t1 &lt; 0x400; r $t1=@$t1+1) &#123;</span><br><span class="line">    r $t2=ARRAY_BASE+@$t1*ENTRY_SIZE;</span><br><span class="line">    .if (by(@$t2+4) != 0) &#123;</span><br><span class="line">        r $t3=poi(@$t2+0x10);</span><br><span class="line">        r $t4=poi(@$t2+0x40);</span><br><span class="line">        .if (@$t3 != 0) &#123;</span><br><span class="line">            .printf &quot;\n[%d] classifyFn模块: &quot;, @$t1;</span><br><span class="line">            ln @$t3;</span><br><span class="line">            .printf &quot;[%d] DeviceObject驱动: %p\n&quot;, @$t1, @$t4;</span><br><span class="line">            !drvobj @$t4 1</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出后，肉眼查找 classifyFn 所属模块与 DeviceObject 所属驱动名不一致的条目。</p>
+<h3 id="10-5-更难检测的变体：filter-结构篡改"><a href="#10-5-更难检测的变体：filter-结构篡改" class="headerlink" title="10.5 更难检测的变体：filter 结构篡改"></a>10.5 更难检测的变体：filter 结构篡改</h3><p>0mWindyBug 博客提到了另一种思路：不修改 classifyFn，而是修改 <strong>filter 的 action 类型</strong>，将 <code>CALLOUT_TERMINATING</code> 改为 <code>CALLOUT_INSPECTION</code>，让 WFP 忽略 callout 的 block 决定。</p>
+<p>这种手法<strong>不触碰 callout entry</strong>，上述检测完全失效。检测它需要额外监控 filter 结构的完整性（<code>gWfpGlobal + 0x180</code> 的 filter hash 表），属于更深入的防御研究方向。</p>
+<h3 id="10-6-防御总结"><a href="#10-6-防御总结" class="headerlink" title="10.6 防御总结"></a>10.6 防御总结</h3><table>
+<thead>
+<tr>
+<th>攻击手法</th>
+<th>特征</th>
+<th>检测方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>清零整个 entry</td>
+<td>isActive&#x3D;0，三个回调为 NULL</td>
+<td>检测 active entry 突然消失</td>
+</tr>
+<tr>
+<td>替换 classifyFn 为默认函数</td>
+<td>classifyFn 指向 netio.sys</td>
+<td>模块一致性校验</td>
+</tr>
+<tr>
+<td>替换为其他合法内核函数</td>
+<td>classifyFn 指向非注册驱动</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>修改 filter action 类型</td>
+<td>callout entry 不变，filter 变</td>
+<td>监控 filter hash 表完整性</td>
+</tr>
+<tr>
+<td>翻转 CONDITIONAL_ON_FLOW flag</td>
+<td>entry+0x30 flags 被修改</td>
+<td>对比注册时的 flags 基线</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="附录-A：关键-WinDbg-命令速查"><a href="#附录-A：关键-WinDbg-命令速查" class="headerlink" title="附录 A：关键 WinDbg 命令速查"></a>附录 A：关键 WinDbg 命令速查</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">; ── 基础信息 ──────────────────────────────────────────</span><br><span class="line">; 找 netio 加载范围</span><br><span class="line">lm m netio</span><br><span class="line"></span><br><span class="line">; 找全局结构指针</span><br><span class="line">dp netio!gWfpGlobal L1</span><br><span class="line"></span><br><span class="line">; 找默认 callout entry（用于定位 FeDefaultClassifyCallback）</span><br><span class="line">dp netio!gFeCallout L1</span><br><span class="line"></span><br><span class="line">; ── 确认结构偏移（每次必做，不要假设）────────────────</span><br><span class="line">uf netio!GetCalloutEntry</span><br><span class="line">uf netio!FeRegisterCalloutEntry</span><br><span class="line"></span><br><span class="line">; ── 读数组信息（替换 BASE 为实际值）─────────────────</span><br><span class="line">dd BASE+0x190 L1      ; count（数组最大容量）</span><br><span class="line">dq BASE+0x198 L1      ; callout 数组基址</span><br><span class="line"></span><br><span class="line">; ── dump entry 验证结构 ──────────────────────────────</span><br><span class="line">dqs ARRAY_BASE L0x20</span><br><span class="line"></span><br><span class="line">; ── 完整枚举（替换实际值）────────────────────────────</span><br><span class="line">r $t1=0</span><br><span class="line">.for (; @$t1 &lt; COUNT; r $t1=@$t1+1) &#123;</span><br><span class="line">    r $t2=ARRAY_BASE+@$t1*ENTRY_SIZE;</span><br><span class="line">    .if (by(@$t2+4) != 0) &#123;</span><br><span class="line">        .printf &quot;\n==== callout id=%d entry=%p ====\n&quot;, @$t1, @$t2;</span><br><span class="line">        .printf &quot;  classifyFn   : &quot;; ln poi(@$t2+0x10);</span><br><span class="line">        .printf &quot;  notifyFn     : &quot;; ln poi(@$t2+0x18);</span><br><span class="line">        .printf &quot;  flowDeleteFn : &quot;; ln poi(@$t2+0x20);</span><br><span class="line">        .printf &quot;  DeviceObject : %p\n&quot;, poi(@$t2+0x40)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">; ── 反查驱动身份 ─────────────────────────────────────</span><br><span class="line">ln 函数地址</span><br><span class="line">lmvm 模块名</span><br><span class="line">!drvobj DeviceObject地址 2</span><br><span class="line"></span><br><span class="line">; ── 完整性校验（对比 classifyFn 和 DeviceObject 所属模块）</span><br><span class="line">; 对单个 entry（替换 ENTRY_ADDR）</span><br><span class="line">.printf &quot;classifyFn: &quot;; ln poi(ENTRY_ADDR+0x10)</span><br><span class="line">!drvobj poi(ENTRY_ADDR+0x40) 1</span><br><span class="line"></span><br><span class="line">; ── 调试实验用断点 ────────────────────────────────────</span><br><span class="line">; 观察 callout 注册过程</span><br><span class="line">bp netio!FeRegisterCalloutEntry</span><br><span class="line"></span><br><span class="line">; 观察 WFP 写锁争用</span><br><span class="line">bp netio!FeAcquireWriteEngineLock &quot;.printf \&quot;write lock acquired\n\&quot;; k 3; g&quot;</span><br><span class="line"></span><br><span class="line">; 对特定 classifyFn 下断（观察调用频率）</span><br><span class="line">bp 函数地址 &quot;.printf \&quot;classifyFn hit\n\&quot;; g&quot;</span><br><span class="line"></span><br><span class="line">; ── 符号管理 ─────────────────────────────────────────</span><br><span class="line">.sympath srv*C:\Symbols*https://msdl.microsoft.com/download/symbols</span><br><span class="line">.reload /f netio.sys</span><br><span class="line">.reload /f fwpkclnt.sys</span><br><span class="line">x netio!gWfpGlobal    ; 验证符号加载成功</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="附录-B：调用链速查表"><a href="#附录-B：调用链速查表" class="headerlink" title="附录 B：调用链速查表"></a>附录 B：调用链速查表</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">【注册路径】</span><br><span class="line">FwpsCalloutRegister0  (fwpkclnt.sys, 公开 API)</span><br><span class="line">  └─ FwppCalloutRegister  (fwpkclnt.sys, 内部)</span><br><span class="line">       └─ KfdRegisterCalloutEntry  (netio.sys, 导出)</span><br><span class="line">            └─ FeRegisterCalloutEntry  (netio.sys, 内部)  ← 真正写入 entry</span><br><span class="line">                 └─ 写入 gWfpGlobal[+0x198][calloutId * ENTRY_SIZE]</span><br><span class="line"></span><br><span class="line">【旧版注册路径（早期 Win10）】</span><br><span class="line">FwpsCalloutRegister0</span><br><span class="line">  └─ FwppCalloutRegister</span><br><span class="line">       └─ KfdAddCalloutEntry  (netio.sys, 导出)</span><br><span class="line">            └─ FeAddCalloutEntry  (netio.sys, 内部)</span><br><span class="line"></span><br><span class="line">【查询路径】</span><br><span class="line">KfdGetRefCallout(calloutId, &amp;pEntry)  (netio.sys, 导出)</span><br><span class="line">  └─ FeGetRefCallout  (netio.sys, 内部)</span><br><span class="line">       └─ GetCalloutEntry  (netio.sys, 内部)</span><br><span class="line">            └─ 返回 gWfpGlobal[+0x198] + calloutId * ENTRY_SIZE</span><br><span class="line"></span><br><span class="line">【引用释放】</span><br><span class="line">KfdDeRefCallout(pEntry)  (netio.sys, 导出)</span><br><span class="line">  ← 每次 KfdGetRefCallout 后必须配对调用</span><br><span class="line"></span><br><span class="line">【获取全局指针】</span><br><span class="line">FeGetWfpGlobalPtr()  (netio.sys, 导出)</span><br><span class="line">  └─ 返回 gWfpGlobal 的值（比直接读符号更稳定）</span><br><span class="line"></span><br><span class="line">【分类过程（WFP 内部调用 classifyFn）】</span><br><span class="line">tcpip.sys（数据包到达某 layer）</span><br><span class="line">  └─ Shim 触发 classification</span><br><span class="line">       └─ ProcessCallout / ProcessCallout2  (netio.sys)</span><br><span class="line">            └─ 读取 entry + 0x10（classifyFn）</span><br><span class="line">            └─ KCFG 验证目标地址合法性</span><br><span class="line">            └─ call classifyFn(inFixedValues, inMetaValues, ...)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="附录-C：gWfpGlobal-已知偏移汇总"><a href="#附录-C：gWfpGlobal-已知偏移汇总" class="headerlink" title="附录 C：gWfpGlobal 已知偏移汇总"></a>附录 C：gWfpGlobal 已知偏移汇总</h2><table>
+<thead>
+<tr>
+<th>偏移</th>
+<th>类型</th>
+<th>含义</th>
+<th>版本稳定性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>+0x190</code></td>
+<td>DWORD</td>
+<td>callout 数组最大容量（初始 1024）</td>
+<td>已测稳定</td>
+</tr>
+<tr>
+<td><code>+0x198</code></td>
+<td>QWORD*</td>
+<td>callout entry 数组基址</td>
+<td>已测稳定</td>
+</tr>
+<tr>
+<td><code>+0x180</code></td>
+<td>—</td>
+<td>filter hash 表基址</td>
+<td>build dependent，不稳定</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="附录-D：CalloutEntry-偏移汇总（多版本对照）"><a href="#附录-D：CalloutEntry-偏移汇总（多版本对照）" class="headerlink" title="附录 D：CalloutEntry 偏移汇总（多版本对照）"></a>附录 D：CalloutEntry 偏移汇总（多版本对照）</h2><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>版本A (0x50 entry)</th>
+<th>版本B (0x60 entry)</th>
+<th>通用读法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>calloutType</td>
+<td>+0x00</td>
+<td>+0x00</td>
+<td><code>*(+0)=a1</code></td>
+</tr>
+<tr>
+<td>isActive</td>
+<td>+0x04</td>
+<td>+0x04</td>
+<td><code>*(+4)=1</code></td>
+</tr>
+<tr>
+<td>classifyFn（普通）</td>
+<td>+0x10</td>
+<td>+0x10</td>
+<td><code>else *(+16)=a2</code></td>
+</tr>
+<tr>
+<td>notifyFn</td>
+<td>+0x18</td>
+<td>+0x18</td>
+<td><code>*(+24)=a3</code></td>
+</tr>
+<tr>
+<td>flowDeleteFn</td>
+<td>+0x20</td>
+<td>+0x20</td>
+<td><code>*(+32)=a4</code></td>
+</tr>
+<tr>
+<td>classifyFn（fast）</td>
+<td>+0x28</td>
+<td>+0x28</td>
+<td><code>if(type==3) *(+40)=a2</code></td>
+</tr>
+<tr>
+<td>flags</td>
+<td>+0x30</td>
+<td>+0x30</td>
+<td><code>*(+48)=a5</code></td>
+</tr>
+<tr>
+<td>deviceObject</td>
+<td>+0x38</td>
+<td>+0x40</td>
+<td><code>ObfRef后 *(+N)=Object</code></td>
+</tr>
+<tr>
+<td>layerInfo</td>
+<td>+0x44</td>
+<td>+0x4C</td>
+<td><code>*(+76)=a9</code></td>
+</tr>
+<tr>
+<td>isTfoIncompat</td>
+<td>+0x46</td>
+<td>+0x4E</td>
+<td><code>*(+78)=a6</code></td>
+</tr>
+<tr>
+<td>Entry 总大小</td>
+<td><strong>0x50</strong></td>
+<td><strong>0x60</strong></td>
+<td>从 <code>GetCalloutEntry</code> 汇编乘法读</td>
+</tr>
+</tbody></table>
+<p><strong>关键结论</strong>：</p>
+<ul>
+<li><code>classifyFn (+0x10)</code>、<code>notifyFn (+0x18)</code>、<code>flowDeleteFn (+0x20)</code> 在已知版本中<strong>偏移一致</strong></li>
+<li><code>deviceObject</code> 偏移有版本差异（0x38 vs 0x40），需从 <code>ObfReferenceObject</code> 调用后的写操作确认</li>
+<li><strong>永远不要硬编码</strong>，每次从目标系统的 <code>FeRegisterCalloutEntry</code> 反编译结果读出</li>
+</ul>
+<hr>
+<h2 id="附录-E：研究项目参考"><a href="#附录-E：研究项目参考" class="headerlink" title="附录 E：研究项目参考"></a>附录 E：研究项目参考</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>性质</th>
+<th>核心贡献</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/0mWindyBug/WFPCalloutReserach">0mWindyBug&#x2F;WFPCalloutReserach</a></td>
+<td>逆向研究 + PoC</td>
+<td>推导 gWfpGlobal 结构；提出三种 callout 静默思路；WFPEnumUM&#x2F;Driver 枚举工具</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal">V-i-x-x&#x2F;kernel-callback-removal &#x2F; NetworkKernelBypass</a></td>
+<td>工程实现</td>
+<td>KCFG 合规的 classifyFn 替换；解决清零 entry 的副作用问题</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/wiresock/WFPCalloutExplorer">wiresock&#x2F;WFPCalloutExplorer</a></td>
+<td>工具</td>
+<td>通过检查 <code>FwpsCalloutRegister</code> 导入识别 WFP callout 驱动，无需内核调试</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/myzxcg/RealBlindingEDR">myzxcg&#x2F;RealBlindingEDR</a></td>
+<td>综合研究</td>
+<td>覆盖多种内核回调（含 WFP），集成移除方案</td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>本文基于实际内核调试（WinDbg 双机调试）和 IDA Pro 逆向结果撰写，所有偏移均通过实验验证。</em><br><em>在不同 Windows 版本上，请始终重新从 <code>uf netio!GetCalloutEntry</code> 和 <code>FeRegisterCalloutEntry</code> 反编译结果读取实际偏移，不要直接使用本文数值。</em></p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-05-01</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E5%86%85%E6%A0%B8/'>
+                            内核
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/05/01/%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8WFP%E8%BF%87%E6%BB%A4%E5%B9%B3%E5%8F%B0/">内核驱动WFP过滤平台</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>

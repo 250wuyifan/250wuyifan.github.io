@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="内核驱动WFP过滤平台" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    内核驱动WFP过滤平台
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-05-01</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：1.1k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：4分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8F%82%E8%80%83"><span class="post-toc-text">参考</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ClassifyFn"><span class="post-toc-text">ClassifyFn</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#windbg%E5%AF%BB%E6%89%BE%E5%86%85%E6%A0%B8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="post-toc-text">windbg寻找内核数据结构</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E5%85%B3%E9%94%AE%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="post-toc-text">关键全局变量</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#gWfpGlobal%EF%BC%88WFP-%E6%80%BB%E6%8E%A7%E7%BB%93%E6%9E%84%EF%BC%89"><span class="post-toc-text">gWfpGlobal（WFP 总控结构）</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E5%AE%9A%E4%BD%8D-Callout-%E6%95%B0%E7%BB%84"><span class="post-toc-text">定位 Callout 数组</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E9%80%9A%E8%BF%87%E5%8F%8D%E6%B1%87%E7%BC%96-GetCalloutEntry-%E7%A1%AE%E5%AE%9A%E5%81%8F%E7%A7%BB"><span class="post-toc-text">通过反汇编 GetCalloutEntry 确定偏移</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E8%AF%BB%E5%8F%96-count-%E5%92%8C%E6%95%B0%E7%BB%84%E5%9F%BA%E5%9D%80"><span class="post-toc-text">读取 count 和数组基址</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Callout-Entry-%E7%BB%93%E6%9E%84"><span class="post-toc-text">Callout Entry 结构</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Entry-%E5%A4%A7%E5%B0%8F%E8%AE%A1%E7%AE%97"><span class="post-toc-text">Entry 大小计算</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Entry-%E5%86%85%E9%83%A8%E5%81%8F%E7%A7%BB%E5%B8%83%E5%B1%80"><span class="post-toc-text">Entry 内部偏移布局</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E5%AE%8C%E6%95%B4%E9%81%8D%E5%8E%86%E5%91%BD%E4%BB%A4"><span class="post-toc-text">完整遍历命令</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E9%AA%8C%E8%AF%81%E7%AC%AC%E4%B8%80%E4%B8%AA-entry-%E7%9A%84%E7%BB%93%E6%9E%84"><span class="post-toc-text">验证第一个 entry 的结构</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E9%81%8D%E5%8E%86%E5%85%A8%E9%83%A8%E6%9C%89%E6%95%88-callout"><span class="post-toc-text">遍历全部有效 callout</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%8F%AA%E6%89%93%E5%8D%B0%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%EF%BC%88%E6%9B%B4%E7%AE%80%E6%B4%81%EF%BC%89"><span class="post-toc-text">只打印函数指针（更简洁）</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E8%84%9A%E6%9C%AC"><span class="post-toc-text">脚本</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal/blob/main/NetworkKernelBypass/Readme.md">https://github.com/V-i-x-x/kernel-callback-removal/blob/main/NetworkKernelBypass/Readme.md</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/0mWindyBug/WFPCalloutReserach">https://github.com/0mWindyBug/WFPCalloutReserach</a></p>
+<p>如下图，我们大概就可以知道wfp在做什么，我们进行绕过的话，主要针对的就是这个callout的classifyFn</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260501184000519.png" title="image-20260501184000519" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260501184000519.png" alt="image-20260501184000519"></a></p>
+<h2 id="ClassifyFn"><a href="#ClassifyFn" class="headerlink" title="ClassifyFn"></a>ClassifyFn</h2><p>第三方驱动通过调用 <code>FwpsCalloutRegister</code> 注册自己的回调函数（callout），WFP 将所有 callout 统一存储在 <code>netio.sys</code> 管理的全局表中。下面代码简单看一下注册 Callout的流程，就可以知道，我们可以主动写这个classifyFn，里面写上一些处理逻辑，那么我们绕过的思路，就是把这个MyClassifyFn替换成没啥用的函数，那么就可以致盲了。</p>
+<p><strong>注册 Callout</strong>：在驱动入口函数中，填充注册结构体并向引擎注册：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">FWPS_CALLOUT sCallout = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">sCallout.calloutKey = MyCalloutGUID; </span><br><span class="line">sCallout.classifyFn = MyClassifyFn; <span class="comment">// 指向你的实现函数</span></span><br><span class="line">sCallout.notifyFn = MyNotifyFn;     <span class="comment">// 用于处理状态变迁</span></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">status = FwpsCalloutRegister(deviceObject, &amp;sCallout, &amp;calloutId);</span><br></pre></td></tr></table></figure>
+
+<p><strong>编写 ClassifyFn 逻辑</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">MyClassifyFn</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="type">const</span> FWPS_INCOMING_VALUES0 *inFixedValues,</span></span><br><span class="line"><span class="params">    <span class="type">const</span> FWPS_INCOMING_METADATA_VALUES0 *inMetaValues,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *layerData,</span></span><br><span class="line"><span class="params">    <span class="type">const</span> <span class="type">void</span> *classifyContext,</span></span><br><span class="line"><span class="params">    <span class="type">const</span> FWPS_FILTER1 *filter,</span></span><br><span class="line"><span class="params">    UINT64 flowContext,</span></span><br><span class="line"><span class="params">    FWPS_CLASSIFY_OUT0 *classifyOut)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 假设出站传输层，数据字段索引定义明确</span></span><br><span class="line">    UINT8 protocol = inFixedValues-&gt;incomingValue[FWPS_FIELD_OUTBOUND_TRANSPORT_V4_IP_PROTOCOL].value.uint8;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查是否为 TCP 流量</span></span><br><span class="line">    <span class="keyword">if</span> (protocol == IPPROTO_TCP) &#123;</span><br><span class="line">        <span class="comment">// 判断为 TCP，决定阻止</span></span><br><span class="line">        classifyOut-&gt;actionType = FWP_ACTION_BLOCK;</span><br><span class="line">        <span class="comment">// 清除动作写入标志，避免被冲突</span></span><br><span class="line">        classifyOut-&gt;rights &amp;= ~FWPS_RIGHT_ACTION_WRITE;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 不是 TCP，放行，并让引擎继续评估后续筛选器</span></span><br><span class="line">        classifyOut-&gt;actionType = FWP_ACTION_CONTINUE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="windbg寻找内核数据结构"><a href="#windbg寻找内核数据结构" class="headerlink" title="windbg寻找内核数据结构"></a>windbg寻找内核数据结构</h2><h3 id="关键全局变量"><a href="#关键全局变量" class="headerlink" title="关键全局变量"></a>关键全局变量</h3><h4 id="gWfpGlobal（WFP-总控结构）"><a href="#gWfpGlobal（WFP-总控结构）" class="headerlink" title="gWfpGlobal（WFP 总控结构）"></a>gWfpGlobal（WFP 总控结构）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x netio!gWfpGlobal</span><br></pre></td></tr></table></figure>
+
+<p>输出示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fffff801`850ec510  netio!gWfpGlobal</span><br></pre></td></tr></table></figure>
+
+<p>这是一个指针，指向 WFP 的全局控制结构（类型未公开符号）。</p>
+<p>取出指针值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp netio!gWfpGlobal L1</span><br></pre></td></tr></table></figure>
+
+<p>示例结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fffff801`850ec510  ffffbb08`8dcdf460   &lt;- 全局结构基址</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="定位-Callout-数组"><a href="#定位-Callout-数组" class="headerlink" title="定位 Callout 数组"></a>定位 Callout 数组</h3><h4 id="通过反汇编-GetCalloutEntry-确定偏移"><a href="#通过反汇编-GetCalloutEntry-确定偏移" class="headerlink" title="通过反汇编 GetCalloutEntry 确定偏移"></a>通过反汇编 GetCalloutEntry 确定偏移</h4><p>WFP 内部用 <code>GetCalloutEntry(calloutId, &amp;entry)</code> 来根据 ID 查找 callout。反汇编它可以直接读出数组偏移：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uf NETIO!GetCalloutEntry</span><br></pre></td></tr></table></figure>
+
+<p>关键汇编片段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov  r8, qword ptr [NETIO!gWfpGlobal]    ; r8 = 全局结构基址</span><br><span class="line">cmp  ecx, dword ptr [r8 + 0x190]         ; ecx = calloutId，与 count 比较</span><br><span class="line">...</span><br><span class="line">add  rcx, qword ptr [r8 + 0x198]         ; rcx += 数组基址</span><br></pre></td></tr></table></figure>
+
+<p>由此得出全局结构的两个关键偏移：</p>
+<table>
+<thead>
+<tr>
+<th>偏移</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>+0x190</code></td>
+<td>callout 槽位总数（count，DWORD）</td>
+</tr>
+<tr>
+<td><code>+0x198</code></td>
+<td>callout 数组基址（指针）</td>
+</tr>
+</tbody></table>
+<h4 id="读取-count-和数组基址"><a href="#读取-count-和数组基址" class="headerlink" title="读取 count 和数组基址"></a>读取 count 和数组基址</h4><p>假设全局结构基址为 <code>BASE</code>（从 gWfpGlobal 取得）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dd BASE+0x190 L1    ; 读 count（DWORD）</span><br><span class="line">dq BASE+0x198 L1    ; 读数组基址（QWORD 指针）</span><br></pre></td></tr></table></figure>
+
+<p>实际示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1: kd&gt; dd 0xffffbb088dcdf460+0x190 L1</span><br><span class="line">ffffbb08`8dcdf5f0  00000400            ; count = 0x400 = 1024 个槽位</span><br><span class="line"></span><br><span class="line">1: kd&gt; dq 0xffffbb088dcdf460+0x198 L1</span><br><span class="line">ffffbb08`8dcdf5f8  ffffbb08`8ddec000   ; 数组基址</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="Callout-Entry-结构"><a href="#Callout-Entry-结构" class="headerlink" title="Callout Entry 结构"></a>Callout Entry 结构</h3><h4 id="Entry-大小计算"><a href="#Entry-大小计算" class="headerlink" title="Entry 大小计算"></a>Entry 大小计算</h4><p>从 <code>GetCalloutEntry</code> 反汇编：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov  eax, ecx           ; eax = index</span><br><span class="line">lea  rcx, [rax+rax*4]   ; rcx = index * 5</span><br><span class="line">shl  rcx, 4             ; rcx = index * 5 * 16 = index * 0x50</span><br><span class="line">add  rcx, [r8+0x198]    ; 加上数组基址</span><br></pre></td></tr></table></figure>
+
+<p><strong>每个 entry 大小 &#x3D; 0x50 字节（80字节）</strong></p>
+<p>Entry 地址 &#x3D; 数组基址 + index × 0x50</p>
+<h4 id="Entry-内部偏移布局"><a href="#Entry-内部偏移布局" class="headerlink" title="Entry 内部偏移布局"></a>Entry 内部偏移布局</h4><p>通过实际 dump 确认的偏移：</p>
+<table>
+<thead>
+<tr>
+<th>偏移</th>
+<th>大小</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>+0x00</code></td>
+<td>DWORD</td>
+<td>callout ID（注册时分配）</td>
+</tr>
+<tr>
+<td><code>+0x04</code></td>
+<td>DWORD</td>
+<td>active 标志（非0 &#x3D; 有效）</td>
+</tr>
+<tr>
+<td><code>+0x08</code></td>
+<td>8字节</td>
+<td>未知&#x2F;保留</td>
+</tr>
+<tr>
+<td><code>+0x10</code></td>
+<td>QWORD</td>
+<td><strong>classifyFn 指针</strong></td>
+</tr>
+<tr>
+<td><code>+0x18</code></td>
+<td>QWORD</td>
+<td><strong>notifyFn 指针</strong></td>
+</tr>
+<tr>
+<td><code>+0x20</code></td>
+<td>QWORD</td>
+<td><strong>flowDeleteFn 指针</strong>（可为0）</td>
+</tr>
+<tr>
+<td><code>+0x28~</code></td>
+<td>…</td>
+<td>其他字段（flags、layer 信息等）</td>
+</tr>
+</tbody></table>
+<p>实际 dump 示例（一个有效 entry）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ffffbb08`8ddf1aa0  00000001`00000004   ; [+0x00]=id=4, [+0x04]=active=1</span><br><span class="line">ffffbb08`8ddf1aa8  00000000`00000000   ; [+0x08] 保留</span><br><span class="line">ffffbb08`8ddf1ab0  fffff801`8f522a70   ; [+0x10] classifyFn</span><br><span class="line">ffffbb08`8ddf1ab8  fffff801`8f523150   ; [+0x18] notifyFn</span><br><span class="line">ffffbb08`8ddf1ac0  fffff801`8f523140   ; [+0x20] flowDeleteFn</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="完整遍历命令"><a href="#完整遍历命令" class="headerlink" title="完整遍历命令"></a>完整遍历命令</h3><h4 id="验证第一个-entry-的结构"><a href="#验证第一个-entry-的结构" class="headerlink" title="验证第一个 entry 的结构"></a>验证第一个 entry 的结构</h4><p>先 dump 数组开头，确认对齐是否正确：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dqs 数组基址 L0x14</span><br></pre></td></tr></table></figure>
+
+<p>第一个全零的 entry 是空槽，找到第一个 <code>+0x04</code> 不为零的就是有效 entry。</p>
+<h4 id="遍历全部有效-callout"><a href="#遍历全部有效-callout" class="headerlink" title="遍历全部有效 callout"></a>遍历全部有效 callout</h4><p><strong>注意</strong>：<code>.for</code> 初始化不能同时赋值两个寄存器，必须在循环外赋值。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">r $t1=0</span><br><span class="line">.for (; @$t1 &lt; 0x400; r $t1=@$t1+1) &#123;</span><br><span class="line">    r $t2=0xffffbb088ddec000+@$t1*0x50;</span><br><span class="line">    .if (by(@$t2+4) != 0) &#123;</span><br><span class="line">        .printf &quot;\n==== callout %d (addr=%p) ====\n&quot;, @$t1, @$t2;</span><br><span class="line">        dqs @$t2 L0xa</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>说明：</p>
+<ul>
+<li><code>0x400</code> 替换为你的实际 count 值</li>
+<li><code>0xffffbb088ddec000</code> 替换为你的实际数组基址</li>
+<li><code>by(@$t2+4)</code> 读取 active 标志的低字节，非0表示有效</li>
+</ul>
+<h4 id="只打印函数指针（更简洁）"><a href="#只打印函数指针（更简洁）" class="headerlink" title="只打印函数指针（更简洁）"></a>只打印函数指针（更简洁）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">r $t1=0</span><br><span class="line">.for (; @$t1 &lt; 0x400; r $t1=@$t1+1) &#123;</span><br><span class="line">    r $t2=0xffffbb088ddec000+@$t1*0x50;</span><br><span class="line">    .if (by(@$t2+4) != 0) &#123;</span><br><span class="line">        .printf &quot;\n[%d] classify: &quot;, @$t1;</span><br><span class="line">        ln poi(@$t2+0x10);</span><br><span class="line">        .printf &quot;[%d] notify:   &quot;, @$t1;</span><br><span class="line">        ln poi(@$t2+0x18)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h2><p><a target="_blank" rel="noopener" href="https://github.com/V-i-x-x/kernel-callback-removal/blob/main/NetworkKernelBypass/Readme.md">https://github.com/V-i-x-x/kernel-callback-removal/blob/main/NetworkKernelBypass/Readme.md</a></p>
+<p>直接看大佬的代码即可，我们只需要改动一些必要的偏移，我自己测试的话，改动了如下即可。</p>
+<table>
+<thead>
+<tr>
+<th align="left">count 偏移</th>
+<th><code>+0x190</code> &#x3D; 0x400（1024槽）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">数组基址偏移</td>
+<td><code>+0x198</code> &#x3D; <code>ffffbb08&#39;8ddec000</code></td>
+</tr>
+</tbody></table>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/164044c7b29b3ceec540e804dff11a66.png" title="164044c7b29b3ceec540e804dff11a66" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/164044c7b29b3ceec540e804dff11a66.png" alt="164044c7b29b3ceec540e804dff11a66"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/ce741635a78e272c53703ac8012bf928.jpg" title="ce741635a78e272c53703ac8012bf928" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/ce741635a78e272c53703ac8012bf928.jpg" alt="ce741635a78e272c53703ac8012bf928"></a></p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-05-01</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E5%86%85%E6%A0%B8/'>
+                            内核
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+                    <span>上一篇：<a href='/2026/05/01/WFP-Callout-%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6/'>WFP_Callout_深度研究</a></span>
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/04/30/%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8MiniFilter-Callback/">内核驱动MiniFilter Callback</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
