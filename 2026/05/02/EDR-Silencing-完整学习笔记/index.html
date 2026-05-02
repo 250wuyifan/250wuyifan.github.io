@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="EDR Silencing 完整学习笔记" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    EDR Silencing 完整学习笔记
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-05-02</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：4.2k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：17分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#EDR-Silencing-%E5%AE%8C%E6%95%B4%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="post-toc-text">EDR Silencing 完整学习笔记</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="post-toc-text">目录</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF-EDR-Silencing"><span class="post-toc-text">1. 什么是 EDR Silencing</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-%E8%83%8C%E6%99%AF%E4%B8%8E%E8%B5%B7%E6%BA%90"><span class="post-toc-text">2. 背景与起源</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-%E6%A0%B8%E5%BF%83%E5%89%8D%E6%8F%90%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8%E6%88%B7%E6%80%81%E5%B0%B1%E5%A4%9F%E4%BA%86"><span class="post-toc-text">3. 核心前提：为什么用户态就够了</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#WFP-%E5%88%86%E5%B1%82%E6%9E%B6%E6%9E%84"><span class="post-toc-text">WFP 分层架构</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E4%B8%8E%E8%80%81%E5%BC%8F%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94"><span class="post-toc-text">与老式内核驱动方法对比</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E5%85%A8%E6%99%AF"><span class="post-toc-text">4. 攻击方法全景</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-1-Windows-Firewall-%E8%A7%84%E5%88%99"><span class="post-toc-text">4.1 Windows Firewall 规则</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-2-Windows-Filtering-Platform-WFP"><span class="post-toc-text">4.2 Windows Filtering Platform (WFP)</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#WFP-Filter-%E7%9A%84%E5%9B%9B%E7%A7%8D%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%B1%BB%E5%9E%8B"><span class="post-toc-text">WFP Filter 的四种生命周期类型</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%B7%A5%E5%85%B7%E4%BB%A3%E8%A1%A8%EF%BC%9AEDRSilencer"><span class="post-toc-text">工具代表：EDRSilencer</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%85%B3%E4%BA%8E-Provider-%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="post-toc-text">关于 Provider 的说明</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-3-Hosts-%E6%96%87%E4%BB%B6%E7%AF%A1%E6%94%B9"><span class="post-toc-text">4.3 Hosts 文件篡改</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-4-%E5%90%8D%E7%A7%B0%E8%A7%A3%E6%9E%90%E7%AD%96%E7%95%A5%E8%A1%A8-NRPT"><span class="post-toc-text">4.4 名称解析策略表 (NRPT)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-5-%E8%B7%AF%E7%94%B1%E8%A1%A8%E7%AF%A1%E6%94%B9"><span class="post-toc-text">4.5 路由表篡改</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-6-IPSec-%E8%BF%87%E6%BB%A4%E8%A7%84%E5%88%99"><span class="post-toc-text">4.6 IPSec 过滤规则</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-7-%E8%BE%85%E5%8A%A9-IP-%E5%9C%B0%E5%9D%80-IPMute"><span class="post-toc-text">4.7 辅助 IP 地址 (IPMute)</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-WFP-%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%90%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%8C%85%E7%9A%84%E4%B8%80%E7%94%9F"><span class="post-toc-text">5. WFP 深度剖析：数据包的一生</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E8%A2%AB-Block-%E5%89%8D%EF%BC%88%E6%AD%A3%E5%B8%B8%EF%BC%89"><span class="post-toc-text">被 Block 前（正常）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#EDRSilencer-%E8%BF%90%E8%A1%8C%E5%90%8E"><span class="post-toc-text">EDRSilencer 运行后</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89-ALE-AUTH-CONNECT-%E5%B1%82%EF%BC%9F"><span class="post-toc-text">为什么选 ALE_AUTH_CONNECT 层？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-%E9%98%B2%E5%BE%A1%E6%96%B9%E6%A1%88%EF%BC%9A%E5%A6%82%E4%BD%95%E5%8F%8D%E5%88%B6-EDR-Silencing"><span class="post-toc-text">6. 防御方案：如何反制 EDR Silencing</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-1-%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9APrevention%EF%BC%88%E9%A2%84%E9%98%B2%EF%BC%89"><span class="post-toc-text">6.1 方案一：Prevention（预防）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9AImmediate-Removal%EF%BC%88%E5%8D%B3%E6%97%B6%E6%B8%85%E9%99%A4%EF%BC%89"><span class="post-toc-text">6.2 方案二：Immediate Removal（即时清除）</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#7-%E6%A3%80%E6%B5%8B%E5%B7%A5%E7%A8%8B"><span class="post-toc-text">7. 检测工程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-1-WFP-%E6%A3%80%E6%B5%8B"><span class="post-toc-text">7.1 WFP 检测</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E9%9C%80%E8%A6%81%E5%90%AF%E7%94%A8%E7%9A%84%E5%AE%A1%E8%AE%A1%E7%AD%96%E7%95%A5%EF%BC%88%E9%BB%98%E8%AE%A4%E5%9D%87%E6%9C%AA%E5%BC%80%E5%90%AF%EF%BC%89"><span class="post-toc-text">需要启用的审计策略（默认均未开启）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%85%B3%E9%94%AE-Event-ID-%E6%98%A0%E5%B0%84"><span class="post-toc-text">关键 Event ID 映射</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9B%91%E6%8E%A7"><span class="post-toc-text">注册表监控</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%B7%A5%E5%85%B7%E8%BE%85%E5%8A%A9"><span class="post-toc-text">工具辅助</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-2-Windows-Firewall-%E8%A7%84%E5%88%99%E6%A3%80%E6%B5%8B"><span class="post-toc-text">7.2 Windows Firewall 规则检测</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-3-Hosts-%E6%96%87%E4%BB%B6%E6%A3%80%E6%B5%8B"><span class="post-toc-text">7.3 Hosts 文件检测</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%90%AF%E7%94%A8%E5%AE%A1%E8%AE%A1%E7%AD%96%E7%95%A5"><span class="post-toc-text">启用审计策略</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-4-NRPT-%E6%A3%80%E6%B5%8B"><span class="post-toc-text">7.4 NRPT 检测</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-5-IPSec-%E6%A3%80%E6%B5%8B"><span class="post-toc-text">7.5 IPSec 检测</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-SIGMA-%E8%A7%84%E5%88%99"><span class="post-toc-text">8. SIGMA 规则</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-%E5%B7%A5%E5%85%B7%E6%B1%87%E6%80%BB"><span class="post-toc-text">9. 工具汇总</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#10-%E7%9F%A5%E8%AF%86%E7%82%B9%E4%B8%B2%E8%81%94%EF%BC%9A%E4%B8%A4%E7%AF%87%E6%96%87%E7%AB%A0%E7%9A%84%E8%A7%86%E8%A7%92%E5%AF%B9%E6%AF%94"><span class="post-toc-text">10. 知识点串联：两篇文章的视角对比</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84%E5%85%B1%E5%90%8C%E7%BB%93%E8%AE%BA"><span class="post-toc-text">最重要的共同结论</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#11-%E5%85%B3%E9%94%AE%E6%A6%82%E5%BF%B5%E9%80%9F%E6%9F%A5"><span class="post-toc-text">11. 关键概念速查</span></a></li></ol></li></ol>
+            
+        
+        <div class=".article-gallery"><h1 id="EDR-Silencing-完整学习笔记"><a href="#EDR-Silencing-完整学习笔记" class="headerlink" title="EDR Silencing 完整学习笔记"></a>EDR Silencing 完整学习笔记</h1><blockquote>
+<p>综合来源：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://ipurple.team/2026/01/12/edr-silencing/">Purple Team – EDR Silencing</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.huntress.com/blog/silencing-the-edr-silencers">Huntress – Silencing the EDR Silencers</a></li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF-edr-silencing">什么是 EDR Silencing</a></li>
+<li><a href="#2-%E8%83%8C%E6%99%AF%E4%B8%8E%E8%B5%B7%E6%BA%90">背景与起源</a></li>
+<li><a href="#3-%E6%A0%B8%E5%BF%83%E5%89%8D%E6%8F%90%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8%E6%88%B7%E6%80%81%E5%B0%B1%E5%A4%9F%E4%BA%86">核心前提：为什么用户态就够了</a></li>
+<li><a href="#4-%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95%E5%85%A8%E6%99%AF">攻击方法全景</a><ul>
+<li><a href="#41-windows-firewall-%E8%A7%84%E5%88%99">4.1 Windows Firewall 规则</a></li>
+<li><a href="#42-windows-filtering-platform-wfp">4.2 Windows Filtering Platform (WFP)</a></li>
+<li><a href="#43-hosts-%E6%96%87%E4%BB%B6%E7%AF%A1%E6%94%B9">4.3 Hosts 文件篡改</a></li>
+<li><a href="#44-%E5%90%8D%E7%A7%B0%E8%A7%A3%E6%9E%90%E7%AD%96%E7%95%A5%E8%A1%A8-nrpt">4.4 名称解析策略表 (NRPT)</a></li>
+<li><a href="#45-%E8%B7%AF%E7%94%B1%E8%A1%A8%E7%AF%A1%E6%94%B9">4.5 路由表篡改</a></li>
+<li><a href="#46-ipsec-%E8%BF%87%E6%BB%A4%E8%A7%84%E5%88%99">4.6 IPSec 过滤规则</a></li>
+<li><a href="#47-%E8%BE%85%E5%8A%A9-ip-%E5%9C%B0%E5%9D%80-ipmute">4.7 辅助 IP 地址 (IPMute)</a></li>
+</ul>
+</li>
+<li><a href="#5-wfp-%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%90%E6%95%B0%E6%8D%AE%E5%8C%85%E7%9A%84%E4%B8%80%E7%94%9F">WFP 深度剖析：数据包的一生</a></li>
+<li><a href="#6-%E9%98%B2%E5%BE%A1%E6%96%B9%E6%A1%88%E5%A6%82%E4%BD%95%E5%8F%8D%E5%88%B6-edr-silencing">防御方案：如何反制 EDR Silencing</a><ul>
+<li><a href="#61-%E6%96%B9%E6%A1%88%E4%B8%80prevention%E9%A2%84%E9%98%B2">6.1 方案一：Prevention（预防）</a></li>
+<li><a href="#62-%E6%96%B9%E6%A1%88%E4%BA%8Cimmediate-removal%E5%8D%B3%E6%97%B6%E6%B8%85%E9%99%A4">6.2 方案二：Immediate Removal（即时清除）</a></li>
+</ul>
+</li>
+<li><a href="#7-%E6%A3%80%E6%B5%8B%E5%B7%A5%E7%A8%8B">检测工程</a><ul>
+<li><a href="#71-wfp-%E6%A3%80%E6%B5%8B">7.1 WFP 检测</a></li>
+<li><a href="#72-windows-firewall-%E8%A7%84%E5%88%99%E6%A3%80%E6%B5%8B">7.2 Windows Firewall 规则检测</a></li>
+<li><a href="#73-hosts-%E6%96%87%E4%BB%B6%E6%A3%80%E6%B5%8B">7.3 Hosts 文件检测</a></li>
+<li><a href="#74-nrpt-%E6%A3%80%E6%B5%8B">7.4 NRPT 检测</a></li>
+<li><a href="#75-ipsec-%E6%A3%80%E6%B5%8B">7.5 IPSec 检测</a></li>
+</ul>
+</li>
+<li><a href="#8-sigma-%E8%A7%84%E5%88%99">SIGMA 规则</a></li>
+<li><a href="#9-%E5%B7%A5%E5%85%B7%E6%B1%87%E6%80%BB">工具汇总</a></li>
+<li><a href="#10-%E7%9F%A5%E8%AF%86%E7%82%B9%E4%B8%B2%E8%81%94%E4%B8%A4%E7%AF%87%E6%96%87%E7%AB%A0%E7%9A%84%E8%A7%86%E8%A7%92%E5%AF%B9%E6%AF%94">知识点串联：两篇文章的视角对比</a></li>
+<li><a href="#11-%E5%85%B3%E9%94%AE%E6%A6%82%E5%BF%B5%E9%80%9F%E6%9F%A5">关键概念速查</a></li>
+</ol>
+<hr>
+<h2 id="1-什么是-EDR-Silencing"><a href="#1-什么是-EDR-Silencing" class="headerlink" title="1. 什么是 EDR Silencing"></a>1. 什么是 EDR Silencing</h2><p>现代 EDR（端点检测与响应）的工作模式依赖<strong>持续的双向云端通信</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">端点 EDR Agent  ←────→  云端管理控制台</span><br><span class="line">   本地遥测收集          告警 / 响应指令</span><br></pre></td></tr></table></figure>
+
+<p><strong>EDR Silencing</strong> 的核心思路：<strong>不终止 EDR 进程，不触碰内核驱动，只切断这条通信链路。</strong></p>
+<p>效果：</p>
+<ul>
+<li>EDR 进程依然存活 ✅</li>
+<li>本地遥测依然收集 ✅</li>
+<li>内核 Callout&#x2F;Hook 依然运行 ✅</li>
+<li>云端收不到任何告警 ❌</li>
+<li>SOC 对该端点完全失去可见性 ❌</li>
+</ul>
+<blockquote>
+<p><strong>为什么叫 “Silencing” 而不是 “Killing”？</strong><br>进程还活着，只是嘴被捂住了。对防御方来说，这比杀掉进程更危险——杀进程会触发告警，但静默不会。</p>
+</blockquote>
+<hr>
+<h2 id="2-背景与起源"><a href="#2-背景与起源" class="headerlink" title="2. 背景与起源"></a>2. 背景与起源</h2><table>
+<thead>
+<tr>
+<th>时间</th>
+<th>事件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>早期勒索软件时代</td>
+<td>使用<strong>内核驱动</strong>（Ring 0）直接中断 EDR 通信，需要驱动签名，风险高，可能 BSOD</td>
+</tr>
+<tr>
+<td>2023年</td>
+<td>MDSec 披露内部工具 <strong>FireBlock</strong>，首次公开使用 WFP 用户态方案实现 EDR Silencing</td>
+</tr>
+<tr>
+<td>2023年后</td>
+<td>社区基于此思路开发大量 PoC：EDRSilencer、SilentButDeadly、WFP_EDR、EDRSandblast 等</td>
+</tr>
+</tbody></table>
+<p><strong>关键转变</strong>：从内核态 → 用户态，从需要驱动签名 → 只需本地管理员权限。</p>
+<hr>
+<h2 id="3-核心前提：为什么用户态就够了"><a href="#3-核心前提：为什么用户态就够了" class="headerlink" title="3. 核心前提：为什么用户态就够了"></a>3. 核心前提：为什么用户态就够了</h2><p>这是理解整个技术的基础。</p>
+<h3 id="WFP-分层架构"><a href="#WFP-分层架构" class="headerlink" title="WFP 分层架构"></a>WFP 分层架构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────┐</span><br><span class="line">│           你的攻击代码               │  ← 用户态进程</span><br><span class="line">│    FwpmFilterAdd0() / 防火墙API      │</span><br><span class="line">└──────────────────┬──────────────────┘</span><br><span class="line">                   │ RPC 调用</span><br><span class="line">                   ▼</span><br><span class="line">┌─────────────────────────────────────┐</span><br><span class="line">│     BFE（Base Filtering Engine）    │  ← 系统服务，用户态 svchost</span><br><span class="line">│         规则管理与下发               │</span><br><span class="line">└──────────────────┬──────────────────┘</span><br><span class="line">                   │ 规则下发到内核</span><br><span class="line">                   ▼</span><br><span class="line">┌─────────────────────────────────────┐</span><br><span class="line">│    内核 WFP（TCPIP.sys / Netio.sys）│  ← 内核态，实际执行过滤</span><br><span class="line">│         ALE 层连接授权判断           │</span><br><span class="line">└─────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>你作为攻击者只需要：</strong></p>
+<ol>
+<li>有本地管理员权限</li>
+<li>调用合法的用户态 WFP API</li>
+<li>通过 RPC 让 BFE 服务把规则下发到内核</li>
+</ol>
+<p><strong>你不需要：</strong></p>
+<ul>
+<li>编写或加载内核驱动</li>
+<li>获取驱动签名</li>
+<li>绕过 PatchGuard &#x2F; DSE</li>
+</ul>
+<h3 id="与老式内核驱动方法对比"><a href="#与老式内核驱动方法对比" class="headerlink" title="与老式内核驱动方法对比"></a>与老式内核驱动方法对比</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内核驱动（旧方法）</th>
+<th>用户态 WFP（新方法）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>权限要求</td>
+<td>SYSTEM + 驱动签名</td>
+<td>本地管理员</td>
+</tr>
+<tr>
+<td>技术门槛</td>
+<td>极高</td>
+<td>中等</td>
+</tr>
+<tr>
+<td>稳定性风险</td>
+<td>可能 BSOD</td>
+<td>几乎没有</td>
+</tr>
+<tr>
+<td>检测面</td>
+<td>驱动加载事件</td>
+<td>WFP Event ID</td>
+</tr>
+<tr>
+<td>BYOVD 需求</td>
+<td>通常需要</td>
+<td>不需要</td>
+</tr>
+<tr>
+<td>工具代表</td>
+<td>早期勒索软件</td>
+<td>EDRSilencer</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="4-攻击方法全景"><a href="#4-攻击方法全景" class="headerlink" title="4. 攻击方法全景"></a>4. 攻击方法全景</h2><p>所有方法均需要<strong>本地管理员权限</strong>。</p>
+<hr>
+<h3 id="4-1-Windows-Firewall-规则"><a href="#4-1-Windows-Firewall-规则" class="headerlink" title="4.1 Windows Firewall 规则"></a>4.1 Windows Firewall 规则</h3><p><strong>原理</strong>：Windows Defender 防火墙本质上也是通过 WFP 实现的，但规则通过不同接口写入。</p>
+<p><strong>工具</strong>：</p>
+<ul>
+<li><code>netsh advfirewall</code> 命令行工具</li>
+<li><code>INetFwRule</code> &#x2F; <code>INetFwRules</code> COM 接口（EDRSandblast 使用此方式）</li>
+</ul>
+<p><strong>规则存储位置（注册表）</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKLM\System\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules\&#123;GUID&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>规则数据格式</strong>（REG_SZ 字符串）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v2.32|Action=Block|Active=TRUE|Dir=Out|App=C:\...\MsSense.exe|Name=BlockEDR|</span><br></pre></td></tr></table></figure>
+
+<p>关键字段：</p>
+<ul>
+<li><code>Action</code> — Block 或 Allow</li>
+<li><code>Active</code> — 规则是否激活</li>
+<li><code>Dir</code> — In（入站）或 Out（出站）</li>
+<li><code>App</code> — 目标进程路径</li>
+</ul>
+<blockquote>
+<p><strong>注意</strong>：Windows Defender 开启时会阻止对 <code>MsMpEng.exe</code> 创建防火墙规则，但对其他 EDR 产品无此保护。</p>
+</blockquote>
+<hr>
+<h3 id="4-2-Windows-Filtering-Platform-WFP"><a href="#4-2-Windows-Filtering-Platform-WFP" class="headerlink" title="4.2 Windows Filtering Platform (WFP)"></a>4.2 Windows Filtering Platform (WFP)</h3><p>这是 EDR Silencing 的<strong>核心技术</strong>，也是最隐蔽的方式。</p>
+<h4 id="WFP-Filter-的四种生命周期类型"><a href="#WFP-Filter-的四种生命周期类型" class="headerlink" title="WFP Filter 的四种生命周期类型"></a>WFP Filter 的四种生命周期类型</h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>生命周期</th>
+<th>攻击者偏好</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Dynamic</td>
+<td>会话结束即删除</td>
+<td>低</td>
+</tr>
+<tr>
+<td>Static</td>
+<td>手动删除前持续存在</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>Persistent</strong></td>
+<td><strong>重启后依然存在，直到显式删除</strong></td>
+<td><strong>高</strong></td>
+</tr>
+<tr>
+<td>Built-in</td>
+<td>系统内置</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h4 id="工具代表：EDRSilencer"><a href="#工具代表：EDRSilencer" class="headerlink" title="工具代表：EDRSilencer"></a>工具代表：EDRSilencer</h4><p><strong>执行步骤</strong>（底层 API 调用流程）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Step 1: 枚举进程，匹配已知 EDR 进程名</span></span><br><span class="line">CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, <span class="number">0</span>)</span><br><span class="line">Process32First / Process32Next  →  匹配 EDR 进程</span><br><span class="line"></span><br><span class="line"><span class="comment">// Step 2: 获取 EDR 进程的完整可执行路径</span></span><br><span class="line">OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, ...)</span><br><span class="line">QueryFullProcessImageNameW(hProcess, <span class="number">0</span>, fullPath, &amp;size)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Step 3: 将路径转为 WFP App ID（FWP_BYTE_BLOB）</span></span><br><span class="line">FwpmGetAppIdFromFileName0(fullPath, &amp;appId)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Step 4: 打开 WFP 引擎会话</span></span><br><span class="line">FwpmEngineOpen0(<span class="literal">NULL</span>, RPC_C_AUTHN_WINNT, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;hEngine)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Step 5: 添加 Provider（可选，用于归组管理）</span></span><br><span class="line">FwpmProviderAdd0(hEngine, &amp;provider, <span class="literal">NULL</span>)</span><br><span class="line"><span class="comment">// provider.displayData.name = L&quot;Microsoft Corporation&quot;  ← opsec 伪装，非必须</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Step 6: 构造 Filter 并添加</span></span><br><span class="line"><span class="comment">// 关键参数：</span></span><br><span class="line">filter.layerKey    = FWPM_LAYER_ALE_AUTH_CONNECT_V4  <span class="comment">// 出站连接授权层</span></span><br><span class="line">filter.action.type = FWP_ACTION_BLOCK                 <span class="comment">// 阻断</span></span><br><span class="line">filter.weight.uint64 = <span class="number">0xFFFFFFFFFFFFFFFF</span>             <span class="comment">// 最高优先级</span></span><br><span class="line">cond.fieldKey      = FWPM_CONDITION_ALE_APP_ID        <span class="comment">// 按 App 匹配</span></span><br><span class="line">cond.matchType     = FWP_MATCH_EQUAL</span><br><span class="line">cond.conditionValue.byteBlob = appId                  <span class="comment">// = EDR 进程</span></span><br><span class="line"></span><br><span class="line">FwpmFilterAdd0(hEngine, &amp;filter, <span class="literal">NULL</span>, &amp;filterId)</span><br></pre></td></tr></table></figure>
+
+<p><strong>EDRSilencer 实际添加的 4 个 Layer（同时阻断 IPv4&#x2F;IPv6 出入站）</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FWPM_LAYER_ALE_AUTH_CONNECT_V4    ← 出站 IPv4 连接授权</span><br><span class="line">FWPM_LAYER_ALE_AUTH_CONNECT_V6    ← 出站 IPv6 连接授权</span><br><span class="line">FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V4 ← 入站 IPv4 连接授权</span><br><span class="line">FWPM_LAYER_ALE_AUTH_RECV_ACCEPT_V6 ← 入站 IPv6 连接授权</span><br></pre></td></tr></table></figure>
+
+<p><strong>WFP Filter 存储位置（注册表）</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BFE\Parameters\Policy\Persistent\Filter\&#123;GUID&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：Filter 数据以 <strong>REG_BINARY</strong> 字节数组存储，不是可读字符串，解析较复杂。</p>
+</blockquote>
+<h4 id="关于-Provider-的说明"><a href="#关于-Provider-的说明" class="headerlink" title="关于 Provider 的说明"></a>关于 Provider 的说明</h4><p>Provider 本质是<strong>元数据标签</strong>，用于归组管理 Filter，对过滤行为本身无影响。EDRSilencer 伪装成 “Microsoft Corporation” 是一种 opsec 技巧，但非常脆弱：</p>
+<ul>
+<li>Provider 有 GUID，微软内置 Provider 的 GUID 是固定的，伪造的一眼可识别</li>
+<li>Event ID 5441 会记录新 Provider 被添加，而系统自身的 Provider 不会在运行时被”新增”</li>
+</ul>
+<p><strong>命令行快速查看 WFP Filter</strong>：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netsh wfp show filters</span><br></pre></td></tr></table></figure>
+
+<p>输出导出到 <code>filters.xml</code>，可以查看所有当前 WFP 规则。</p>
+<hr>
+<h3 id="4-3-Hosts-文件篡改"><a href="#4-3-Hosts-文件篡改" class="headerlink" title="4.3 Hosts 文件篡改"></a>4.3 Hosts 文件篡改</h3><p><strong>原理</strong>：将 EDR 云端域名解析指向无效 IP，DNS 层面断开连接。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Add-Content</span> <span class="literal">-Path</span> <span class="string">&quot;C:\Windows\System32\drivers\etc\hosts&quot;</span> `</span><br><span class="line">    <span class="literal">-Value</span> <span class="string">&quot;127.0.0.1 edr.domain.com&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Add-Content</span> <span class="literal">-Path</span> <span class="string">&quot;C:\WINDOWS\system32\drivers\etc\hosts.ics&quot;</span> `</span><br><span class="line">    <span class="literal">-Value</span> <span class="string">&quot;127.0.0.1 edr.domain.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>hosts.ics</code> 是 Windows Internet Connection Sharing 服务生成的变体文件，也需要一并修改。</p>
+<hr>
+<h3 id="4-4-名称解析策略表-NRPT"><a href="#4-4-名称解析策略表-NRPT" class="headerlink" title="4.4 名称解析策略表 (NRPT)"></a>4.4 名称解析策略表 (NRPT)</h3><p><strong>原理</strong>：NRPT 控制特定域名使用哪个 DNS 服务器，优先级高于默认 DNS。将 EDR 域名解析重定向到 <code>127.0.0.1</code>。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Add-DnsClientNrptRule</span> <span class="literal">-Namespace</span> <span class="string">&quot;.endpoint.security.microsoft.com&quot;</span> `</span><br><span class="line">    <span class="literal">-NameServers</span> <span class="number">127.0</span>.<span class="number">0.1</span> <span class="literal">-Comment</span> <span class="string">&quot;Silenced&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Add-DnsClientNrptRule</span> <span class="literal">-Namespace</span> <span class="string">&quot;endpoint.security.microsoft.com&quot;</span> `</span><br><span class="line">    <span class="literal">-NameServers</span> <span class="number">127.0</span>.<span class="number">0.1</span> <span class="literal">-Comment</span> <span class="string">&quot;Silenced&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Clear-DnsClientCache</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Microsoft 公开发布了 <a target="_blank" rel="noopener" href="https://download.microsoft.com/download/mde-streamlined-urls-commercial.xlsx">Defender for Endpoint 所有域名列表</a>，攻击者可直接利用。</p>
+</blockquote>
+<p><strong>NRPT 规则存储位置</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient\DnsPolicyConfig</span><br><span class="line">HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters\DnsPolicyConfig</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-5-路由表篡改"><a href="#4-5-路由表篡改" class="headerlink" title="4.5 路由表篡改"></a>4.5 路由表篡改</h3><p><strong>原理</strong>：向路由表注入自定义路由，使发往 EDR 云端 IP 的数据包被错误路由。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-NetIPInterface</span></span><br><span class="line"><span class="built_in">New-NetRoute</span> <span class="literal">-DestinationPrefix</span> <span class="string">&quot;192.168.100.0/32&quot;</span> `</span><br><span class="line">    <span class="literal">-InterfaceIndex</span> <span class="number">1</span> <span class="literal">-PolicyStore</span> ActiveStore</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-6-IPSec-过滤规则"><a href="#4-6-IPSec-过滤规则" class="headerlink" title="4.6 IPSec 过滤规则"></a>4.6 IPSec 过滤规则</h3><p><strong>原理</strong>：IPSec 过滤规则工作在网络层，即使 IPSec 未在端点上配置，也可以用 <code>netsh</code> 添加 Block 规则。</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">netsh ipsec static add policy name=ipurplePolicy description=ipurplePolicy</span><br><span class="line">netsh ipsec static <span class="built_in">set</span> policy name=ipurplePolicy assign=y</span><br><span class="line">netsh ipsec static add filterlist name=BlockFilterList</span><br><span class="line">netsh ipsec static add filter filterlist=BlockFilterList srcaddr=me dstaddr=EDR_IP protocol=tcp</span><br><span class="line">netsh ipsec static add filteraction name=BlockFilterAction action=block</span><br><span class="line">netsh ipsec static add rule name=BlockRule policy=ipurplePolicy \</span><br><span class="line">    filterlist=BlockFilterList filteraction=BlockFilterAction</span><br></pre></td></tr></table></figure>
+
+<p><strong>IPSec 策略存储位置</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKLM\Software\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecFilter&#123;GUID&#125;\ipsecData</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：IP 地址以十六进制格式存储，非人类可读。</p>
+</blockquote>
+<hr>
+<h3 id="4-7-辅助-IP-地址-IPMute"><a href="#4-7-辅助-IP-地址-IPMute" class="headerlink" title="4.7 辅助 IP 地址 (IPMute)"></a>4.7 辅助 IP 地址 (IPMute)</h3><p><strong>工具</strong>：<a target="_blank" rel="noopener" href="https://github.com/idafchev/IPMute/">IPMute</a> — PowerShell 脚本，作者 Iliya Dafchev</p>
+<p><strong>原理</strong>：</p>
+<ol>
+<li>监控指定 EDR 进程的 TCP 连接</li>
+<li>捕获连接的远端 IP（即 EDR 云端 IP）</li>
+<li>将这些云端 IP 作为<strong>辅助 IP 地址</strong>绑定到本地物理网卡</li>
+</ol>
+<p><strong>效果</strong>：本地路由表会认为这些 IP 是本机地址，不再转发到互联网，连接失败。</p>
+<p><strong>不同添加方式对应的进程</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>进程</th>
+<th>操作方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>wmiprvse.exe</code></td>
+<td>PowerShell cmdlet 修改</td>
+</tr>
+<tr>
+<td><code>DllHost.exe</code></td>
+<td>GUI 图形界面修改</td>
+</tr>
+<tr>
+<td><code>netsh.exe</code></td>
+<td>netsh 命令修改</td>
+</tr>
+<tr>
+<td><code>svchost.exe</code></td>
+<td>DHCP 分配</td>
+</tr>
+</tbody></table>
+<p><strong>辅助 IP 存储位置</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\&#123;GUID&#125;\IPAddress</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5-WFP-深度剖析：数据包的一生"><a href="#5-WFP-深度剖析：数据包的一生" class="headerlink" title="5. WFP 深度剖析：数据包的一生"></a>5. WFP 深度剖析：数据包的一生</h2><p>以 CrowdStrike <code>CSFalconService.exe</code> 向云端发送告警为例：</p>
+<h3 id="被-Block-前（正常）"><a href="#被-Block-前（正常）" class="headerlink" title="被 Block 前（正常）"></a>被 Block 前（正常）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">CSFalconService.exe</span><br><span class="line">    │ connect() 到 1.2.3.4:443</span><br><span class="line">    ▼</span><br><span class="line">[用户态 Winsock]</span><br><span class="line">    ▼</span><br><span class="line">[内核 TCP/IP 栈]</span><br><span class="line">    ▼</span><br><span class="line">[WFP ALE_AUTH_CONNECT_V4 层]</span><br><span class="line">    │ 检查所有 Filter → 无匹配 Block 规则</span><br><span class="line">    │ → 决定：Permit</span><br><span class="line">    ▼</span><br><span class="line">[数据包出网卡] → 云端收到告警 ✅</span><br></pre></td></tr></table></figure>
+
+<h3 id="EDRSilencer-运行后"><a href="#EDRSilencer-运行后" class="headerlink" title="EDRSilencer 运行后"></a>EDRSilencer 运行后</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">CSFalconService.exe</span><br><span class="line">    │ connect() 到 1.2.3.4:443</span><br><span class="line">    ▼</span><br><span class="line">[用户态 Winsock]</span><br><span class="line">    ▼</span><br><span class="line">[内核 TCP/IP 栈]</span><br><span class="line">    ▼</span><br><span class="line">[WFP ALE_AUTH_CONNECT_V4 层]</span><br><span class="line">    │ 检查所有 Filter</span><br><span class="line">    │ → 匹配：App=CSFalconService.exe, Action=BLOCK, Weight=MAX</span><br><span class="line">    │ → 决定：Block</span><br><span class="line">    ▼</span><br><span class="line">connect() 返回 WSAEACCES / WSAECONNREFUSED</span><br><span class="line">    │</span><br><span class="line">    ├─ 进程还活着 ✅</span><br><span class="line">    ├─ 本地日志还在记录 ✅</span><br><span class="line">    ├─ 内核 Callout 还在运行 ✅</span><br><span class="line">    └─ 告警永远出不去 ❌</span><br></pre></td></tr></table></figure>
+
+<h3 id="为什么选-ALE-AUTH-CONNECT-层？"><a href="#为什么选-ALE-AUTH-CONNECT-层？" class="headerlink" title="为什么选 ALE_AUTH_CONNECT 层？"></a>为什么选 ALE_AUTH_CONNECT 层？</h3><ul>
+<li><strong>连接建立阶段</strong>就介入，不等数据包发出再丢弃</li>
+<li>支持<strong>按进程（App ID）精确匹配</strong></li>
+<li>优先级高于 <code>OUTBOUND_TRANSPORT</code> 层，无法绕过</li>
+<li>EDR 的内核 Callout 本身也注册在 WFP 的其他层，但不能阻止自身流量被 Block</li>
+</ul>
+<hr>
+<h2 id="6-防御方案：如何反制-EDR-Silencing"><a href="#6-防御方案：如何反制-EDR-Silencing" class="headerlink" title="6. 防御方案：如何反制 EDR Silencing"></a>6. 防御方案：如何反制 EDR Silencing</h2><p>来自 Huntress 的 Jonathan Johnson（曾在 BlackHat 演讲）提出了两种方案，核心思路都是：<strong>监控注册表变化，然后采取行动</strong>。</p>
+<h3 id="6-1-方案一：Prevention（预防）"><a href="#6-1-方案一：Prevention（预防）" class="headerlink" title="6.1 方案一：Prevention（预防）"></a>6.1 方案一：Prevention（预防）</h3><p><strong>机制</strong>：在内核中注册 <strong>RegNtPreSetValueKey</strong> 注册表预回调。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">攻击者调用 FwpmFilterAdd0()</span><br><span class="line">    ↓</span><br><span class="line">BFE 准备写注册表</span><br><span class="line">    ↓</span><br><span class="line">触发 RegNtPreSetValueKey（写入前回调）</span><br><span class="line">    ↓</span><br><span class="line">EDR 驱动检查：路径匹配 WFP Filter 路径？数据包含自身进程名？</span><br><span class="line">    ↓ 是</span><br><span class="line">返回 STATUS_ACCESS_DENIED</span><br><span class="line">    ↓</span><br><span class="line">写入被阻止，Filter 规则无法持久化</span><br></pre></td></tr></table></figure>
+
+<p><strong>优点</strong>：完全阻断，攻击者无法成功添加规则。</p>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>需要在内核中解析数据，存在性能风险</li>
+<li>Firewall 规则是字符串（易解析），WFP Filter 是 REG_BINARY 字节数组（内核中解析较危险）</li>
+</ul>
+<h3 id="6-2-方案二：Immediate-Removal（即时清除）"><a href="#6-2-方案二：Immediate-Removal（即时清除）" class="headerlink" title="6.2 方案二：Immediate Removal（即时清除）"></a>6.2 方案二：Immediate Removal（即时清除）</h3><p><strong>机制</strong>：注册 <strong>RegNtPostSetValueKey</strong> 注册表后回调，允许写入后立即清除。</p>
+<p><strong>架构设计</strong>（来自 JonMon PoC）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">攻击者调用 FwpmFilterAdd0()</span><br><span class="line">    ↓</span><br><span class="line">规则写入注册表（短暂生效）</span><br><span class="line">    ↓</span><br><span class="line">触发 RegNtPostSetValueKey（写入后回调）</span><br><span class="line">    ↓</span><br><span class="line">内核驱动：将变化数据通过通道发送到用户态 Agent</span><br><span class="line">    ↓</span><br><span class="line">用户态 Agent（解析 + 决策，避免内核中做复杂操作）</span><br><span class="line">    ├─ 对于 Firewall 规则：</span><br><span class="line">    │      验证注册表值 → 调用 INetFwRules::Remove()</span><br><span class="line">    │</span><br><span class="line">    └─ 对于 WFP Filter：</span><br><span class="line">           FwpmFilterDeleteById0()   ← 删除 Filter</span><br><span class="line">           FwpmProviderDeleteByKey0() ← 删除 Provider</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键点</strong>：</p>
+<ul>
+<li><strong>不能只删注册表键</strong>，必须调用对应的清理 API，否则内核规则不会刷新（除非重启）</li>
+<li>规则被添加到完全生效之间有极短时间窗口，但在实践中几乎无法被利用</li>
+<li>也可以监听 <strong>Event ID 5447</strong>（新 WFP 规则被创建）来触发清除，而不依赖内核回调</li>
+</ul>
+<p><strong>两种方案对比</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Prevention</th>
+<th>Immediate Removal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>内核复杂度</td>
+<td>高（需内核解析）</td>
+<td>低（解析在用户态）</td>
+</tr>
+<tr>
+<td>攻击者体验</td>
+<td>规则添加失败</td>
+<td>规则添加成功但瞬间消失</td>
+</tr>
+<tr>
+<td>稳定性</td>
+<td>稍低</td>
+<td>较高</td>
+</tr>
+<tr>
+<td>实现难度</td>
+<td>中等</td>
+<td>中等</td>
+</tr>
+<tr>
+<td>推荐程度</td>
+<td>一般</td>
+<td><strong>推荐</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="7-检测工程"><a href="#7-检测工程" class="headerlink" title="7. 检测工程"></a>7. 检测工程</h2><h3 id="7-1-WFP-检测"><a href="#7-1-WFP-检测" class="headerlink" title="7.1 WFP 检测"></a>7.1 WFP 检测</h3><h4 id="需要启用的审计策略（默认均未开启）"><a href="#需要启用的审计策略（默认均未开启）" class="headerlink" title="需要启用的审计策略（默认均未开启）"></a>需要启用的审计策略（默认均未开启）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">计算机配置 &gt; Windows 设置 &gt; 安全设置 &gt; 高级审核策略配置 &gt; 审核策略</span><br><span class="line"></span><br><span class="line">&gt; 策略更改 &gt; 审核筛选平台策略更改   (Audit Filtering Platform Policy Change)</span><br><span class="line">&gt; 对象访问 &gt; 审核筛选平台连接        (Audit Filtering Platform Connection)</span><br><span class="line">&gt; 对象访问 &gt; 审核筛选平台数据包丢弃  (Audit Filtering Platform Packet Drop)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>⚠️ 启用这些策略会<strong>显著增加</strong>日志量，需评估存储容量。</p>
+</blockquote>
+<h4 id="关键-Event-ID-映射"><a href="#关键-Event-ID-映射" class="headerlink" title="关键 Event ID 映射"></a>关键 Event ID 映射</h4><table>
+<thead>
+<tr>
+<th>WFP API</th>
+<th>Event ID</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FwpmProviderAdd0</code></td>
+<td><strong>5441</strong></td>
+<td>新 Provider 被添加</td>
+</tr>
+<tr>
+<td><code>FwpmFilterAdd0</code></td>
+<td><strong>5444</strong></td>
+<td>新 Filter 被添加</td>
+</tr>
+<tr>
+<td><code>FwpmFilterAdd0</code></td>
+<td><strong>5157</strong></td>
+<td>连接被 WFP 阻断（最直接的检测点）</td>
+</tr>
+<tr>
+<td><code>FwpmFilterDeleteById0</code></td>
+<td><strong>5445</strong></td>
+<td>Filter 被删除</td>
+</tr>
+<tr>
+<td>—</td>
+<td><strong>5447</strong></td>
+<td>WFP Filter 被更改（可用于触发 Immediate Removal）</td>
+</tr>
+</tbody></table>
+<p><strong>重点关注 5444 和 5157</strong>，尤其是：</p>
+<ul>
+<li>5441：新增 Provider 声称是 Microsoft 但 GUID 不匹配系统内置值</li>
+<li>5157：EDR 进程的出站连接被 Block（这是最直接的 IOC）</li>
+</ul>
+<h4 id="注册表监控"><a href="#注册表监控" class="headerlink" title="注册表监控"></a>注册表监控</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BFE\Parameters\Policy\Persistent\Filter</span><br></pre></td></tr></table></figure>
+
+<p>监控此键下的新增子键（新 Filter 被写入）。</p>
+<h4 id="工具辅助"><a href="#工具辅助" class="headerlink" title="工具辅助"></a>工具辅助</h4><ul>
+<li><code>netsh wfp show filters</code> — 导出当前所有 WFP 规则到 XML</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/zodiacon/WFPExplorer">WFP Explorer</a> — 图形化查看 WFP 规则</li>
+<li><code>Get-FwFilter -FilterId &lt;id&gt;</code> 或 <code>Get-FwFilter -FilterKey &lt;guid&gt;</code> — PowerShell 查询特定 Filter</li>
+</ul>
+<hr>
+<h3 id="7-2-Windows-Firewall-规则检测"><a href="#7-2-Windows-Firewall-规则检测" class="headerlink" title="7.2 Windows Firewall 规则检测"></a>7.2 Windows Firewall 规则检测</h3><p>监控注册表路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKLM\System\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules\&#123;GUID&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解析 REG_SZ 字符串中的 <code>App=</code> 字段，判断是否指向已知 EDR 进程路径。</p>
+<hr>
+<h3 id="7-3-Hosts-文件检测"><a href="#7-3-Hosts-文件检测" class="headerlink" title="7.3 Hosts 文件检测"></a>7.3 Hosts 文件检测</h3><h4 id="启用审计策略"><a href="#启用审计策略" class="headerlink" title="启用审计策略"></a>启用审计策略</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">对象访问 &gt; 审核文件系统 (Audit File System)</span><br><span class="line">对象访问 &gt; 审核句柄操作 (Audit Handle Manipulation)</span><br></pre></td></tr></table></figure>
+
+<p>在文件系统审计中<strong>手动添加 hosts 文件路径</strong>，并配置 Read&#x2F;Write&#x2F;Modify 审计权限。</p>
+<p><strong>触发 Event ID</strong>：<strong>4663</strong>（对象被访问&#x2F;修改）</p>
+<hr>
+<h3 id="7-4-NRPT-检测"><a href="#7-4-NRPT-检测" class="headerlink" title="7.4 NRPT 检测"></a>7.4 NRPT 检测</h3><p>监控注册表路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters\DnsPolicyConfig</span><br></pre></td></tr></table></figure>
+
+<p>注意：<code>Add-DnsClientNrptRule</code> 内部通过 <strong>WMI</strong> 操作，因此修改行为来自 <code>WmiPrvSE.exe</code> 进程。</p>
+<p><strong>触发 Event ID</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>Event ID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>句柄请求</td>
+<td>4656</td>
+</tr>
+<tr>
+<td>访问对象</td>
+<td>4663</td>
+</tr>
+<tr>
+<td>注册表值修改</td>
+<td>4657</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="7-5-IPSec-检测"><a href="#7-5-IPSec-检测" class="headerlink" title="7.5 IPSec 检测"></a>7.5 IPSec 检测</h3><p>监控注册表路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKLM\Software\Policies\Microsoft\Windows\IPSec\Policy\Local\</span><br></pre></td></tr></table></figure>
+
+<p><strong>触发 Event ID</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>Event ID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>句柄请求</td>
+<td>4656</td>
+</tr>
+<tr>
+<td>对象访问</td>
+<td>4663</td>
+</tr>
+<tr>
+<td>注册表值修改</td>
+<td>4657</td>
+</tr>
+<tr>
+<td>IPSec 策略被应用</td>
+<td><strong>5460</strong></td>
+</tr>
+<tr>
+<td>IPSec 策略被加载</td>
+<td><strong>5471</strong></td>
+</tr>
+</tbody></table>
+<p>关联点：<code>netsh.exe</code> 进程访问 IPSec 注册表键 + 5460&#x2F;5471 事件同时出现。</p>
+<hr>
+<h2 id="8-SIGMA-规则"><a href="#8-SIGMA-规则" class="headerlink" title="8. SIGMA 规则"></a>8. SIGMA 规则</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">WFP</span> <span class="string">Blocked</span> <span class="string">Outbound</span> <span class="string">Connection</span> <span class="string">From</span> <span class="string">Common</span> <span class="string">EDR</span> <span class="string">Agent</span> <span class="string">Binary</span></span><br><span class="line"><span class="attr">id:</span> <span class="string">6b2b5db7-8f7e-4b6e-b9d4-29f0a9edc0d1</span></span><br><span class="line"><span class="attr">status:</span> <span class="string">Production</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&gt;</span></span><br><span class="line"><span class="string">  检测 WFP 阻断已知 EDR/AV 进程出站连接的事件（Event ID 5157），</span></span><br><span class="line"><span class="string">  可能表明攻击者使用 WFP 规则实施 EDR Silencing。</span></span><br><span class="line"><span class="string"></span><span class="attr">references:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">https://github.com/netero1010/EDRSilencer</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">Panos</span> <span class="string">Gkatziroulis</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2026-01-06</span></span><br><span class="line"><span class="attr">tags:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">attack.defense-evasion</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">attack.t1562</span></span><br><span class="line"><span class="attr">logsource:</span></span><br><span class="line">  <span class="attr">product:</span> <span class="string">windows</span></span><br><span class="line">  <span class="attr">service:</span> <span class="string">security</span></span><br><span class="line"><span class="attr">detection:</span></span><br><span class="line">  <span class="attr">selection:</span></span><br><span class="line">    <span class="attr">EventID:</span> <span class="number">5157</span></span><br><span class="line">    <span class="string">Direction|contains:</span> <span class="string">&#x27;Outbound&#x27;</span></span><br><span class="line">    <span class="string">Application|endswith:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\MsSense.exe&#x27;</span>         <span class="comment"># Microsoft Defender for Endpoint</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\SenseIR.exe&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\SenseCncProxy.exe&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\SenseNdr.exe&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\MsMpEng.exe&#x27;</span>         <span class="comment"># Windows Defender</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\NisSrv.exe&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\CSFalconService.exe&#x27;</span> <span class="comment"># CrowdStrike Falcon</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\CylanceSvc.exe&#x27;</span>      <span class="comment"># Cylance</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\elastic-agent.exe&#x27;</span>   <span class="comment"># Elastic</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\elastic-endpoint.exe&#x27;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\SentinelAgent.exe&#x27;</span>   <span class="comment"># SentinelOne</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\TaniumClient.exe&#x27;</span>    <span class="comment"># Tanium</span></span><br><span class="line">  <span class="attr">condition:</span> <span class="string">selection</span></span><br><span class="line"><span class="attr">falsepositives:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">合法防火墙策略</span> <span class="string">Block</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">EDR</span> <span class="string">后端临时故障期间恰好有本地策略变更</span></span><br><span class="line"><span class="attr">level:</span> <span class="string">high</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="9-工具汇总"><a href="#9-工具汇总" class="headerlink" title="9. 工具汇总"></a>9. 工具汇总</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>作者&#x2F;来源</th>
+<th>方法</th>
+<th>语言</th>
+<th>开源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/netero1010/EDRSilencer">EDRSilencer</a></td>
+<td>Chris Au (@netero_1010)</td>
+<td>WFP FwpmFilterAdd0</td>
+<td>C</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/loosehose/SilentButDeadly">SilentButDeadly</a></td>
+<td>loosehose</td>
+<td>WFP FwpmFilterAdd0</td>
+<td>—</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/k4nfr3/WFP_EDR">WFP_EDR</a></td>
+<td>k4nfr3</td>
+<td>WFP + SubscriptionManager</td>
+<td>Go</td>
+<td>❌（无源码）</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.bordergate.co.uk/blocking-edr-traffic/">BlockEDRTraffic</a></td>
+<td>Bordergate</td>
+<td>WFP FwpmFilterAdd0</td>
+<td>C++</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/wavestone-cdt/EDRSandblast">EDRSandblast</a></td>
+<td>Wavestone</td>
+<td>Windows Firewall COM</td>
+<td>C++</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/idafchev/IPMute">IPMute</a></td>
+<td>Iliya Dafchev</td>
+<td>辅助 IP 地址</td>
+<td>PowerShell</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/jsecurity101/JonMon">JonMon</a></td>
+<td>Jonathan Johnson</td>
+<td>防御 PoC（RegNtPost回调）</td>
+<td>—</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/zodiacon/WFPExplorer">WFP Explorer</a></td>
+<td>Pavel Yosifovich</td>
+<td>WFP 规则可视化（蓝队工具）</td>
+<td>—</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>⚠️ <strong>WFP_EDR 没有公开源码，不要在生产环境中运行不可信二进制文件。</strong></p>
+</blockquote>
+<hr>
+<h2 id="10-知识点串联：两篇文章的视角对比"><a href="#10-知识点串联：两篇文章的视角对比" class="headerlink" title="10. 知识点串联：两篇文章的视角对比"></a>10. 知识点串联：两篇文章的视角对比</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Purple Team 文章</th>
+<th>Huntress 文章</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>视角</strong></td>
+<td>攻防全景（Red + Blue）</td>
+<td>防御深度（以攻促防）</td>
+</tr>
+<tr>
+<td><strong>攻击方法覆盖</strong></td>
+<td>WFP &#x2F; Hosts &#x2F; NRPT &#x2F; 路由表 &#x2F; IPSec &#x2F; 辅助IP（6种）</td>
+<td>Windows Firewall &#x2F; WFP（2种，更深入）</td>
+</tr>
+<tr>
+<td><strong>防御重点</strong></td>
+<td>审计策略启用 + 注册表监控 + Event ID</td>
+<td>内核回调机制 + 实时清除方案</td>
+</tr>
+<tr>
+<td><strong>独特贡献</strong></td>
+<td>完整 Playbook + SIGMA 规则</td>
+<td>RegNtPreSetValueKey&#x2F;PostSetValueKey 防御架构</td>
+</tr>
+<tr>
+<td><strong>工具视角</strong></td>
+<td>攻击工具 PoC 全景梳理</td>
+<td>攻击工具原理分析 + 防御 PoC（JonMon）</td>
+</tr>
+<tr>
+<td><strong>核心洞察</strong></td>
+<td>多种方法覆盖，检测需分层</td>
+<td><strong>防御的关键在于注册表监控，而非进程监控</strong></td>
+</tr>
+</tbody></table>
+<h3 id="最重要的共同结论"><a href="#最重要的共同结论" class="headerlink" title="最重要的共同结论"></a>最重要的共同结论</h3><ol>
+<li><strong>攻击侧</strong>：EDR Silencing 不需要内核权限，本地管理员即可，这使其威胁面极广。</li>
+<li><strong>防御侧</strong>：所有 EDR Silencing 方法最终都会落到<strong>注册表写入</strong>，这是最通用的检测锚点。</li>
+<li><strong>运营侧</strong>：默认审计策略不足以覆盖这些威胁，需要主动启用 WFP &#x2F; 文件系统 &#x2F; 注册表审计。</li>
+</ol>
+<hr>
+<h2 id="11-关键概念速查"><a href="#11-关键概念速查" class="headerlink" title="11. 关键概念速查"></a>11. 关键概念速查</h2><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>WFP</strong></td>
+<td>Windows Filtering Platform，Windows 网络过滤框架，Vista 引入</td>
+</tr>
+<tr>
+<td><strong>BFE</strong></td>
+<td>Base Filtering Engine，WFP 的用户态管理服务，运行在 svchost</td>
+</tr>
+<tr>
+<td><strong>ALE</strong></td>
+<td>Application Layer Enforcement，WFP 的应用层执行层，支持按进程匹配</td>
+</tr>
+<tr>
+<td><strong>FWP_ACTION_BLOCK</strong></td>
+<td>WFP Filter 动作类型：阻断匹配流量</td>
+</tr>
+<tr>
+<td><strong>FWP_BYTE_BLOB</strong></td>
+<td>WFP 用于表示应用程序 ID 的数据结构</td>
+</tr>
+<tr>
+<td><strong>Provider</strong></td>
+<td>WFP 中的策略提供者标签，用于归组管理 Filter</td>
+</tr>
+<tr>
+<td><strong>NRPT</strong></td>
+<td>Name Resolution Policy Table，名称解析策略表，控制 DNS 解析路径</td>
+</tr>
+<tr>
+<td><strong>RegNtPreSetValueKey</strong></td>
+<td>内核注册表预回调，写入前触发，可返回 ACCESS_DENIED 阻止写入</td>
+</tr>
+<tr>
+<td><strong>RegNtPostSetValueKey</strong></td>
+<td>内核注册表后回调，写入后触发，适合即时清除方案</td>
+</tr>
+<tr>
+<td><strong>INetFwRules::Remove</strong></td>
+<td>COM 接口方法，运行时删除防火墙规则（比直接删注册表键更正确）</td>
+</tr>
+<tr>
+<td><strong>FwpmFilterDeleteById0</strong></td>
+<td>WFP API，运行时删除指定 Filter（比删注册表键更正确）</td>
+</tr>
+<tr>
+<td><strong>BYOVD</strong></td>
+<td>Bring Your Own Vulnerable Driver，带入易受攻击的驱动，EDR Silencing 不需要此技术</td>
+</tr>
+<tr>
+<td><strong>T1562</strong></td>
+<td>MITRE ATT&amp;CK 技术编号：削弱防御（Impair Defenses）</td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>笔记整理完毕。建议配合 <a target="_blank" rel="noopener" href="https://github.com/zodiacon/WFPExplorer">WFP Explorer</a> 在测试环境中实际观察 WFP 规则变化，加深理解。</em></p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-05-02</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E5%85%8D%E6%9D%80/'>
+                            免杀
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/05/02/ETW-TI-Kernel-Bypass/">ETW-TI Kernel Bypass</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
