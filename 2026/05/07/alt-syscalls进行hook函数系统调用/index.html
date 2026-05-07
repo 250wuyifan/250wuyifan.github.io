@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="alt-syscalls进行hook函数系统调用" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    alt-syscalls进行hook函数系统调用
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-05-08</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：1.4k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：6分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%AD%A3%E5%B8%B8%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="post-toc-text">正常系统调用</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#win10-22h2-syscall%E5%88%86%E6%9E%90"><span class="post-toc-text">win10 22h2 syscall分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#KiSystemCall64-%E2%86%92-KiSystemServiceUser"><span class="post-toc-text">KiSystemCall64 → KiSystemServiceUser</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#KiSystemCall64"><span class="post-toc-text">KiSystemCall64</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Alt-Syscall-%E8%A7%A6%E5%8F%91%E5%88%A4%E6%96%AD%EF%BC%88%E6%A0%B8%E5%BF%83%EF%BC%89"><span class="post-toc-text">Alt-Syscall 触发判断（核心）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#PsAltSystemCallDispatch-%E5%88%86%E5%8F%91%E9%80%BB%E8%BE%91"><span class="post-toc-text">PsAltSystemCallDispatch 分发逻辑</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#WinDbg-%E5%8F%8D%E6%B1%87%E7%BC%96"><span class="post-toc-text">WinDbg 反汇编</span></a></li></ol></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E7%A0%94%E7%A9%B6%E5%8F%91%E7%8E%B0"><span class="post-toc-text">研究发现</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E6%84%9F%E6%83%B3"><span class="post-toc-text">感想</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><p>主要针对<a target="_blank" rel="noopener" href="https://github.com/250wuyifan/ChangmenEdr/blob/main/ChangmenDriver/SyscallTrace.c%EF%BC%8C%E6%88%91%E7%9A%84edr%E4%BD%BF%E7%94%A8%E4%BA%86%E8%BF%99%E4%B8%AA%E6%8A%80%E6%9C%AF%E8%BF%9B%E8%A1%8Chook%E6%95%8F%E6%84%9F%E5%87%BD%E6%95%B0%EF%BC%8C%E4%BB%8Ehttps://github.com/Xacone/BestEdrOfTheMarket%E6%8A%84%E8%BF%87%E6%9D%A5%E7%9A%84%E6%8A%80%E6%9C%AF%EF%BC%8C%E5%8F%AF%E4%BB%A5%E5%8E%BB%E4%BB%96%E5%8D%9A%E5%AE%A2%E7%9C%8B%E7%9C%8B%E4%BB%96%E7%9A%84%E6%8F%8F%E8%BF%B0">https://github.com/250wuyifan/ChangmenEdr/blob/main/ChangmenDriver/SyscallTrace.c，我的edr使用了这个技术进行hook敏感函数，从https://github.com/Xacone/BestEdrOfTheMarket抄过来的技术，可以去他博客看看他的描述</a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507201631452.png" title="image-20260507201631452" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507201631452.png" alt="image-20260507201631452"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507201928138.png" title="image-20260507201928138" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507201928138.png" alt="image-20260507201928138"></a></p>
+<p>所以这个意思就是数组注册了一个函数，然后修改ethread的某些成员即可调用这个函数，作为一个hook，我们根据他的说明自己实际分析一波。</p>
+<h2 id="正常系统调用"><a href="#正常系统调用" class="headerlink" title="正常系统调用"></a>正常系统调用</h2><p>ida打开测试机的ntdll.dll来分析正常的系统调用，比如WriteProcessMemory函数最终就调用ntdll里的NtWriteVirtualMemory。如下图，mov     eax, 3Ah，就说明这个系统调用号是NtWriteVirtualMemory，然后使用syscall进行调用这个函数。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507202654427.png" title="image-20260507202654427" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507202654427.png" alt="image-20260507202654427"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">用户程序</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">KERNEL32!WriteProcessMemory        ← jmp 转发给 KERNELBASE</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">KERNELBASE!WriteProcessMemory      ← 真正实现，组装参数</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">ntdll!NtWriteVirtualMemory         ← syscall stub</span><br><span class="line">    │  mov r10, rcx</span><br><span class="line">    │  mov eax, 0x3A               ← 系统调用号</span><br><span class="line">    │  test [SharedUserData+308], 1</span><br><span class="line">    │  syscall                     ← 进内核</span><br><span class="line">    ▼</span><br><span class="line">nt!KiSystemCall64                  ← 内核统一入口</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">nt!NtWriteVirtualMemory            ← 内核实现</span><br></pre></td></tr></table></figure>
+
+<h2 id="win10-22h2-syscall分析"><a href="#win10-22h2-syscall分析" class="headerlink" title="win10 22h2 syscall分析"></a>win10 22h2 syscall分析</h2><p>上面我们知道是要使用syscall进行调用函数的，我们随便写个函数进行调用NtWriteVirtualMemory，然后在这个程序下断点。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    DWORD target_pid = GetCurrentProcessId();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 申请一块可写内存作为目标</span></span><br><span class="line">    LPVOID addr = VirtualAlloc(<span class="literal">NULL</span>, <span class="number">0x1000</span>, MEM_COMMIT, PAGE_READWRITE);</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> buf[] = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">    SIZE_T size = <span class="keyword">sizeof</span>(buf);</span><br><span class="line"></span><br><span class="line">    HANDLE h = OpenProcess(PROCESS_ALL_ACCESS, FALSE, target_pid);</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;PID: %d, addr: %p\nPress Enter...\n&quot;</span>, target_pid, addr);</span><br><span class="line">    HMODULE ntdll = GetModuleHandleA(<span class="string">&quot;ntdll.dll&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;ntdll base: %p\n&quot;</span>, ntdll);</span><br><span class="line">    getchar();</span><br><span class="line"></span><br><span class="line">    WriteProcessMemory(h, addr, buf, size, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;done, press Enter to exit\n&quot;</span>);</span><br><span class="line">    getchar();  <span class="comment">// 第二个 getchar，给你时间看结果</span></span><br><span class="line"></span><br><span class="line">    VirtualFree(addr, <span class="number">0</span>, MEM_RELEASE);</span><br><span class="line">    CloseHandle(h);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507203704743.png" title="image-20260507203704743" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507203704743.png" alt="image-20260507203704743"></a></p>
+<p>windbg找进程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!process 0 0 &lt;进程名&gt;        ; 找 EPROCESS 地址</span><br></pre></td></tr></table></figure>
+
+<p>断点该进程的函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bp /p &lt;EPROCESS&gt; &lt;地址&gt;      ; 进程绑定断点</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507203934805.png" title="image-20260507203934805" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507203934805.png" alt="image-20260507203934805"></a></p>
+<p>继续执行，然后断点成功，k 看一下栈的情况，顺便反编译一下这个函数。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507204410527.png" title="image-20260507204410527" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507204410527.png" alt="image-20260507204410527"></a></p>
+<h3 id="KiSystemCall64-→-KiSystemServiceUser"><a href="#KiSystemCall64-→-KiSystemServiceUser" class="headerlink" title="KiSystemCall64 → KiSystemServiceUser"></a>KiSystemCall64 → KiSystemServiceUser</h3><h4 id="KiSystemCall64"><a href="#KiSystemCall64" class="headerlink" title="KiSystemCall64"></a>KiSystemCall64</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// KiSystemCall64 入口</span><br><span class="line">swapgs</span><br><span class="line">mov [gs:0x10], rsp          // 保存用户态 RSP</span><br><span class="line">mov rsp, [gs:0x1a8]         // 切换到内核栈</span><br><span class="line"></span><br><span class="line">// 构建 TrapFrame</span><br><span class="line">push 0x2b                   // 用户态 SS</span><br><span class="line">push [gs:0x10]              // 用户态 RSP</span><br><span class="line">push r11                    // 用户态 RFLAGS</span><br><span class="line">push 0x33                   // 用户态 CS</span><br><span class="line">push rcx                    // 用户态 RIP（syscall 约定：返回地址在 rcx）</span><br><span class="line"></span><br><span class="line">// 保存用户态参数寄存器</span><br><span class="line">mov [rbp-0x50], rax         // TrapFrame-&gt;Rax = 系统调用号</span><br><span class="line">mov [rbp-0x48], rcx         // TrapFrame-&gt;Rcx = 第1个参数</span><br><span class="line">mov [rbp-0x40], rdx         // TrapFrame-&gt;Rdx = 第2个参数</span><br><span class="line"></span><br><span class="line">// 取当前线程</span><br><span class="line">mov rbx, [gs:0x188]         // GS:0x188 → 当前 KTHREAD*</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">; windbg看完整函数</span><br><span class="line">uf nt!KiSystemCall64</span><br><span class="line"></span><br><span class="line">; 关键行</span><br><span class="line">fffff805`7121126e  807b0300   cmp  byte ptr [rbx+3], 0</span><br><span class="line">fffff805`71211294  f6430324   test byte ptr [rbx+3], 24h</span><br><span class="line">fffff805`712112be  call nt!PsAltSystemCallDispatch</span><br><span class="line">fffff805`712112c3  cmp  al, 1</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507213806143.png" title="image-20260507213806143" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507213806143.png" alt="image-20260507213806143"></a></p>
+<h4 id="Alt-Syscall-触发判断（核心）"><a href="#Alt-Syscall-触发判断（核心）" class="headerlink" title="Alt-Syscall 触发判断（核心）"></a>Alt-Syscall 触发判断（核心）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// KiSystemServiceUser 里的关键判断</span><br><span class="line">mov rbx, [gs:0x188]             // rbx = 当前 KTHREAD*</span><br><span class="line"></span><br><span class="line">cmp byte [rbx+0x3], 0x0         // KTHREAD+3 标志字节是否为0？</span><br><span class="line">je  KiSystemServiceStart        // 为0：跳过，走正常分发</span><br><span class="line"></span><br><span class="line">test byte [rbx+0x3], 0x3        // bit0/1：调试相关</span><br><span class="line">je  → 跳过 debug 寄存器保存</span><br><span class="line"></span><br><span class="line">test byte [rbx+0x3], 0x24       // bit2(0x04) | bit5(0x20)</span><br><span class="line">je  KiSystemServiceStart        // 没有 alt 标志：跳过</span><br><span class="line"></span><br><span class="line">// 有 alt 标志，调用分发器</span><br><span class="line">mov rcx, rsp                    // rcx = TrapFrame 指针（参数）</span><br><span class="line">call PsAltSystemCallDispatch</span><br><span class="line"></span><br><span class="line">cmp al, 0x1                     // 返回值 == 1？</span><br><span class="line">je  KiSystemServiceStart        // 是：继续正常 syscall</span><br><span class="line">// 否：拦截，不执行实际 syscall</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507214002724.png" title="image-20260507214002724" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507214002724.png" alt="image-20260507214002724"></a></p>
+<h4 id="PsAltSystemCallDispatch-分发逻辑"><a href="#PsAltSystemCallDispatch-分发逻辑" class="headerlink" title="PsAltSystemCallDispatch 分发逻辑"></a>PsAltSystemCallDispatch 分发逻辑</h4><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507214805403.png" title="image-20260507214805403" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507214805403.png" alt="image-20260507214805403"></a></p>
+<h5 id="WinDbg-反汇编"><a href="#WinDbg-反汇编" class="headerlink" title="WinDbg 反汇编"></a>WinDbg 反汇编</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uf nt!PsAltSystemCallDispatch</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">1: kd&gt; uf nt!PsAltSystemCallDispatch</span><br><span class="line">nt!PsAltSystemCallDispatch:</span><br><span class="line">fffff804`6fd82a70 4883ec38        sub     rsp,38h</span><br><span class="line">fffff804`6fd82a74 65488b042588010000 mov   rax,qword ptr gs:[188h]</span><br><span class="line">fffff804`6fd82a7d 8a5003          mov     dl,byte ptr [rax+3]</span><br><span class="line">fffff804`6fd82a80 f6c204          test    dl,4</span><br><span class="line">fffff804`6fd82a83 7409            je      nt!PsAltSystemCallDispatch+0x1e (fffff804`6fd82a8e)  Branch</span><br><span class="line"></span><br><span class="line">nt!PsAltSystemCallDispatch+0x15:</span><br><span class="line">fffff804`6fd82a85 488b050c9d7700  mov     rax,qword ptr [nt!PsAltSystemCallHandlers (fffff804`704fc798)]</span><br><span class="line">fffff804`6fd82a8c eb0c            jmp     nt!PsAltSystemCallDispatch+0x2a (fffff804`6fd82a9a)  Branch</span><br><span class="line"></span><br><span class="line">nt!PsAltSystemCallDispatch+0x1e:</span><br><span class="line">fffff804`6fd82a8e f6c220          test    dl,20h</span><br><span class="line">fffff804`6fd82a91 7418            je      nt!PsAltSystemCallDispatch+0x3b (fffff804`6fd82aab)  Branch</span><br><span class="line"></span><br><span class="line">nt!PsAltSystemCallDispatch+0x23:</span><br><span class="line">fffff804`6fd82a93 488b05069d7700  mov     rax,qword ptr [nt!PsAltSystemCallHandlers+0x8 (fffff804`704fc7a0)]</span><br><span class="line"></span><br><span class="line">nt!PsAltSystemCallDispatch+0x2a:</span><br><span class="line">fffff804`6fd82a9a 4883f802        cmp     rax,2</span><br><span class="line">fffff804`6fd82a9e 720b            jb      nt!PsAltSystemCallDispatch+0x3b (fffff804`6fd82aab)  Branch</span><br><span class="line"></span><br><span class="line">nt!PsAltSystemCallDispatch+0x30:</span><br><span class="line">fffff804`6fd82aa0 e8db51e8ff      call    nt!guard_dispatch_icall (fffff804`6fc07c80)</span><br><span class="line">fffff804`6fd82aa5 4883c438        add     rsp,38h</span><br><span class="line">fffff804`6fd82aa9 c3              ret</span><br><span class="line"></span><br><span class="line">nt!PsAltSystemCallDispatch+0x3b:</span><br><span class="line">fffff804`6fd82aab 488364242000    and     qword ptr [rsp+20h],0</span><br><span class="line">fffff804`6fd82ab1 4533c9          xor     r9d,r9d</span><br><span class="line">fffff804`6fd82ab4 4533c0          xor     r8d,r8d</span><br><span class="line">fffff804`6fd82ab7 b9e0010000      mov     ecx,1E0h</span><br><span class="line">fffff804`6fd82abc 418d5104        lea     edx,[r9+4]</span><br><span class="line">fffff804`6fd82ac0 e8fbaae7ff      call    nt!KeBugCheckEx (fffff804`6fbfd5c0)</span><br><span class="line">fffff804`6fd82ac5 cc              int     3</span><br><span class="line">fffff804`6fd82ac6 cc              int     3</span><br><span class="line">fffff804`6fd82ac7 cc              int     3</span><br><span class="line">fffff804`6fd82ac8 cc              int     3</span><br><span class="line">fffff804`6fd82ac9 cc              int     3</span><br><span class="line">fffff804`6fd82aca cc              int     3</span><br><span class="line">fffff804`6fd82acb cc              int     3</span><br><span class="line">fffff804`6fd82acc cc              int     3</span><br><span class="line">fffff804`6fd82acd cc              int     3</span><br><span class="line">fffff804`6fd82ace cc              int     3</span><br><span class="line">fffff804`6fd82acf cc              int     3</span><br><span class="line">fffff804`6fd82ad0 4883ec28        sub     rsp,28h</span><br><span class="line">fffff804`6fd82ad4 e8538e3800      call    nt!PsPicoSystemCallDispatch (fffff804`7010b92c)</span><br><span class="line">fffff804`6fd82ad9 33c0            xor     eax,eax</span><br><span class="line">fffff804`6fd82adb 4883c428        add     rsp,28h</span><br><span class="line">fffff804`6fd82adf c3              ret</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="研究发现"><a href="#研究发现" class="headerlink" title="研究发现"></a>研究发现</h2><p>在上面我们研究了这个调用链，我们Alt-Syscall 触发判断（核心）这个最关键的，系统拿到KTHREAD结构进行一系列的判断，过了判断之后最终调用分发PsAltSystemCallDispatch，然后分发函数中就会调用[PsAltSystemCallHandlers+0x8] ，所以把前面的判断都过了，然后在这里面填入我们函数即可。</p>
+<p>加载驱动</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507231415861.png" title="image-20260507231415861" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507231415861.png" alt="image-20260507231415861"></a></p>
+<p>运行测试程序</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507232320248.png" title="image-20260507232320248" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507232320248.png" alt="image-20260507232320248"></a></p>
+<p>断两个点，大家觉得会先断哪个，前提是之前的判断我都绕过了，这个其实我是复现不出来，只要断点就卡哈哈哈。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507232434139.png" title="image-20260507232434139" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260507232434139.png" alt="image-20260507232434139"></a></p>
+<p>这是我加了一些输出日志，可以看到监控能力没毛病的，就是太多噪音了，那些系统进程的东西，也监控了。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/bb1d65a525ccb17fa7ed846d60b953c5.jpg" title="bb1d65a525ccb17fa7ed846d60b953c5" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/bb1d65a525ccb17fa7ed846d60b953c5.jpg" alt="bb1d65a525ccb17fa7ed846d60b953c5"></a></p>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>去年学这个的时候，完全看不懂，当时就想着自己开发edr，看了很多博客等等，慢慢也是能看懂一点点，但是写不出来，今年AI发展太快了，这种东西写的也是没毛病，有问题，问ai，一步一步调试，也能做出来，比如这个alt syscall，我之前使用的不是现在22h2版本，然后是不能做到的，我调试了半天都是注册不成功，问的claude才说出来是版本的问题，还有很多调试的地方，比如各种偏移啥的，ai也能做到，就是他告诉我们命令需要自己windbg然后给他输出就行了。有没有大手子给点token，我身上好痒。</p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-05-07</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E5%86%85%E6%A0%B8/'>
+                            内核
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/05/03/IDA-Pro-9-3-MAC%E5%AE%89%E8%A3%85%E7%A0%B4%E8%A7%A3/">IDA Pro 9.3 MAC安装破解</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
