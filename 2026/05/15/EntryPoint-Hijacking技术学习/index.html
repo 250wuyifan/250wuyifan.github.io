@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="EntryPoint Hijacking（入口点劫持）技术学习" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    EntryPoint Hijacking（入口点劫持）技术学习
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-05-15</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：4.3k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：17分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B8%80%E3%80%81%E6%8A%80%E6%9C%AF%E8%83%8C%E6%99%AF"><span class="post-toc-text">一、技术背景</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-1-%E4%BC%A0%E7%BB%9F%E4%BB%A3%E7%A0%81%E6%B3%A8%E5%85%A5%E7%9A%84%E5%9B%B0%E5%A2%83"><span class="post-toc-text">1.1 传统代码注入的困境</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-EntryPoint-Hijacking-%E7%9A%84%E6%80%9D%E8%B7%AF"><span class="post-toc-text">1.2 EntryPoint Hijacking 的思路</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%BA%8C%E3%80%81Windows-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%9F%BA%E7%A1%80%EF%BC%9APEB-%E2%86%92-LDR-%E9%93%BE%E8%A1%A8"><span class="post-toc-text">二、Windows 内存管理基础：PEB → LDR 链表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-1-PEB%EF%BC%88Process-Environment-Block%EF%BC%89"><span class="post-toc-text">2.1 PEB（Process Environment Block）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-2-PEB-LDR-DATA-%E7%BB%93%E6%9E%84"><span class="post-toc-text">2.2 PEB_LDR_DATA 结构</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-3-LDR-DATA-TABLE-ENTRY2-%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3"><span class="post-toc-text">2.3 LDR_DATA_TABLE_ENTRY2 结构详解</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B8%89%E3%80%81DLL-%E5%8A%A0%E8%BD%BD%E4%B8%8E-DllMain-%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6"><span class="post-toc-text">三、DLL 加载与 DllMain 调用机制</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-1-DllMain-%E7%9A%84%E8%A7%A6%E5%8F%91%E6%97%B6%E6%9C%BA"><span class="post-toc-text">3.1 DllMain 的触发时机</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-2-%E5%8A%A0%E8%BD%BD%E5%99%A8%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="post-toc-text">3.2 加载器的执行流程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-3-DontCallForThreads-%E6%A0%87%E5%BF%97%E4%BD%8D"><span class="post-toc-text">3.3 DontCallForThreads 标志位</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%8C%E6%95%B4%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B%EF%BC%88%E4%BB%A5-LdrShuffle-PoC-%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="post-toc-text">四、完整攻击流程（以 LdrShuffle PoC 为例）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-1-%E6%94%BB%E5%87%BB%E5%89%8D%E7%BD%AE%E6%9D%A1%E4%BB%B6"><span class="post-toc-text">4.1 攻击前置条件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-2-%E6%94%BB%E5%87%BB%E6%AD%A5%E9%AA%A4%E8%AF%A6%E8%A7%A3"><span class="post-toc-text">4.2 攻击步骤详解</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-3-DATA-T-%E7%BB%93%E6%9E%84%E4%BD%93%E8%AF%A6%E8%A7%A3"><span class="post-toc-text">4.3 DATA_T 结构体详解</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%BA%94%E3%80%81%E4%BB%A3%E7%A0%81%E9%80%90%E8%A1%8C%E8%A7%A3%E6%9E%90"><span class="post-toc-text">五、代码逐行解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-1-RestoreLdr-%E2%80%94-%E6%81%A2%E5%A4%8D%E8%A2%AB%E7%AF%A1%E6%94%B9%E7%9A%84-LDR-%E7%BB%93%E6%9E%84"><span class="post-toc-text">5.1 RestoreLdr() — 恢复被篡改的 LDR 结构</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-2-DLL-%E7%AD%9B%E9%80%89%E9%80%BB%E8%BE%91"><span class="post-toc-text">5.2 DLL 筛选逻辑</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-3-%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E4%B8%8E-createThread-%E5%AD%97%E6%AE%B5"><span class="post-toc-text">5.3 死锁问题与 createThread 字段</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%85%AD%E3%80%81%E4%B8%89%E4%B8%AA-PoC-%E7%9A%84%E5%B7%AE%E5%BC%82%E5%AF%B9%E6%AF%94"><span class="post-toc-text">六、三个 PoC 的差异对比</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#EPI-%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="post-toc-text">EPI 的执行流程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#LdrShuffle-%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="post-toc-text">LdrShuffle 的执行流程</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B8%83%E3%80%81%E5%A6%82%E4%BD%95%E7%94%A8-WinDbg-%E9%AA%8C%E8%AF%81-EntryPoint"><span class="post-toc-text">七、如何用 WinDbg 验证 EntryPoint</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-1-%E6%9F%A5%E7%9C%8B-LDR-%E7%BB%93%E6%9E%84"><span class="post-toc-text">7.1 查看 LDR 结构</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-2-%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89%E5%B7%B2%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9D%97"><span class="post-toc-text">7.2 列出所有已加载模块</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-3-%E9%AA%8C%E8%AF%81-EntryPoint-%E6%98%AF%E5%90%A6%E8%A2%AB%E7%AF%A1%E6%94%B9"><span class="post-toc-text">7.3 验证 EntryPoint 是否被篡改</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%85%AB%E3%80%81%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="post-toc-text">八、检测方法详解</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-1-%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9ALDR-%E7%BB%93%E6%9E%84%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A0%A1%E9%AA%8C%EF%BC%88LdrShuffleDetect%EF%BC%89"><span class="post-toc-text">8.1 方法一：LDR 结构完整性校验（LdrShuffleDetect）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E6%9D%A1%E4%BB%B6-1%EF%BC%9AEntryPoint-%E8%B6%85%E5%87%BA-DllBase-%E8%8C%83%E5%9B%B4"><span class="post-toc-text">条件 1：EntryPoint 超出 DllBase 范围</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E6%9D%A1%E4%BB%B6-2%EF%BC%9AEntryPoint-%E5%86%85%E5%AD%98%E7%B1%BB%E5%9E%8B%E5%BC%82%E5%B8%B8"><span class="post-toc-text">条件 2：EntryPoint 内存类型异常</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E6%9D%A1%E4%BB%B6-3%EF%BC%9AOriginalBase-%E5%BC%82%E5%B8%B8"><span class="post-toc-text">条件 3：OriginalBase 异常</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%91%8A%E8%AD%A6%E7%BD%AE%E4%BF%A1%E5%BA%A6%E7%9F%A9%E9%98%B5"><span class="post-toc-text">告警置信度矩阵</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A0%A1%E9%AA%8C%E5%85%AC%E5%BC%8F"><span class="post-toc-text">完整性校验公式</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-2-%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9ASysmon-Event-ID-10-%E7%9B%91%E6%8E%A7"><span class="post-toc-text">8.2 方法二：Sysmon Event ID 10 监控</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-3-%E6%96%B9%E6%B3%95%E4%B8%89%EF%BC%9AWriteProcessMemory-%E7%9B%91%E6%8E%A7"><span class="post-toc-text">8.3 方法三：WriteProcessMemory 监控</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-4-%E6%96%B9%E6%B3%95%E5%9B%9B%EF%BC%9A%E5%AE%9A%E6%9C%9F%E6%89%AB%E6%8F%8F%E9%AB%98%E4%BB%B7%E5%80%BC%E8%BF%9B%E7%A8%8B"><span class="post-toc-text">8.4 方法四：定期扫描高价值进程</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B9%9D%E3%80%81LdrShuffleDetect-%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="post-toc-text">九、LdrShuffleDetect 检测工具实现原理</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-1-%E6%9E%9A%E4%B8%BE%E6%89%80%E6%9C%89%E8%BF%9B%E7%A8%8B"><span class="post-toc-text">9.1 枚举所有进程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-2-%E8%8E%B7%E5%8F%96%E7%9B%AE%E6%A0%87%E8%BF%9B%E7%A8%8B-PEB-%E5%9C%B0%E5%9D%80"><span class="post-toc-text">9.2 获取目标进程 PEB 地址</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-3-%E8%AF%BB%E5%8F%96%E7%9B%AE%E6%A0%87%E8%BF%9B%E7%A8%8B%E7%9A%84-LDR-%E7%BB%93%E6%9E%84"><span class="post-toc-text">9.3 读取目标进程的 LDR 结构</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8D%81%E3%80%81%E6%94%BB%E5%87%BB%E5%88%A9%E7%94%A8%E7%9A%84%E7%9C%9F%E5%AE%9E%E5%9C%BA%E6%99%AF"><span class="post-toc-text">十、攻击利用的真实场景</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E5%9C%BA%E6%99%AF-1%EF%BC%9AC2-%E6%8C%81%E4%B9%85%E5%8C%96"><span class="post-toc-text">场景 1：C2 持久化</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E5%9C%BA%E6%99%AF-2%EF%BC%9A%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8"><span class="post-toc-text">场景 2：横向移动</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#%E5%9C%BA%E6%99%AF-3%EF%BC%9A%E7%BB%95%E8%BF%87-EDR-%E5%86%85%E5%AD%98%E6%89%AB%E6%8F%8F"><span class="post-toc-text">场景 3：绕过 EDR 内存扫描</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E9%98%B2%E5%BE%A1%E5%BB%BA%E8%AE%AE"><span class="post-toc-text">十一、防御建议</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-1-%E7%AB%AF%E7%82%B9%E6%A3%80%E6%B5%8B"><span class="post-toc-text">11.1 端点检测</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-2-Sysmon-%E8%A7%84%E5%88%99"><span class="post-toc-text">11.2 Sysmon 规则</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-3-EDR-%E8%83%BD%E5%8A%9B%E6%8F%90%E5%8D%87"><span class="post-toc-text">11.3 EDR 能力提升</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-4-SOC-%E6%93%8D%E4%BD%9C%E6%89%8B%E5%86%8C"><span class="post-toc-text">11.4 SOC 操作手册</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E6%8A%80%E6%9C%AF%E6%BC%94%E8%BF%9B%E4%B8%8E%E6%9C%AA%E6%9D%A5"><span class="post-toc-text">十二、技术演进与未来</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="post-toc-text">参考资料</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><blockquote>
+<p>基于 <a target="_blank" rel="noopener" href="https://ipurple.team/2026/05/13/entrypoint-hijacking/">ipurple.team</a> 的研究整理，结合 LdrShuffle &#x2F; EPI &#x2F; iPurple 三个 PoC 进行深度解析</p>
+</blockquote>
+<hr>
+<h2 id="一、技术背景"><a href="#一、技术背景" class="headerlink" title="一、技术背景"></a>一、技术背景</h2><h3 id="1-1-传统代码注入的困境"><a href="#1-1-传统代码注入的困境" class="headerlink" title="1.1 传统代码注入的困境"></a>1.1 传统代码注入的困境</h3><p>传统的进程注入技术（如 <code>CreateRemoteThread</code> + <code>WriteProcessMemory</code>）在 EDR 普及的今天已经很难不被发现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">传统注入流程：</span><br><span class="line">  调用 CreateRemoteThread / NtCreateThreadEx  → EDR API 钩子拦截</span><br><span class="line">  在远程进程创建新线程                        → 线程创建遥测被捕获</span><br><span class="line">  新线程指向 MEM_PRIVATE 区域的 shellcode       → 内存扫描检测</span><br></pre></td></tr></table></figure>
+
+<p>攻击者需要一种<strong>不创建新线程</strong>、<strong>不调用可疑 API</strong> 的注入方式。</p>
+<h3 id="1-2-EntryPoint-Hijacking-的思路"><a href="#1-2-EntryPoint-Hijacking-的思路" class="headerlink" title="1.2 EntryPoint Hijacking 的思路"></a>1.2 EntryPoint Hijacking 的思路</h3><p>核心思想：<strong>利用 Windows Loader 自身的行为来执行恶意代码，而不是主动调用任何 API</strong>。</p>
+<p>Windows 加载器在 DLL 加载完成后会自动调用 <code>DllMain()</code>，攻击者通过篡改 DLL 的 <code>EntryPoint</code> 字段，让加载器”自愿”将执行流导向攻击者控制的代码。</p>
+<hr>
+<h2 id="二、Windows-内存管理基础：PEB-→-LDR-链表"><a href="#二、Windows-内存管理基础：PEB-→-LDR-链表" class="headerlink" title="二、Windows 内存管理基础：PEB → LDR 链表"></a>二、Windows 内存管理基础：PEB → LDR 链表</h2><h3 id="2-1-PEB（Process-Environment-Block）"><a href="#2-1-PEB（Process-Environment-Block）" class="headerlink" title="2.1 PEB（Process Environment Block）"></a>2.1 PEB（Process Environment Block）</h3><p>每个 Windows 进程都有一个 PEB 结构，存储进程的所有运行时信息。PEB 中有一个 <code>pLdr</code> 指针，指向 <code>PEB_LDR_DATA</code>，维护着所有已加载 DLL 的信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PEB 结构访问方式（x64）：</span><br><span class="line">  通过 TEB（Thread Environment Block）的 self 字段</span><br><span class="line">  TEB 位于 GS 段寄存器偏移 0x30 处</span><br><span class="line">  TEB → self 字段（偏移 0x60）→ PEB 地址</span><br><span class="line"></span><br><span class="line">获取 PEB 的代码：</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// x64</span></span><br><span class="line">PPEB pPeb = (PPEB)(__readgsqword(<span class="number">0x60</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// x32</span></span><br><span class="line">PPEB pPeb = (PPEB)(__readfsdword(<span class="number">0x30</span>));</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>为什么用 <code>__readgsqword(0x60)</code>？</strong><br>在 x64 Windows 中，GS 段寄存器指向 TEB（Thread Environment Block）。TEB 偏移 <code>0x60</code> 处存放的是指向 PEB 的指针。这是操作系统在创建线程时自动设置的，任何用户态代码都可以访问。</p>
+</blockquote>
+<h3 id="2-2-PEB-LDR-DATA-结构"><a href="#2-2-PEB-LDR-DATA-结构" class="headerlink" title="2.2 PEB_LDR_DATA 结构"></a>2.2 PEB_LDR_DATA 结构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PEB → pLdr（偏移 0x18）→ PEB_LDR_DATA</span><br></pre></td></tr></table></figure>
+
+<p><code>PEB_LDR_DATA</code> 内有三条双向链表，按不同顺序组织 DLL：</p>
+<table>
+<thead>
+<tr>
+<th>链表字段</th>
+<th>排序方式</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>InLoadOrderModuleList</code></td>
+<td>按加载顺序</td>
+<td>调试用</td>
+</tr>
+<tr>
+<td><code>InMemoryOrderModuleList</code></td>
+<td>按内存地址</td>
+<td><strong>本技术使用的链表</strong></td>
+</tr>
+<tr>
+<td><code>InInitializationOrderModuleList</code></td>
+<td>按初始化顺序</td>
+<td>加载器用</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-LDR-DATA-TABLE-ENTRY2-结构详解"><a href="#2-3-LDR-DATA-TABLE-ENTRY2-结构详解" class="headerlink" title="2.3 LDR_DATA_TABLE_ENTRY2 结构详解"></a>2.3 LDR_DATA_TABLE_ENTRY2 结构详解</h3><p>链表中每个节点都是 <code>LDR_DATA_TABLE_ENTRY2</code> 结构，包含一个 DLL 的全部关键信息：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">LDR_DATA_TABLE_ENTRY2</span> &#123;</span></span><br><span class="line">    LIST_ENTRY          InLoadOrderLinks;           <span class="comment">// 偏移 0x00</span></span><br><span class="line">    LIST_ENTRY          InMemoryOrderLinks;         <span class="comment">// 偏移 0x10  ← 链表遍历入口</span></span><br><span class="line">    LIST_ENTRY          InInitializationOrderLinks; <span class="comment">// 偏移 0x20</span></span><br><span class="line">    PVOID               DllBase;                    <span class="comment">// 偏移 0x30  ← DLL 在内存中的基地址</span></span><br><span class="line">    PVOID               EntryPoint;                 <span class="comment">// 偏移 0x38  ← ★ 攻击目标 ★</span></span><br><span class="line">    ULONG               SizeOfImage;                <span class="comment">// 偏移 0x40</span></span><br><span class="line">    UNICODE_STRING      FullDllName;                <span class="comment">// 偏移 0x48</span></span><br><span class="line">    UNICODE_STRING      BaseDllName;                <span class="comment">// 偏移 0x58</span></span><br><span class="line">    <span class="comment">// ... 其他字段</span></span><br><span class="line">    PVOID               OriginalBase;               <span class="comment">// 用于校验的字段（被攻击者覆写保存）</span></span><br><span class="line">&#125; LDR_DATA_TABLE_ENTRY2, *PLDR_DATA_TABLE_ENTRY2;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键字段解释：</strong></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>正常值（以 kernelbase.dll 为例）</th>
+<th>被劫持后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DllBase</code></td>
+<td><code>0x00007FFB10000000</code>（DLL 加载地址）</td>
+<td>不变</td>
+</tr>
+<tr>
+<td><code>EntryPoint</code></td>
+<td><code>0x00007FFB10001234</code>（DllMain 地址）</td>
+<td><strong>被覆写为攻击者 shellcode 地址</strong></td>
+</tr>
+<tr>
+<td><code>OriginalBase</code></td>
+<td>与 <code>DllBase</code> 相同</td>
+<td><strong>被覆写为备份数据</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、DLL-加载与-DllMain-调用机制"><a href="#三、DLL-加载与-DllMain-调用机制" class="headerlink" title="三、DLL 加载与 DllMain 调用机制"></a>三、DLL 加载与 DllMain 调用机制</h2><h3 id="3-1-DllMain-的触发时机"><a href="#3-1-DllMain-的触发时机" class="headerlink" title="3.1 DllMain 的触发时机"></a>3.1 DllMain 的触发时机</h3><p>Windows 加载器（<code>ntdll!Ldrp*</code> 系列函数）在以下事件时自动调用 <code>DllMain()</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DLL_PROCESS_ATTACH  — DLL 被加载到进程时（进程启动）</span><br><span class="line">DLL_THREAD_ATTACH   — 新线程在进程中创建时（线程创建）</span><br><span class="line">DLL_THREAD_DETACH   — 线程退出时</span><br><span class="line">DLL_PROCESS_DETACH  — DLL 从进程中卸载时</span><br></pre></td></tr></table></figure>
+
+<p><strong>攻击利用的正是 <code>DLL_THREAD_ATTACH</code> 时机</strong>：当进程创建新线程时，加载器遍历所有已加载的 DLL，调用它们的 <code>DllMain</code>。</p>
+<h3 id="3-2-加载器的执行流程"><a href="#3-2-加载器的执行流程" class="headerlink" title="3.2 加载器的执行流程"></a>3.2 加载器的执行流程</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">进程创建新线程</span><br><span class="line">    ↓</span><br><span class="line">ntdll!LdrpRunThreadRoutines</span><br><span class="line">    ↓</span><br><span class="line">遍历 InMemoryOrderModuleList 链表</span><br><span class="line">    ↓</span><br><span class="line">对每个 DLL：读取 LDR_DATA_TABLE_ENTRY2.EntryPoint</span><br><span class="line">    ↓</span><br><span class="line">判断：DontCallForThreads == 0 ?  如果为 1，则跳过此 DLL 的 DllMain 调用</span><br><span class="line">    ↓</span><br><span class="line">调用 EntryPoint 指向的函数（即 DllMain）</span><br><span class="line">    ↓</span><br><span class="line">正常情况下：DllMain() 被调用</span><br><span class="line">    劫持情况下：攻击者的 shellcode 被执行</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-DontCallForThreads-标志位"><a href="#3-3-DontCallForThreads-标志位" class="headerlink" title="3.3 DontCallForThreads 标志位"></a>3.3 DontCallForThreads 标志位</h3><p><code>LDR_DATA_TABLE_ENTRY2</code> 中有一个 <code>DontCallForThreads</code> 字段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DontCallForThreads == 0  →  线程创建时会调用该 DLL 的 DllMain（可被利用）</span><br><span class="line">DontCallForThreads == 1  →  线程创建时跳过该 DLL（无法利用）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、完整攻击流程（以-LdrShuffle-PoC-为例）"><a href="#四、完整攻击流程（以-LdrShuffle-PoC-为例）" class="headerlink" title="四、完整攻击流程（以 LdrShuffle PoC 为例）"></a>四、完整攻击流程（以 LdrShuffle PoC 为例）</h2><h3 id="4-1-攻击前置条件"><a href="#4-1-攻击前置条件" class="headerlink" title="4.1 攻击前置条件"></a>4.1 攻击前置条件</h3><p>攻击者需要已经获得目标进程内的代码执行权限（通过任何先期攻击手段），这一步 EntryPoint Hijacking 不涉及。</p>
+<h3 id="4-2-攻击步骤详解"><a href="#4-2-攻击步骤详解" class="headerlink" title="4.2 攻击步骤详解"></a>4.2 攻击步骤详解</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">步骤1：获取 PEB 地址</span><br><span class="line">    ↓</span><br><span class="line">步骤2：从 PEB 出发，遍历 InMemoryOrderModuleList 找到目标 DLL（kernelbase.dll）</span><br><span class="line">    ↓</span><br><span class="line">步骤3：备份原始的 EntryPoint 和 OriginalBase</span><br><span class="line">    ↓</span><br><span class="line">步骤4：构造 DATA_T 结构体，写入堆内存</span><br><span class="line">    ↓</span><br><span class="line">步骤5：将 DATA_T 的地址写入 OriginalBase 字段</span><br><span class="line">    ↓</span><br><span class="line">步骤6：将 EntryPoint 覆写为 DATA_T.runner（攻击者 loader 地址）</span><br><span class="line">    ↓</span><br><span class="line">步骤7：等待... 进程自然创建新线程</span><br><span class="line">    ↓</span><br><span class="line">步骤8：加载器触发 DllMain → 读取 EntryPoint → 跳转到 shellcode</span><br><span class="line">    ↓</span><br><span class="line">步骤9：立刻恢复 EntryPoint 和 OriginalBase</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-DATA-T-结构体详解"><a href="#4-3-DATA-T-结构体详解" class="headerlink" title="4.3 DATA_T 结构体详解"></a>4.3 DATA_T 结构体详解</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">DATA_T</span> &#123;</span></span><br><span class="line">    <span class="comment">// LDR 结构操纵字段</span></span><br><span class="line">    ULONG_PTR   runner;             <span class="comment">// 恶意入口点地址，DllMain 被重定向到这里</span></span><br><span class="line">    ULONG_PTR   bakOriginalBase;    <span class="comment">// 原始 OriginalBase 的备份</span></span><br><span class="line">    ULONG_PTR   bakEntryPoint;      <span class="comment">// 原始 EntryPoint 的备份</span></span><br><span class="line">    HANDLE      event;              <span class="comment">// 事件，用于 Runner() 执行完毕后通知</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 功能调用字段</span></span><br><span class="line">    ULONG_PTR   ret;                <span class="comment">// 函数返回值</span></span><br><span class="line">    DWORD       createThread;       <span class="comment">// 是否在新线程中调用 API（InternetOpenW 等需要）</span></span><br><span class="line">    ULONG_PTR   function;           <span class="comment">// 要调用的 Windows API 地址</span></span><br><span class="line">    DWORD       dwArgs;             <span class="comment">// 参数个数</span></span><br><span class="line">    ULONG_PTR   args[MAX_ARGS];     <span class="comment">// 参数数组</span></span><br><span class="line">&#125; DATA_T, *PDATA_T;</span><br></pre></td></tr></table></figure>
+
+<p><strong>结构体的内存布局（x64）：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">偏移   字段              大小    作用</span><br><span class="line">0x00   runner            8字节   Shellcode/loader 的地址（ EntryPoint 被重定向到这里）</span><br><span class="line">0x08   bakOriginalBase   8字节   保存被覆写前的 OriginalBase</span><br><span class="line">0x10   bakEntryPoint     8字节   保存被覆写前的 EntryPoint</span><br><span class="line">0x18   event             8字节   事件句柄，Runner 执行完后触发</span><br><span class="line">0x20   ret               8字节   API 返回值存放</span><br><span class="line">0x28   createThread      4字节   1=需要在新线程中调用（处理 wininet/winhttp）</span><br><span class="line">0x2C   (padding)         4字节   对齐填充</span><br><span class="line">0x30   function          8字节   要调用的 API 地址</span><br><span class="line">0x38   dwArgs            4字节   参数个数</span><br><span class="line">0x3C   (padding)         4字节   对齐填充</span><br><span class="line">0x40   args[0]           8字节   第一个参数</span><br><span class="line">0x48   args[1]           8字节   第二个参数</span><br><span class="line">...    args[N]           8字节   第 N 个参数</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么用堆内存？</strong> 堆内存不像栈那样有固定模式，EDR 很难区分合法的堆分配和攻击者的堆分配。</p>
+<hr>
+<h2 id="五、代码逐行解析"><a href="#五、代码逐行解析" class="headerlink" title="五、代码逐行解析"></a>五、代码逐行解析</h2><h3 id="5-1-RestoreLdr-—-恢复被篡改的-LDR-结构"><a href="#5-1-RestoreLdr-—-恢复被篡改的-LDR-结构" class="headerlink" title="5.1 RestoreLdr() — 恢复被篡改的 LDR 结构"></a>5.1 RestoreLdr() — 恢复被篡改的 LDR 结构</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BOOL <span class="title function_">RestoreLdr</span><span class="params">(IN ULONG_PTR dllBase)</span> &#123;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>函数接收 DLL 基地址（<code>DllBase</code>），恢复该 DLL 的 <code>EntryPoint</code> 和 <code>OriginalBase</code></p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> _WIN64</span></span><br><span class="line">    PPEB pPeb = (PPEB)(__readgsqword(<span class="number">0x60</span>));   <span class="comment">// x64：GS 段寄存器 + 0x60 = PEB 地址</span></span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> _WIN32</span></span><br><span class="line">    PPEB pPeb = (PPEB)(__readgsqword(<span class="number">0x30</span>));   <span class="comment">// x32：FS 段寄存器 + 0x30 = PEB 地址</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PDATA_T pDataT = <span class="literal">NULL</span>;</span><br><span class="line">PEB_LDR_DATA* pPebLdr = (PEB_LDR_DATA*)pPeb-&gt;pLdr;  <span class="comment">// 从 PEB 取出 LDR 指针</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 遍历 InMemoryOrderModuleList 链表</span></span><br><span class="line"><span class="comment">// 注意：Flink 指向的是 LIST_ENTRY 结构，而 LDR_DATA_TABLE_ENTRY2 中</span></span><br><span class="line"><span class="comment">// LIST_ENTRY 在偏移 0x10 处（InMemoryOrderLinks），所以要减去 0x10</span></span><br><span class="line">PLDR_DATA_TABLE_ENTRY2 pDte = (PLDR_DATA_TABLE_ENTRY2)(</span><br><span class="line">    (ULONG_PTR)pPebLdr-&gt;InMemoryOrderModuleList.Flink - <span class="number">0x10</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>为什么要减去 0x10？</strong><br><code>InMemoryOrderModuleList</code> 是一个 <code>LIST_ENTRY</code>（16 字节），位于 <code>LDR_DATA_TABLE_ENTRY2</code> 结构体偏移 <code>0x10</code> 处。链表的 <code>Flink</code> 指针指向的是节点中的 <code>LIST_ENTRY</code> 成员，要得到整个 <code>LDR_DATA_TABLE_ENTRY2</code> 的起始地址，需要往回退 <code>0x10</code> 字节。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">while</span> (pDte) &#123;</span><br><span class="line">        <span class="keyword">if</span> (pDte-&gt;BaseDllName.Length != <span class="literal">NULL</span>) &#123;  <span class="comment">// 检查 DLL 名称是否存在（有效节点）</span></span><br><span class="line">            <span class="keyword">if</span> (pDte-&gt;DllBase == (PVOID)dllBase) &#123;  <span class="comment">// 找到目标 DLL</span></span><br><span class="line">                pDataT = (PDATA_T)pDte-&gt;OriginalBase;  <span class="comment">// OriginalBase 已被改为 DATA_T 指针</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// 恢复原始的 EntryPoint 和 OriginalBase</span></span><br><span class="line">                pDte-&gt;EntryPoint = (PLDR_INIT_ROUTINE)pDataT-&gt;bakEntryPoint;</span><br><span class="line">                pDte-&gt;OriginalBase = pDataT-&gt;bakOriginalBase;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> TRUE;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">break</span>;  <span class="comment">// 链表末尾</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 遍历下一个节点：读取当前节点 LIST_ENTRY（偏移 0x10）的 Flink</span></span><br><span class="line">        <span class="comment">// Flink 指向下一个节点的 LIST_ENTRY，同样要减去 0x10 得到节点起始地址</span></span><br><span class="line">        pDte = *(PLDR_DATA_TABLE_ENTRY2*)(pDte);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> FALSE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-DLL-筛选逻辑"><a href="#5-2-DLL-筛选逻辑" class="headerlink" title="5.2 DLL 筛选逻辑"></a>5.2 DLL 筛选逻辑</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 伪代码（来自 LdrShuffle 分析）</span></span><br><span class="line"><span class="keyword">if</span> (pDte-&gt;EntryPoint != <span class="literal">NULL</span> &amp;&amp; pDte-&gt;DontCallForThreads == <span class="number">0</span> &amp;&amp; i &gt; <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>EntryPoint != NULL</code></td>
+<td>该 DLL 有 DllMain，可以被劫持</td>
+</tr>
+<tr>
+<td><code>DontCallForThreads == 0</code></td>
+<td>该 DLL 在线程创建时会触发 DllMain</td>
+</tr>
+<tr>
+<td><code>i &gt; 5</code></td>
+<td>跳过前 5 个 DLL，避免劫持 ntdll&#x2F;ntoskrnl 等核心 DLL 导致崩溃</td>
+</tr>
+</tbody></table>
+<p><strong>为什么跳过前 5 个 DLL？</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">进程加载顺序（典型）：</span><br><span class="line">  0: ntdll.dll           ← 核心，改了必崩</span><br><span class="line">  1: kernel32.dll        ← 核心</span><br><span class="line">  2: kernelbase.dll      ← 常见攻击目标，但需要等进程稳定后再改</span><br><span class="line">  3: ucrtbase.dll        ← C 运行时</span><br><span class="line">  4: ...其他系统 DLL</span><br><span class="line">  5+: 可以安全操作的 DLL</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-死锁问题与-createThread-字段"><a href="#5-3-死锁问题与-createThread-字段" class="headerlink" title="5.3 死锁问题与 createThread 字段"></a>5.3 死锁问题与 createThread 字段</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// DATA_T 中的 createThread 字段</span></span><br><span class="line">DWORD createThread;  <span class="comment">// 1 = 在新线程中调用该 API</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么需要这个字段？</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">问题场景：</span><br><span class="line">  DllMain 被调用时，Loader 持有 Loader Lock（加载器锁）</span><br><span class="line">  在 Loader Lock 下调用某些 API 会死锁：</span><br><span class="line"></span><br><span class="line">  DllMain → InternetOpenW → 内部创建线程 → 新线程需要 Loader Lock → 死锁</span><br><span class="line"></span><br><span class="line">  会死锁的 API：</span><br><span class="line">    InternetOpenW / InternetConnectW    （WinINet）</span><br><span class="line">    HttpOpenRequestW / HttpSendRequestW  （WinINet）</span><br><span class="line">    WinHttpOpen / WinHttpConnect         （WinHTTP）</span><br><span class="line"></span><br><span class="line">  不会死锁的 API：</span><br><span class="line">    GetComputerNameW / GetUserNameW      （无创建线程）</span><br><span class="line">    VirtualAlloc（PAGE_READWRITE）        （无创建线程）</span><br></pre></td></tr></table></figure>
+
+<p><strong>解决方法：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DllMain 中（有 Loader Lock）：</span><br><span class="line">  只执行简单操作：设置 event，读取 DATA_T 中的 function 地址</span><br><span class="line">  如果 createThread == 1：使用 QueueUserWorkItem 在线程池中执行</span><br><span class="line">  如果 createThread == 0：直接调用</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、三个-PoC-的差异对比"><a href="#六、三个-PoC-的差异对比" class="headerlink" title="六、三个 PoC 的差异对比"></a>六、三个 PoC 的差异对比</h2><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>EPI (Kudaes, 2023)</th>
+<th>LdrShuffle (RWXstoned, 2025)</th>
+<th>iPurple</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>目标 DLL</td>
+<td>kernelbase.dll</td>
+<td>任意符合条件的 DLL</td>
+<td>kernelbase.dll</td>
+</tr>
+<tr>
+<td>同进程注入</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>远程进程注入</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>执行方式</td>
+<td>QueueUserWorkItem（线程池）</td>
+<td>Runner() 读取堆内存</td>
+<td>NtQueryInformationProcess</td>
+</tr>
+<tr>
+<td>Shellcode 处理</td>
+<td>分配内存→解密→执行</td>
+<td>写入堆内存</td>
+<td>N&#x2F;A</td>
+</tr>
+<tr>
+<td>PEB 恢复</td>
+<td>操作后恢复 PEB</td>
+<td>操作后恢复 LDR 结构</td>
+<td>操作后恢复</td>
+</tr>
+<tr>
+<td>使用命令</td>
+<td><code>epi.exe -p &lt;PID&gt;</code></td>
+<td><code>LdrInject.exe &lt;PID&gt; &lt;shellcode.bin&gt;</code></td>
+<td>GUI 工具</td>
+</tr>
+</tbody></table>
+<h3 id="EPI-的执行流程"><a href="#EPI-的执行流程" class="headerlink" title="EPI 的执行流程"></a>EPI 的执行流程</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">epi.exe -p 6832</span><br><span class="line"></span><br><span class="line">1. 分配内存空间</span><br><span class="line">2. 写入 loader（解密、分配、运行 shellcode）</span><br><span class="line">3. 修补目标进程的 PEB（EntryPoint → loader 地址）</span><br><span class="line">4. 利用进程线程池执行</span><br><span class="line">5. 执行后恢复 PEB</span><br></pre></td></tr></table></figure>
+
+<h3 id="LdrShuffle-的执行流程"><a href="#LdrShuffle-的执行流程" class="headerlink" title="LdrShuffle 的执行流程"></a>LdrShuffle 的执行流程</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 同进程注入</span><br><span class="line">LdrShuffle.exe</span><br><span class="line"></span><br><span class="line"># 远程进程注入</span><br><span class="line">LdrInject.exe 3612 demon.x64.bin</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、如何用-WinDbg-验证-EntryPoint"><a href="#七、如何用-WinDbg-验证-EntryPoint" class="headerlink" title="七、如何用 WinDbg 验证 EntryPoint"></a>七、如何用 WinDbg 验证 EntryPoint</h2><h3 id="7-1-查看-LDR-结构"><a href="#7-1-查看-LDR-结构" class="headerlink" title="7.1 查看 LDR 结构"></a>7.1 查看 LDR 结构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// WinDbg 中执行</span><br><span class="line">dt nt!_LDR_DATA_TABLE_ENTRY 0x7ffdc640bcb0</span><br></pre></td></tr></table></figure>
+
+<p>输出示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">nt!_LDR_DATA_TABLE_ENTRY</span><br><span class="line">   +0x000 InLoadOrderLinks          : _LIST_ENTRY [ 0x7ffc`a800b4e0 - 0x7ff6`4e20b010 ]</span><br><span class="line">   +0x010 InMemoryOrderLinks        : _LIST_ENTRY [ 0x7ffc`a800b4f0 - 0x7ff6`4e20b020 ]</span><br><span class="line">   +0x020 InInitializationOrderLinks: _LIST_ENTRY [ 0x7ffc`a800b010 - 0x7ffc`a8015be0 ]</span><br><span class="line">   +0x030 DllBase                   : 0x00007ffc`a8000000 Void       ← kernelbase.dll 基地址</span><br><span class="line">   +0x038 EntryPoint                : 0x00007ffc`a8001234 Void       ← DllMain 地址</span><br><span class="line">   +0x040 SizeOfImage               : 0x1c0000</span><br><span class="line">   +0x048 FullDllName               : _UNICODE_STRING &quot;C:\Windows\System32\kernelbase.dll&quot;</span><br><span class="line">   +0x058 BaseDllName               : _UNICODE_STRING &quot;kernelbase.dll&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-列出所有已加载模块"><a href="#7-2-列出所有已加载模块" class="headerlink" title="7.2 列出所有已加载模块"></a>7.2 列出所有已加载模块</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 列出模块列表</span><br><span class="line">lm m kernelbase</span><br><span class="line"></span><br><span class="line">// 详细输出</span><br><span class="line">lmDm kernelbase</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-3-验证-EntryPoint-是否被篡改"><a href="#7-3-验证-EntryPoint-是否被篡改" class="headerlink" title="7.3 验证 EntryPoint 是否被篡改"></a>7.3 验证 EntryPoint 是否被篡改</h3><p>正常情况下，<code>EntryPoint</code> 应该等于 <code>DllBase + AddressOfEntryPoint</code>（PE 头中的入口点偏移）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 计算正确值</span><br><span class="line">? kernelbase + &lt;AddressOfEntryPoint&gt;</span><br><span class="line"></span><br><span class="line">// 比较</span><br><span class="line">? 0x00007ffc`a8000000 + 0x1234   → 0x00007ffc`a8001234</span><br><span class="line">dt nt!_LDR_DATA_TABLE_ENTRY &lt;LDR地址&gt;</span><br><span class="line">// 看 EntryPoint 字段是否匹配</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="八、检测方法详解"><a href="#八、检测方法详解" class="headerlink" title="八、检测方法详解"></a>八、检测方法详解</h2><h3 id="8-1-方法一：LDR-结构完整性校验（LdrShuffleDetect）"><a href="#8-1-方法一：LDR-结构完整性校验（LdrShuffleDetect）" class="headerlink" title="8.1 方法一：LDR 结构完整性校验（LdrShuffleDetect）"></a>8.1 方法一：LDR 结构完整性校验（LdrShuffleDetect）</h3><p>这是最有效的检测方法，基于<strong>三个告警条件</strong>：</p>
+<h4 id="条件-1：EntryPoint-超出-DllBase-范围"><a href="#条件-1：EntryPoint-超出-DllBase-范围" class="headerlink" title="条件 1：EntryPoint 超出 DllBase 范围"></a>条件 1：EntryPoint 超出 DllBase 范围</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">检测逻辑：</span><br><span class="line">  EntryPoint 地址 不在 [DllBase, DllBase + SizeOfImage) 范围内</span><br><span class="line"></span><br><span class="line">原理：</span><br><span class="line">  正常的 EntryPoint（DllMain）一定在 DLL 映像内存范围内</span><br><span class="line">  如果被篡改为 shellcode 地址，地址一定在堆/私有内存中，必然在映像范围外</span><br><span class="line"></span><br><span class="line">检测代码示意：</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ULONG_PTR epAddress = (ULONG_PTR)pDte-&gt;EntryPoint;</span><br><span class="line">ULONG_PTR dllStart  = (ULONG_PTR)pDte-&gt;DllBase;</span><br><span class="line">ULONG_PTR dllEnd    = dllStart + pDte-&gt;SizeOfImage;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (epAddress &lt; dllStart || epAddress &gt;= dllEnd) &#123;</span><br><span class="line">    <span class="comment">// 告警：EntryPoint 超出 DLL 映像范围</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="条件-2：EntryPoint-内存类型异常"><a href="#条件-2：EntryPoint-内存类型异常" class="headerlink" title="条件 2：EntryPoint 内存类型异常"></a>条件 2：EntryPoint 内存类型异常</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">检测逻辑：</span><br><span class="line">  用 VirtualQuery 查询 EntryPoint 地址的内存类型</span><br><span class="line">  正常应为 MEM_IMAGE (0x1000000)</span><br><span class="line">  被劫持后变为 MEM_PRIVATE (0x20000)</span><br><span class="line"></span><br><span class="line">原理：</span><br><span class="line">  DLL 的代码段在内存中标记为 MEM_IMAGE（从文件映射）</span><br><span class="line">  shellcode 在堆上执行，标记为 MEM_PRIVATE</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MEMORY_BASIC_INFORMATION mbi;</span><br><span class="line">VirtualQuery((LPCVOID)pDte-&gt;EntryPoint, &amp;mbi, <span class="keyword">sizeof</span>(mbi));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (mbi.Type != MEM_IMAGE) &#123;  <span class="comment">// MEM_IMAGE = 0x1000000</span></span><br><span class="line">    <span class="comment">// 告警：EntryPoint 不在映像内存中</span></span><br><span class="line">    <span class="comment">// MEM_PRIVATE = 0x20000（可能是 shellcode）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="条件-3：OriginalBase-异常"><a href="#条件-3：OriginalBase-异常" class="headerlink" title="条件 3：OriginalBase 异常"></a>条件 3：OriginalBase 异常</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">检测逻辑：</span><br><span class="line">  OriginalBase 的值不应与 DllBase 相同（正常情况下 OriginalBase 可能等于 DllBase）</span><br><span class="line">  如果 OriginalBase 看起来像堆地址而非 DLL 地址 → 被覆写过</span><br><span class="line"></span><br><span class="line">原理：</span><br><span class="line">  攻击者需要备份 OriginalBase，会把它写入堆内存的 DATA_T 中</span><br><span class="line">  如果读取 OriginalBase 发现它指向堆区域 → 可疑</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ULONG_PTR originalBase = (ULONG_PTR)pDte-&gt;OriginalBase;</span><br><span class="line">ULONG_PTR dllBase = (ULONG_PTR)pDte-&gt;DllBase;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果 OriginalBase 看起来不像合法的 DLL 地址</span></span><br><span class="line"><span class="comment">// （例如指向堆内存区域，且值不等于 DllBase）</span></span><br><span class="line"><span class="keyword">if</span> (originalBase != dllBase &amp;&amp; !IsAddressInRange(originalBase)) &#123;</span><br><span class="line">    <span class="comment">// 告警：OriginalBase 可能被覆写</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="告警置信度矩阵"><a href="#告警置信度矩阵" class="headerlink" title="告警置信度矩阵"></a>告警置信度矩阵</h4><table>
+<thead>
+<tr>
+<th>触发条件组合</th>
+<th>场景</th>
+<th>置信度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 + 2 + 3</td>
+<td>三个条件全部触发</td>
+<td><strong>Critical</strong></td>
+</tr>
+<tr>
+<td>1 + 2</td>
+<td>EP 超出范围 + 内存类型为私有</td>
+<td><strong>Critical</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>OriginalBase 是堆指针</td>
+<td><strong>High</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>EntryPoint 不在映像内存中</td>
+<td><strong>Medium</strong></td>
+</tr>
+<tr>
+<td>全部不触发</td>
+<td>正常</td>
+<td>Clean</td>
+</tr>
+</tbody></table>
+<h4 id="完整性校验公式"><a href="#完整性校验公式" class="headerlink" title="完整性校验公式"></a>完整性校验公式</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LDR_DATA_TABLE_ENTRY.EntryPoint == DllBase + IMAGE_NT_HEADERS.OptionalHeader.AddressOfEntryPoint</span><br><span class="line"></span><br><span class="line">如果不相等 → EntryPoint 被篡改</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-2-方法二：Sysmon-Event-ID-10-监控"><a href="#8-2-方法二：Sysmon-Event-ID-10-监控" class="headerlink" title="8.2 方法二：Sysmon Event ID 10 监控"></a>8.2 方法二：Sysmon Event ID 10 监控</h3><p>监控句柄访问中的 <code>GrantedAccess = 0x143A</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">0x143A 拆解：</span><br><span class="line"></span><br><span class="line">  0x0002  PROCESS_VM_READ      — 读取目标进程内存</span><br><span class="line">  0x0020  PROCESS_VM_WRITE     — 写入目标进程内存</span><br><span class="line">  0x0008  PROCESS_CREATE_THREAD — 创建线程（用于 CreateRemoteThread）</span><br><span class="line">  0x0100  PROCESS_VM_OPERATION — 虚拟内存操作（VirtualAllocEx）</span><br><span class="line">  0x0400  PROCESS_QUERY_INFORMATION</span><br><span class="line">  0x1000  PROCESS_DUP_HANDLE   — 复制句柄</span><br><span class="line"></span><br><span class="line">  组合 0x143A = 0x1000 + 0x0400 + 0x0020 + 0x08 + 0x02（近似）</span><br></pre></td></tr></table></figure>
+
+<p><strong>检测规则：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Sysmon Event ID 10（ProcessAccess）中：</span><br><span class="line">  找到 GrantedAccess 包含 0x143A 的事件</span><br><span class="line">  关联该事件中目标进程是否有出站网络连接</span><br><span class="line">  → 如果有，高度可疑</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-3-方法三：WriteProcessMemory-监控"><a href="#8-3-方法三：WriteProcessMemory-监控" class="headerlink" title="8.3 方法三：WriteProcessMemory 监控"></a>8.3 方法三：WriteProcessMemory 监控</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">监控 WriteProcessMemory API 调用：</span><br><span class="line">  目标地址是否在已加载 DLL 的 DllBase 范围内</span><br><span class="line">  写入的数据是否与 EntryPoint 相关</span><br><span class="line"></span><br><span class="line">这需要 EDR 的 API 钩子能力，或 ETW 提供的遥测数据</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-4-方法四：定期扫描高价值进程"><a href="#8-4-方法四：定期扫描高价值进程" class="headerlink" title="8.4 方法四：定期扫描高价值进程"></a>8.4 方法四：定期扫描高价值进程</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">对以下进程定期执行 LdrShuffleDetect 类检查：</span><br><span class="line">  - lsass.exe        （凭证存储）</span><br><span class="line">  - svchost.exe      （系统服务）</span><br><span class="line">  - chrome.exe       （浏览器，C2 通信常见）</span><br><span class="line">  - OUTLOOK.EXE      （Office，钓鱼入口）</span><br><span class="line">  - MsMpEng.exe      （EDR 自身）</span><br><span class="line"></span><br><span class="line">检查频率：建议每 10 秒一次（LdrShuffleDetect 默认频率）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="九、LdrShuffleDetect-检测工具实现原理"><a href="#九、LdrShuffleDetect-检测工具实现原理" class="headerlink" title="九、LdrShuffleDetect 检测工具实现原理"></a>九、LdrShuffleDetect 检测工具实现原理</h2><h3 id="9-1-枚举所有进程"><a href="#9-1-枚举所有进程" class="headerlink" title="9.1 枚举所有进程"></a>9.1 枚举所有进程</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 创建系统进程快照</span></span><br><span class="line">HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 遍历所有进程</span></span><br><span class="line">PROCESSENTRY32W pe = &#123;<span class="keyword">sizeof</span>(pe)&#125;;</span><br><span class="line"><span class="keyword">if</span> (Process32FirstW(hSnap, &amp;pe)) &#123;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (pe.th32ProcessID == <span class="number">0</span> || pe.th32ProcessID == <span class="number">4</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="comment">// PID 0 = System Idle Process，PID 4 = System 进程，跳过</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125; <span class="keyword">while</span> (Process32NextW(hSnap, &amp;pe));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>为什么跳过 PID 0 和 PID 4？</strong><br>PID 0 是 System Idle Process，PID 4 是 System 进程，它们的内存结构与普通用户态进程不同，对它们进行内存读取会出错。</p>
+</blockquote>
+<h3 id="9-2-获取目标进程-PEB-地址"><a href="#9-2-获取目标进程-PEB-地址" class="headerlink" title="9.2 获取目标进程 PEB 地址"></a>9.2 获取目标进程 PEB 地址</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打开目标进程（只需要查询权限）</span></span><br><span class="line">HANDLE hTmp = OpenProcess(</span><br><span class="line">    PROCESS_QUERY_LIMITED_INFORMATION,  <span class="comment">// 只需要有限信息查询权限</span></span><br><span class="line">    FALSE,                              <span class="comment">// 不继承句柄</span></span><br><span class="line">    targetPid</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取进程映像路径</span></span><br><span class="line">DWORD sz = MAX_PATH;</span><br><span class="line">QueryFullProcessImageNameW(hTmp, <span class="number">0</span>, e.name, &amp;sz);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 NtQueryInformationProcess 获取 PEB 地址</span></span><br><span class="line"><span class="comment">// 这是检测工具用于跨进程读取 LDR 结构的关键 API</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="9-3-读取目标进程的-LDR-结构"><a href="#9-3-读取目标进程的-LDR-结构" class="headerlink" title="9.3 读取目标进程的 LDR 结构"></a>9.3 读取目标进程的 LDR 结构</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 ReadProcessMemory 读取目标进程内存</span></span><br><span class="line"><span class="comment">// 读取顺序：PEB → pLdr → InMemoryOrderModuleList → LDR_DATA_TABLE_ENTRY2</span></span><br><span class="line">ReadProcessMemory(hProcess, pPeb, &amp;pebBuf, <span class="keyword">sizeof</span>(pebBuf), &amp;bytesRead);</span><br><span class="line">ReadProcessMemory(hProcess, pPeb-&gt;pLdr, &amp;ldrBuf, <span class="keyword">sizeof</span>(ldrBuf), &amp;bytesRead);</span><br><span class="line"><span class="comment">// ... 遍历每个 LDR_DATA_TABLE_ENTRY2，检查 EntryPoint</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十、攻击利用的真实场景"><a href="#十、攻击利用的真实场景" class="headerlink" title="十、攻击利用的真实场景"></a>十、攻击利用的真实场景</h2><h3 id="场景-1：C2-持久化"><a href="#场景-1：C2-持久化" class="headerlink" title="场景 1：C2 持久化"></a>场景 1：C2 持久化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">前提：攻击者已通过钓鱼获得进程内代码执行权限</span><br><span class="line"></span><br><span class="line">攻击者操作：</span><br><span class="line">  1. 把 shellcode（C2 回连代码）写入目标进程堆内存</span><br><span class="line">  2. 劫持 kernelbase.dll 的 EntryPoint 指向 shellcode</span><br><span class="line">  3. 进程在日常运行中自然创建线程</span><br><span class="line">  4. DllMain 触发 → 执行 C2 回连</span><br><span class="line">  5. 恢复 EntryPoint，无痕迹</span><br><span class="line"></span><br><span class="line">EDR 视角：</span><br><span class="line">  ✗ 没有 CreateRemoteThread 调用</span><br><span class="line">  ✗ 没有新线程被创建</span><br><span class="line">  ✗ EntryPoint 只在几毫秒内被篡改</span><br><span class="line">  ✗ 扫描时已恢复正常</span><br></pre></td></tr></table></figure>
+
+<h3 id="场景-2：横向移动"><a href="#场景-2：横向移动" class="headerlink" title="场景 2：横向移动"></a>场景 2：横向移动</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">前提：攻击者需要在远程进程中执行代码</span><br><span class="line"></span><br><span class="line">攻击者操作：</span><br><span class="line">  1. 使用 WriteProcessMemory 将 shellcode 写入远程进程</span><br><span class="line">  2. 劫持远程进程 kernelbase.dll 的 EntryPoint</span><br><span class="line">  3. 等待远程进程创建线程（如 Windows Service）</span><br><span class="line">  4. 恶意代码被执行</span><br></pre></td></tr></table></figure>
+
+<h3 id="场景-3：绕过-EDR-内存扫描"><a href="#场景-3：绕过-EDR-内存扫描" class="headerlink" title="场景 3：绕过 EDR 内存扫描"></a>场景 3：绕过 EDR 内存扫描</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">EDR 的内存扫描通常：</span><br><span class="line">  定期扫描 MEM_PRIVATE 区域的可执行代码</span><br><span class="line">  检测可疑的内存分配模式</span><br><span class="line"></span><br><span class="line">EntryPoint Hijacking 的优势：</span><br><span class="line">  恶意代码可以放在 MEM_IMAGE 区域（DLL 内部的合法代码段）</span><br><span class="line">  EntryPoint 只在执行时被短暂修改</span><br><span class="line">  恢复后内存扫描看到的是正常的 DLL 映像</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十一、防御建议"><a href="#十一、防御建议" class="headerlink" title="十一、防御建议"></a>十一、防御建议</h2><h3 id="11-1-端点检测"><a href="#11-1-端点检测" class="headerlink" title="11.1 端点检测"></a>11.1 端点检测</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. 部署 LdrShuffleDetect 类工具，每 10 秒扫描高价值进程</span><br><span class="line">2. 检查 LDR_DATA_TABLE_ENTRY 的完整性：</span><br><span class="line">   - EntryPoint 是否在 [DllBase, DllBase + SizeOfImage) 范围内</span><br><span class="line">   - OriginalBase 是否与 DllBase 一致</span><br><span class="line">3. 监控 VirtualQuery 调用，关注 MEM_IMAGE → MEM_PRIVATE 的转换</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-2-Sysmon-规则"><a href="#11-2-Sysmon-规则" class="headerlink" title="11.2 Sysmon 规则"></a>11.2 Sysmon 规则</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Sysmon Event ID 10 检测规则示例 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Sysmon</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">RuleGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ProcessAccess</span> <span class="attr">onmatch</span>=<span class="string">&quot;include&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">GrantedAccess</span> <span class="attr">condition</span>=<span class="string">&quot;contains&quot;</span>&gt;</span>0x143A<span class="tag">&lt;/<span class="name">GrantedAccess</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ProcessAccess</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">RuleGroup</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Sysmon</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="11-3-EDR-能力提升"><a href="#11-3-EDR-能力提升" class="headerlink" title="11.3 EDR 能力提升"></a>11.3 EDR 能力提升</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">传统 EDR 关注的：</span><br><span class="line">  ✗ API 钩子（CreateRemoteThread、VirtualAllocEx）</span><br><span class="line">  ✗ 线程创建遥测</span><br><span class="line">  ✗ 内存扫描</span><br><span class="line"></span><br><span class="line">应该增加的：</span><br><span class="line">  ✓ PEB/LDR 结构完整性校验</span><br><span class="line">  ✓ EntryPoint 地址范围检查</span><br><span class="line">  ✓ WriteProcessMemory 对 DLL 区域的监控</span><br><span class="line">  ✓ 多行为关联（句柄访问 + 出站流量）</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-4-SOC-操作手册"><a href="#11-4-SOC-操作手册" class="headerlink" title="11.4 SOC 操作手册"></a>11.4 SOC 操作手册</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">当告警触发时：</span><br><span class="line"></span><br><span class="line">1. 确认告警来源进程是否为高价值目标（lsass/浏览器/Office）</span><br><span class="line">2. 检查该进程是否有异常出站连接（关联 EDR 网络遥测）</span><br><span class="line">3. 使用 LdrShuffleDetect 确认被劫持的具体 DLL</span><br><span class="line">4. 取证：记录 EntryPoint 的原始值和被篡改后的值</span><br><span class="line">5. 隔离进程，终止可疑连接</span><br><span class="line">6. 回溯攻击链：WriteProcessMemory 的来源进程是什么</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十二、技术演进与未来"><a href="#十二、技术演进与未来" class="headerlink" title="十二、技术演进与未来"></a>十二、技术演进与未来</h2><table>
+<thead>
+<tr>
+<th>时间</th>
+<th>进展</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2023</td>
+<td>EPI 发布</td>
+<td>首个 EntryPoint Injection 的公开 PoC</td>
+</tr>
+<tr>
+<td>2025</td>
+<td>LdrShuffle 发布</td>
+<td>支持远程进程注入，更成熟的实现</td>
+</tr>
+<tr>
+<td>2026</td>
+<td>iPurple 工具</td>
+<td>工具化，带 GUI，降低使用门槛</td>
+</tr>
+</tbody></table>
+<p><strong>攻击趋势：</strong></p>
+<ul>
+<li>不依赖可疑 API 的注入技术将成为主流</li>
+<li>利用 Windows Loader 自身机制的”Living off the Land”思路</li>
+<li>短暂窗口期的攻击将挑战传统定时扫描的检测模式</li>
+</ul>
+<hr>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>原文：<a target="_blank" rel="noopener" href="https://ipurple.team/2026/05/13/entrypoint-hijacking/">https://ipurple.team/2026/05/13/entrypoint-hijacking/</a></li>
+<li>EPI PoC：<a target="_blank" rel="noopener" href="https://github.com/Kudaes/EPI">https://github.com/Kudaes/EPI</a></li>
+<li>LdrShuffle PoC：<a target="_blank" rel="noopener" href="https://github.com/RWXstoned/LdrShuffle">https://github.com/RWXstoned/LdrShuffle</a></li>
+<li>研究者：@<em>Kudaes</em> (Kurosh Dabbagh Escalante)、@RXWstoned (Hugo Valette)</li>
+</ul>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-05-15</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E5%85%8D%E6%9D%80/'>
+                            免杀
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/05/07/alt-syscalls%E8%BF%9B%E8%A1%8Chook%E5%87%BD%E6%95%B0%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/">alt-syscalls进行hook函数系统调用</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
