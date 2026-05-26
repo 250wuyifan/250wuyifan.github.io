@@ -12,7 +12,7 @@
     <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="IDA Pro 9.3 MAC安装破解" />
+    <meta name="description" content="" />
     <meta name="hexo-theme-A4" content="v2.0.1" />
     <link rel="alternate icon" type="image/webp" href="/null">
     <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
@@ -176,10 +176,6 @@
         
         
             
-                <div class="left-toc-container">
-                    <nav id="toc" class="bs-docs-sidebar"></nav>
-                </div>
-            
         
         <div class="paper">
 
@@ -243,81 +239,38 @@
     
 
     
-        
-            
-                <div class="post-main-title" style="text-align: center;">
-                    IDA Pro 9.3 MAC安装破解
-                </div>
-            
-        
-      
-    
 
-    
-
-        
-            <div class="post-head-meta-center">
-        
-                
-                    <span>最近更新：2026-05-26</span> 
-                
-                
-                    
-                        &nbsp; | &nbsp;
-                    
-                     <span>字数总计：68</span>
-                
-                
-                    
-                        &nbsp; | &nbsp;
-                    
-                    <span>阅读估时：1分钟</span>
-                
-                
-                    
-                        &nbsp; | &nbsp;
-                    
-                    <span id="busuanzi_container_page_pv">
-                        阅读量：<span id="busuanzi_value_page_pv"></span>次
-                    </span>
-                
-            </div>
     
 
     <div class="post-md">
         
             
-                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8F%82%E8%80%83"><span class="post-toc-text">参考</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%AE%9E%E6%93%8D"><span class="post-toc-text">实操</span></a></li></ol>
-            
         
         <div class=".article-gallery"><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-289611.htm">https://bbs.kanxue.com/thread-289611.htm</a></p>
-<h2 id="实操"><a href="#实操" class="headerlink" title="实操"></a>实操</h2><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260503014154528.png" title="image-20260503014154528" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260503014154528.png" alt="image-20260503014154528"></a></p>
+<p>百度网盘链接：通过网盘分享的文件：idapro93<br>链接: <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1usnytCp29XQui_EaXwQNCA?pwd=be27">https://pan.baidu.com/s/1usnytCp29XQui_EaXwQNCA?pwd=be27</a> 提取码: be27</p>
+<h2 id="Mac实操"><a href="#Mac实操" class="headerlink" title="Mac实操"></a>Mac实操</h2><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260503014154528.png" title="image-20260503014154528" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260503014154528.png" alt="image-20260503014154528"></a></p>
 <p>但是这个执行之后会导致应用打不开，是因为patch的文件没有签名，需要手动执行如下命令。</p>
 <p>Code sign them with something like this: </p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">codesign --force --deep --sign - ./libida.dylib</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">codesign --force --deep --sign - ./libida32.dylib</span></span><br></pre></td></tr></table></figure>
 
 <p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260503014330103.png" title="image-20260503014330103" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260503014330103.png" alt="image-20260503014330103"></a></p>
+<h2 id="WINDOWS同样并且无需签名"><a href="#WINDOWS同样并且无需签名" class="headerlink" title="WINDOWS同样并且无需签名"></a>WINDOWS同样并且无需签名</h2><h2 id="MCP插件"><a href="#MCP插件" class="headerlink" title="MCP插件"></a>MCP插件</h2><p><a target="_blank" rel="noopener" href="https://github.com/mrexodia/ida-pro-mcp">https://github.com/mrexodia/ida-pro-mcp</a></p>
+<h2 id="Installation-GUI"><a href="#Installation-GUI" class="headerlink" title="Installation (GUI)"></a>Installation (GUI)</h2><p><strong>Note</strong>: the MCP plugin is no longer recommended and will eventually be deprecated. Use <code>idalib-mcp</code> instead.</p>
+<p>If you want to configure the MCP server manually from the IDA GUI:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip uninstall ida-pro-mcp</span><br><span class="line">pip install https://github.com/mrexodia/ida-pro-mcp/archive/refs/heads/main.zip</span><br></pre></td></tr></table></figure>
+
+<p>Configure the MCP servers and install the IDA Plugin:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ida-pro-mcp --install</span><br></pre></td></tr></table></figure>
+
+<p><strong>Important</strong>: Make sure you completely restart IDA and your MCP client for the installation to take effect. Some clients (like Claude) run in the background and need to be quit from the tray icon.</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260526154709662.png" title="image-20260526154709662" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260526154709662.png" alt="image-20260526154709662"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260526154746303.png" title="image-20260526154746303" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260526154746303.png" alt="image-20260526154746303"></a></p>
+<p>使用AI直接跟AI说我ida开启了mcp，让AI做后续脚本编写等等事情吧。</p>
 </div>
     </div>
 
     <div class="post-meta">
         <i>
-        
-            <span>2026-05-03</span>
-            
-                <span>该篇文章被 CHANGMEN</span>
-            
-            
-                <span>打上标签:
-                    
-                    
-                        <a href='/tags/%E5%B7%A5%E5%85%B7/'>
-                            工具
-                        </a>
-                    
-                </span>
-             
-             
         
         </i>
     </div>
@@ -329,12 +282,7 @@
     
             <div class="post-footer-pre-next">
                 
-                    <span>上一篇：<a href='/2026/05/07/alt-syscalls%E8%BF%9B%E8%A1%8Chook%E5%87%BD%E6%95%B0%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/'>alt-syscalls进行hook函数系统调用</a></span>
-                
 
-                
-                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/05/02/EDR-Silencing-%E5%AE%8C%E6%95%B4%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">EDR Silencing 完整学习笔记</a>
-                    </span>
                 
             </div>
     
