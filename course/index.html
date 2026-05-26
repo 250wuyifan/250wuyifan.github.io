@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="AI驱动开发课程资源" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><i>
+                    
+                        <a style="color: #4e7dde;" href="/course/">课程资源</a>
+                    
+                </i></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+
+    
+
+    <div class="post-md">
+        
+            
+        
+        <div class="hbe hbe-container" id="hexo-blog-encrypt"
+     data-hbe-format="4"
+     data-wpm="Oh, this is an invalid password. Check and try again, please."
+     data-whm="Oh, this is an invalid password. Check and try again, please."
+     data-salt="b45b17b7dbe195d9b88b285f2ae32cf0bbe8518b0ad94a1d669a2282a73ae6d8"
+     data-nonce="4a04bb911fa0fa9330d22c4b"
+     data-kdf-iterations="250000"
+     data-auto-save="false">
+  <script id="hbeData" type="hbeData">
+    fa9eeaa48b6e52a413475818371368ba3005c604e4613e34a09a33a3b3bd7a04333b9ff2e2b2a754d8bbb142c59cdb55445ac6cd23a5192c073eb97d281e620418e7dc3337368bf23ab69547176c3166262db2c32f600ffddb97ff09c4194d2b77c85bc17b15ccf6d90330084f68fa08c52a82008da76685e33990dfb9e73561d809c2f75bfa1b109c669f2eaaba7f6fbe4086d5bddab8ad1eef21c1ef61f93d2cddc1754e753217939f6660eb31782f1d4d67eda6b97c0ede3d581b58a69a6d0b6d892dc21ab4856365c7fc9200ea904b6ba90c662b3a0cfe9fca4d1931e98ecd363a2d16e1dd7c70388062ec0cbcfe8ea8251a5aaaf87eecfa56388fb0ecb4535344c006a6adbb2eaf1116e535d43b6bc9d86f80e89b3be5f853aa43c60953d6d692a3b068b8fef91a6d71e4da4aa2233c8deda6d95af5e0f0f5cb8e01371b1cfa2fff995e83541d1b78e4a2b836124f25e7e76a20c09109243eafdcccf5ff7e74af1bd95f2946373c04336a7b16d7d56509bd477e70a1f26cd44a3e0491e90c521f1b8bfbed53218f93c8b5b961d59b4d535768a506a948d20b63282697e82d340cae36867b53b540988f911002e77163628eed613dffb418459178f25f5799379f46378309030a02e75ef807200766fea016a33559c2b52ba3d3255b18e5b050ecaa46e26f54da5321ad67f86d7940b943b9b8c601a7c81dafce029b98210ad218dafbec8e33fc2197b2fe67be044e7e2b983556f8722f9622de0739dd58e4d94c4073757b69e98b5a11e041cae4975bd1bf8ed79c5794b932e64d4e2f1666cacc295bd18be7381690e0b753c950a419b9e52bb1a2854e019e80c6c56dbfdbae33528115e62a64cfbccec467ec3d1fc40aede6bece7d2474680293aa824c9efb94995471c1f41a494a963112bbefd377e00a732ef9f121a860b3f024cddb7d260699033f5f2db2b91ffb5e8897e00823ff5d4ffe3e6461c01dcfebbdf92f58b574090423f5f689797aaf286bb0b497dd4d293a352e9512ee6d59e3d2ac2ef52e81250d1340e54cbb3661c1b827edbfd49786ff51e41c672f264884c1646eab35e2c4232c8869ba930b46ea2d837ecacdc937a6da7a7f1fae0db3b722bc52cf83a886e61f2b61790c169d1cc085766b219008f04bdc26aba05154aad683df52e2bba8d189f86ac3a69d2c5bef97a8d805963214e57681fbce9a2f444110d332a89f445ab03ca8540f6f044c5200cae9d93f80323683eb9e6871cd4934c71f977d4bd77d6adc2bbc0b54dea34b445fba046b3fd232703afccacf193b0bbcfb7cdd5a40fc5f396999b5ece82b080d210915dc56676d9b1ca3bafc80411aaa8d0bbe12c7a701664f7d142e01545a615651ed49f3f59770abf268fa2bb0daba608425a0cf14ffcb2c8e0c9f84b78c7b04a009bf349990bf20e4a7c277955f51a337d159a0271884c24a3b3968ce86dc7cadfa432f1a9c5f8fac3b76f4720ea6a5c5a82f343a6c3f8a81c7a769c3dffeb0d171c6a89a736429488a4cb57ca32653d5ec0bd71db95702e7655e853bb23a0f13900007103174af4d847a27006fc3ef2ca7192f553afcef1b8379342e965aee6488f1a8f1721ef7f9e58d44ddf517d56b61028ef63f2f9457ba03ebd2b1c6259ed96a293c171fc5f58d78edb44c610dac5fc489513d14bb6f31d6d0d4e820ce383729c1f7360834c39e331a165a276e9a0c40da96f49875905877d9357d9a794a062c188b7c4c9b45ca6875df1deee6fad938dcac2506148231b516b33ea6459b0c6cac3cd6fd24f009c7167425ed3fbe5ae38139cdbbb0092aec9f58b844f5f514744017802fef5b9465eeb62bb6896ee0291dd063dc13a67c9508d0fca9d67584c5e10e5341c830acd37309e3560a83be4bdd26d803e61ec3f627fc139214e022a91f213c18675c867a4e9ac1f0b424e585a7063a718da4242bca8aaf0755d22a67f5f11e29e7a5fac4761bcac925851b4a1e42cef1155fc904e14d537244bce2520189fc251d61bd669fa9f38d79022ec8d6a9866a5211a6b7f6058c9c6958a8e68f2ae4ee49abab99081619e03ec79f19d6dec774d9d34352e0e909c53acb41d81cc9b2a9427f408bf47cb3736096d6514a2425d32ec1e60abd8b224208a419ea0f292086716770944637209a60046376c70c09ea5b34a9c3f203ce7982a29e094b04f1b3a3a86d884794213495cece0b762847727aa1cbcbbdcfc018f0a8053d48430fec8dbc2e2e93645729cf75a2015c10d86b0fbbe3e2db6cdbf645258413c4a22b4d428acdc24c6269e09871f33f7c1af810398e252c4edc4b768c329912000a1e4576f11470d0
+  </script>
+  <div class="hbe hbe-content">
+    <form id="hbeForm" class="hbe hbe-form" onsubmit="return false">
+      <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">请输入课程访问密码</span>
+      </label>
+    </div>
+      <button class="hbe hbe-button" type="submit">Decrypt</button>
+      <div class="hbe hbe-error" role="alert" aria-live="polite"></div>
+    </form>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.9a88ff0505.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
