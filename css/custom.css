@@ -1,10 +1,136 @@
-.circle-pink {
-    padding: 40px 25px 50px;
-    border: solid 1px rgb(233, 137, 212);
-    margin-bottom: 15px;
-    display: flex;
+.course-portal {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.course-hero {
+  border: 1px solid #d8d8d8;
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem;
+  background: linear-gradient(130deg, #f5f8ff, #f8fbf7 70%, #fff8ef);
+}
+
+.course-hero h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.course-hero p {
+  margin: 0.45rem 0 0 0;
+  color: #4f5d62;
+}
+
+.course-stats {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.course-stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.34rem 0.58rem;
+  border: 1px solid #d5e2ea;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  font-size: 0.84rem;
+}
+
+.course-module {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.course-module-head {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #edf0f2;
+  background: #fafbfc;
+}
+
+.course-module-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.course-module-head p {
+  margin: 0.25rem 0 0;
+  font-size: 0.84rem;
+  color: #6a737d;
+}
+
+.course-list {
+  display: grid;
+}
+
+.course-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.78rem 1rem;
+  text-decoration: none;
+  border-bottom: 1px dashed #eceff3;
+  transition: background-color 0.18s ease, transform 0.18s ease;
+}
+
+.course-item:hover {
+  background: #f7fafb;
+  transform: translateX(2px);
+}
+
+.course-item:last-child {
+  border-bottom: 0;
+}
+
+.course-item-main {
+  min-width: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.course-item-name {
+  font-weight: 600;
+  line-height: 1.2;
+  color: #16222a;
+  word-break: break-all;
+}
+
+.course-item-path {
+  color: #6a737d;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  word-break: break-all;
+}
+
+.course-item-meta {
+  color: #60707b;
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.course-item-action {
+  flex: none;
+  font-size: 0.78rem;
+  color: #0a7a66;
+  border: 1px solid #b8e4db;
+  border-radius: 999px;
+  padding: 0.18rem 0.52rem;
+  background: #effcf8;
+}
+
+.course-empty {
+  padding: 1rem;
+  color: #76848f;
+}
+
+@media (max-width: 760px) {
+  .course-item {
     flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-content: center;
+    align-items: flex-start;
+  }
 }
