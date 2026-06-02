@@ -246,16 +246,22 @@
         
             
         
-        <div class=".article-gallery"><p>仅根据我的经验，有时候我们自己从零写一个驱动，会发现怎么也加载不上，这种玄学问题哈哈，我们学习这个驱动开发最好还是找一些项目，或者单独的一个点，去上面进行二开，我们目前就是学这些各种回调，也可以找一些项目，比如<a target="_blank" rel="noopener" href="https://www.lyshark.com/post/7c89636f.html">https://www.lyshark.com/post/7c89636f.html</a></p>
+        <div class=".article-gallery"><h2 id="推荐项目"><a href="#推荐项目" class="headerlink" title="推荐项目"></a>推荐项目</h2><p>仅根据我的经验，有时候我们自己从零写一个驱动，会发现怎么也加载不上，这种玄学问题哈哈，我们学习这个驱动开发最好还是找一些项目，去上面进行二开，多找一些项目。</p>
 <p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260529121714917.png" title="image-20260529121714917" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260529121714917.png" alt="image-20260529121714917"></a></p>
-<p>或者在我的博客也有</p>
-<p><a target="_blank" rel="noopener" href="https://250wuyifan.github.io/2026/04/23/%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8%E7%9B%91%E5%90%AC%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E4%B8%8E%E9%94%80%E6%AF%81/![image-20260529121851380](https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260529121851380.png)">https://250wuyifan.github.io/2026/04/23/%E5%86%85%E6%A0%B8%E9%A9%B1%E5%8A%A8%E7%9B%91%E5%90%AC%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E4%B8%8E%E9%94%80%E6%AF%81/![image-20260529121851380](https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260529121851380.png)</a></p>
+<h3 id="github"><a href="#github" class="headerlink" title="github"></a>github</h3><p><a target="_blank" rel="noopener" href="https://github.com/Xacone/BestEdrOfTheMarket">https://github.com/Xacone/BestEdrOfTheMarket</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/m0n1x90/vettaiyan">https://github.com/m0n1x90/vettaiyan</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/wazuh/wazuh">https://github.com/wazuh/wazuh</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ComodoSecurity/openedr">https://github.com/ComodoSecurity/openedr</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/250wuyifan/ChangmenEdr">https://github.com/250wuyifan/ChangmenEdr</a></p>
+<h2 id="推荐文章"><a href="#推荐文章" class="headerlink" title="推荐文章"></a>推荐文章</h2><p><a target="_blank" rel="noopener" href="https://www.lyshark.com/tags/%E3%80%8AWindows-%E5%86%85%E6%A0%B8%E5%AE%89%E5%85%A8%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/page/9/">https://www.lyshark.com/tags/%E3%80%8AWindows-%E5%86%85%E6%A0%B8%E5%AE%89%E5%85%A8%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF%E5%AE%9E%E8%B7%B5%E3%80%8B/page/9/</a></p>
+<p>或者在我的博客也有,比如下方关于进程的回调，我也是大部分参考的上面大佬的。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260529121851380.png" title="image-20260529121851380" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260529121851380.png" alt="image-20260529121851380"></a></p>
 <p>主要就是使用一个注册函数PsSetCreateProcessNotifyRoutineEx，然后指定回调函数即可</p>
 <p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260529122257490.png" title="image-20260529122257490" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260529122257490.png" alt="image-20260529122257490"></a></p>
 <p>需要什么参数，就从数据结构里面找就好，比如下图什么文件名，什么父进程id，命令行等等。<a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260529122335157.png" title="image-20260529122335157" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260529122335157.png" alt="image-20260529122335157"></a></p>
-<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>我建议大家自行编译代码，感受一下进程回调，比如例子中就是拦截进程打开这个操作，匹配到文件名就直接不允许打开进程，可以问AI开发更多有意思的东西。从免杀的角度来看，edr都会使用这个进程回调，那么edr能看到进程的父进程，如果我们进行进程注入，word.exe启动了一个cmd.exe的子进程，并且也能看到cmd执行了什么命令，那么这个是一个很值得怀疑的操作。</p>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><p>我建议大家自行编译代码，感受一下进程回调，比如例子中就是拦截进程打开这个操作，匹配到文件名就直接不允许打开进程，可以问AI开发更多有意思的东西。从免杀的角度来看，edr都会使用这个进程回调，那么edr能看到进程的父进程，如果我们进行进程注入，word.exe启动了一个cmd.exe的子进程，并且也能看到cmd执行了什么命令，那么这个是一个很值得怀疑的操作。</p>
 <p>其他各种回调的话，其实难度都不是很大，毕竟AI开发，我们不需要非常详细的了解每一步每一个操作，这部分我们直接看案例，并且思考edr是如何使用这些回调的即可，我在准备这部分，写了几个文档，后来发现越来越难写，因为AI太强大了，他直接就做的很好，我介绍每个函数的时候，都不如他讲的好，为了节约时间，直接问AI即可，我们的目的是做成品，快速部署上线这一套，技术细节交给AI了。</p>
-<p>还有就是除了开发外，也可以看到我的博客，做了很多直接手动修改对每个回调进行致盲的操作，</p>
+<p>还有就是除了开发外，也可以看到我的博客，做了很多直接手动修改对每个回调进行致盲的操作。</p>
 </div>
     </div>
 
