@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="不落地、不 WMI：用 Performance Logs and Alerts 实现远程 EDR" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/course/">课程资源</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    不落地、不 WMI：用 Performance Logs and Alerts 实现远程 EDR
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-06-05</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：3.8k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：18分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="post-toc-text">0x00 前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x01-JonMon-Lite-%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86"><span class="post-toc-text">0x01 JonMon-Lite 的核心原理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x02-%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83"><span class="post-toc-text">0x02 实验环境</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x03-%E5%87%86%E5%A4%87%E4%B8%BB%E6%9C%BA%E5%85%B1%E4%BA%AB%E7%9B%AE%E5%BD%95"><span class="post-toc-text">0x03 准备主机共享目录</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x04-%E5%87%86%E5%A4%87%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%B4%A6%E5%8F%B7%E5%92%8C%E6%9D%83%E9%99%90"><span class="post-toc-text">0x04 准备虚拟机账号和权限</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x05-%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E8%BF%90%E8%A1%8C%E5%87%86%E5%A4%87%E8%84%9A%E6%9C%AC"><span class="post-toc-text">0x05 在虚拟机上运行准备脚本</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x06-%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%9A%E4%BD%BF%E7%94%A8-runas-netonly-%E5%90%AF%E5%8A%A8%E4%B8%BB%E6%9C%BA-PowerShell"><span class="post-toc-text">0x06 关键点：使用 runas &#x2F;netonly 启动主机 PowerShell</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x07-%E9%AA%8C%E8%AF%81%E8%BF%9C%E7%A8%8B-PLA-%E6%98%AF%E5%90%A6%E6%89%93%E9%80%9A"><span class="post-toc-text">0x07 验证远程 PLA 是否打通</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x08-%E5%90%AF%E5%8A%A8-JonMon-Lite"><span class="post-toc-text">0x08 启动 JonMon-Lite</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x09-%E4%BA%A7%E7%94%9F%E6%B5%8B%E8%AF%95%E4%BA%8B%E4%BB%B6"><span class="post-toc-text">0x09 产生测试事件</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x0A-%E6%9F%A5%E7%9C%8B%E4%BA%8B%E4%BB%B6"><span class="post-toc-text">0x0A 查看事件</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x0B-%E5%81%9C%E6%AD%A2%E9%87%87%E9%9B%86"><span class="post-toc-text">0x0B 停止采集</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x0C-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%92%8C%E6%8E%92%E9%94%99"><span class="post-toc-text">0x0C 常见问题和排错</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-logman-query-s-DESKTOP-TC0RGKO-%E6%89%BE%E4%B8%8D%E5%88%B0%E7%BD%91%E7%BB%9C%E8%B7%AF%E5%BE%84"><span class="post-toc-text">1. logman query -s DESKTOP-TC0RGKO 找不到网络路径</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-logman-query-s-DESKTOP-TC0RGKO-%E6%8B%92%E7%BB%9D%E8%AE%BF%E9%97%AE"><span class="post-toc-text">2. logman query -s DESKTOP-TC0RGKO 拒绝访问</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-WMI-%E6%8B%92%E7%BB%9D%E8%AE%BF%E9%97%AE"><span class="post-toc-text">3. WMI 拒绝访问</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-pDataCollectorSet-Commit-failed-with-0x80070035"><span class="post-toc-text">4. pDataCollectorSet-&gt;Commit failed with 0x80070035</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-pDataCollectorSet-Commit-failed-with-0x80070005"><span class="post-toc-text">5. pDataCollectorSet-&gt;Commit failed with 0x80070005</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-ETL-file-not-found"><span class="post-toc-text">6. ETL file not found</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x0D-%E5%AE%89%E5%85%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="post-toc-text">0x0D 安全注意事项</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#0x0E-%E6%80%BB%E7%BB%93"><span class="post-toc-text">0x0E 总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E4%B9%9D%E3%80%81%E6%80%BB%E7%BB%93"><span class="post-toc-text">九、总结</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="post-toc-text">参考资料</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>JonMon-Lite 是一个很有意思的 Windows 安全监控 PoC。它的核心卖点不是“又写了一个 Agent”，而是反过来：利用 Windows 原生的 Performance Logs and Alerts、Data Collector Set、ETW 和 Event Log Provider，实现一种远程、无常驻 Agent 的事件采集方式。</p>
+<p>这篇文章记录一次完整实验：主机作为检测端，虚拟机作为被监控测试机。最终效果是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">主机远程创建虚拟机上的 Data Collector Set</span><br><span class="line">虚拟机产生 ETW 事件</span><br><span class="line">ETL 文件写回主机共享目录</span><br><span class="line">主机 JonMon-Lite 读取 ETL</span><br><span class="line">事件写入主机 Event Viewer 的 JonMon-Lite/Operational</span><br></pre></td></tr></table></figure>
+
+<p>实验过程中遇到的关键问题是远程 PLA&#x2F;DCOM 权限、SMB 共享权限、<code>runas /netonly</code> 网络身份，以及 ETL 回写路径。下面按原理和实践完整记录。</p>
+<h2 id="0x01-JonMon-Lite-的核心原理"><a href="#0x01-JonMon-Lite-的核心原理" class="headerlink" title="0x01 JonMon-Lite 的核心原理"></a>0x01 JonMon-Lite 的核心原理</h2><p>JonMon-Lite 的 README 将它描述为一个 research proof-of-concept 的 “Remote Agentless EDR”。</p>
+<p>它的核心由四部分组成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">JonMon-Lite.exe              主程序，负责创建远程 Data Collector Set 并处理 ETL</span><br><span class="line">JonMon-Lite.json             运行配置文件</span><br><span class="line">JonMon-Lite.xml              Data Collector Set 使用的采集配置</span><br><span class="line">JonMon-Lite-Provider.man/dll 自定义事件 Provider，用于写入 Event Viewer</span><br></pre></td></tr></table></figure>
+
+<p>它不是在目标机器上部署长期运行的 Agent，而是通过 Windows 原生机制远程创建 ETW Trace Session。远程创建成功后，目标机器上的 ETW 事件会被写入 <code>.etl</code> 文件；主机端再读取 <code>.etl</code>，解析指定 Provider&#x2F;Event ID，最后以 JonMon-Lite 自己定义的事件格式写入 Windows 事件日志。</p>
+<p>换句话说，它的关键链路是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">主机</span><br><span class="line">  |</span><br><span class="line">  | DCOM/PLA remote commit</span><br><span class="line">  v</span><br><span class="line">虚拟机 Data Collector Set</span><br><span class="line">  |</span><br><span class="line">  | ETW providers -&gt; JonMon-Lite.etl</span><br><span class="line">  v</span><br><span class="line">主机共享目录</span><br><span class="line">  |</span><br><span class="line">  | OpenTraceW / ProcessTrace</span><br><span class="line">  v</span><br><span class="line">JonMon-Lite/Operational Event Log</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x02-实验环境"><a href="#0x02-实验环境" class="headerlink" title="0x02 实验环境"></a>0x02 实验环境</h2><p>本次实验拓扑：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">主机名: CHANGMEN</span><br><span class="line">主机 VMnet8 IP: 192.168.59.1</span><br><span class="line">主机共享目录: C:\JonMonDrop</span><br><span class="line">主机共享 UNC: \\192.168.59.1\JonMonDrop</span><br><span class="line"></span><br><span class="line">虚拟机名: DESKTOP-TC0RGKO</span><br><span class="line">虚拟机 IP: 192.168.59.168</span><br><span class="line">虚拟机用户: DESKTOP-TC0RGKO\jonmon</span><br></pre></td></tr></table></figure>
+
+<p>虚拟机是测试机器，主机是检测机器。最终要在主机事件查看器里看到虚拟机行为产生的检测事件。</p>
+<h2 id="0x03-准备主机共享目录"><a href="#0x03-准备主机共享目录" class="headerlink" title="0x03 准备主机共享目录"></a>0x03 准备主机共享目录</h2><p>在主机管理员 PowerShell 中进入项目目录：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> F:\SEC\github\JonMon<span class="literal">-Lite-main</span>\JonMon<span class="literal">-Lite-main</span></span><br></pre></td></tr></table></figure>
+
+<p>运行项目自带脚本：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="literal">-ExecutionPolicy</span> Bypass <span class="operator">-File</span> .\scripts\setup<span class="literal">-host-prereqs</span>.ps1 `</span><br><span class="line">  <span class="literal">-VmIp</span> <span class="string">&quot;192.168.59.168&quot;</span> `</span><br><span class="line">  <span class="literal">-SharePath</span> <span class="string">&quot;C:\JonMonDrop&quot;</span> `</span><br><span class="line">  <span class="literal">-ShareName</span> <span class="string">&quot;JonMonDrop&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>成功后会看到类似：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host prerequisites are ready.</span><br><span class="line">Share path: C:\JonMonDrop</span><br><span class="line">Share UNC:  \\CHANGMEN\JonMonDrop</span><br><span class="line">VM IP:      192.168.59.168</span><br></pre></td></tr></table></figure>
+
+<p>这个脚本会创建主机共享目录，并把虚拟机准备脚本 <code>setup-vm-prereqs.ps1</code> 放进去。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">param</span>(</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$VmIp</span> = <span class="string">&quot;192.168.59.168&quot;</span>,</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$SharePath</span> = <span class="string">&quot;C:\JonMonDrop&quot;</span>,</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$ShareName</span> = <span class="string">&quot;JonMonDrop&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="variable">$ErrorActionPreference</span> = <span class="string">&quot;Stop&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Assert-Admin</span></span> &#123;</span><br><span class="line">    <span class="variable">$identity</span> = [<span class="type">Security.Principal.WindowsIdentity</span>]::GetCurrent()</span><br><span class="line">    <span class="variable">$principal</span> = [<span class="type">Security.Principal.WindowsPrincipal</span>]::new(<span class="variable">$identity</span>)</span><br><span class="line">    <span class="keyword">if</span> (<span class="operator">-not</span> <span class="variable">$principal</span>.IsInRole([<span class="type">Security.Principal.WindowsBuiltInRole</span>]::Administrator)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="string">&quot;Run this script in an elevated PowerShell window.&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Ensure-FirewallRule</span></span> &#123;</span><br><span class="line">    <span class="keyword">param</span>(</span><br><span class="line">        [<span class="built_in">string</span>]<span class="variable">$Name</span>,</span><br><span class="line">        [<span class="built_in">string</span>]<span class="variable">$DisplayName</span>,</span><br><span class="line">        [<span class="built_in">hashtable</span>]<span class="variable">$Rule</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="variable">$existing</span> = <span class="built_in">Get-NetFirewallRule</span> <span class="literal">-Name</span> <span class="variable">$Name</span> <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$existing</span>) &#123;</span><br><span class="line">        <span class="built_in">Set-NetFirewallRule</span> <span class="literal">-Name</span> <span class="variable">$Name</span> <span class="literal">-Enabled</span> True <span class="literal">-Action</span> Allow <span class="literal">-Direction</span> Inbound</span><br><span class="line">        <span class="built_in">Set-NetFirewallAddressFilter</span> <span class="literal">-AssociatedNetFirewallRule</span> <span class="variable">$existing</span> <span class="literal">-RemoteAddress</span> <span class="variable">$Rule</span>.RemoteAddress</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">New-NetFirewallRule</span> @Rule <span class="literal">-Name</span> <span class="variable">$Name</span> <span class="literal">-DisplayName</span> <span class="variable">$DisplayName</span> | <span class="built_in">Out-Null</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Assert-Admin</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$vmnet8</span> = <span class="built_in">Get-NetConnectionProfile</span> <span class="literal">-InterfaceAlias</span> <span class="string">&quot;VMware Network Adapter VMnet8&quot;</span> <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$vmnet8</span>) &#123;</span><br><span class="line">    <span class="built_in">Set-NetConnectionProfile</span> <span class="literal">-InterfaceAlias</span> <span class="string">&quot;VMware Network Adapter VMnet8&quot;</span> <span class="literal">-NetworkCategory</span> Private</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">New-Item</span> <span class="literal">-Path</span> <span class="string">&quot;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System&quot;</span> <span class="literal">-Force</span> | <span class="built_in">Out-Null</span></span><br><span class="line"><span class="built_in">New-ItemProperty</span> `</span><br><span class="line">    <span class="literal">-Path</span> <span class="string">&quot;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System&quot;</span> `</span><br><span class="line">    <span class="literal">-Name</span> <span class="string">&quot;LocalAccountTokenFilterPolicy&quot;</span> `</span><br><span class="line">    <span class="literal">-PropertyType</span> DWord `</span><br><span class="line">    <span class="literal">-Value</span> <span class="number">1</span> `</span><br><span class="line">    <span class="literal">-Force</span> | <span class="built_in">Out-Null</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">New-Item</span> <span class="literal">-Path</span> <span class="variable">$SharePath</span> <span class="literal">-ItemType</span> Directory <span class="literal">-Force</span> | <span class="built_in">Out-Null</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Lab-friendly ACLs. Restrict these once you are done testing.</span></span><br><span class="line">icacls <span class="variable">$SharePath</span> /grant <span class="string">&quot;*S-1-1-0:(OI)(CI)M&quot;</span> /T | <span class="built_in">Out-Null</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$share</span> = <span class="built_in">Get-SmbShare</span> <span class="literal">-Name</span> <span class="variable">$ShareName</span> <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line"><span class="keyword">if</span> (<span class="operator">-not</span> <span class="variable">$share</span>) &#123;</span><br><span class="line">    <span class="built_in">New-SmbShare</span> <span class="literal">-Name</span> <span class="variable">$ShareName</span> <span class="literal">-Path</span> <span class="variable">$SharePath</span> <span class="literal">-FullAccess</span> Everyone | <span class="built_in">Out-Null</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">Grant-SmbShareAccess</span> <span class="literal">-Name</span> <span class="variable">$ShareName</span> <span class="literal">-AccountName</span> Everyone <span class="literal">-AccessRight</span> Full <span class="literal">-Force</span> | <span class="built_in">Out-Null</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$vmSetupScript</span> = <span class="built_in">Join-Path</span> <span class="variable">$PSScriptRoot</span> <span class="string">&quot;setup-vm-prereqs.ps1&quot;</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="variable">$vmSetupScript</span>) &#123;</span><br><span class="line">    <span class="built_in">Copy-Item</span> <span class="variable">$vmSetupScript</span> (<span class="built_in">Join-Path</span> <span class="variable">$SharePath</span> <span class="string">&quot;setup-vm-prereqs.ps1&quot;</span>) <span class="literal">-Force</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Ensure<span class="literal">-FirewallRule</span> `</span><br><span class="line">    <span class="literal">-Name</span> <span class="string">&quot;JonMon-SMB-From-VM&quot;</span> `</span><br><span class="line">    <span class="literal">-DisplayName</span> <span class="string">&quot;JonMon SMB from VM&quot;</span> `</span><br><span class="line">    <span class="literal">-Rule</span> <span class="selector-tag">@</span>&#123;</span><br><span class="line">        Direction = <span class="string">&quot;Inbound&quot;</span></span><br><span class="line">        Action = <span class="string">&quot;Allow&quot;</span></span><br><span class="line">        Protocol = <span class="string">&quot;TCP&quot;</span></span><br><span class="line">        LocalPort = <span class="number">445</span></span><br><span class="line">        RemoteAddress = <span class="variable">$VmIp</span></span><br><span class="line">        Profile = <span class="string">&quot;Any&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;Host prerequisites are ready.&quot;</span></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;Share path: <span class="variable">$SharePath</span>&quot;</span></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;Share UNC:  \\<span class="variable">$env:COMPUTERNAME</span>\<span class="variable">$ShareName</span>&quot;</span></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;VM IP:      <span class="variable">$VmIp</span>&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="0x04-准备虚拟机账号和权限"><a href="#0x04-准备虚拟机账号和权限" class="headerlink" title="0x04 准备虚拟机账号和权限"></a>0x04 准备虚拟机账号和权限</h2><p>虚拟机上的远程 PLA&#x2F;DCOM 调用需要管理员账号。如果虚拟机当前账号没有密码，建议创建一个实验专用账号。</p>
+<p>在虚拟机管理员 PowerShell 中：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">net user jonmon &lt;YourStrongPassword&gt; /add</span><br><span class="line">net localgroup administrators jonmon /add</span><br></pre></td></tr></table></figure>
+
+<p>然后把它加入远程 DCOM、Performance Logs 相关组：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">net localgroup <span class="string">&quot;Distributed COM Users&quot;</span> jonmon /add</span><br><span class="line">net localgroup <span class="string">&quot;Performance Log Users&quot;</span> jonmon /add</span><br><span class="line">net localgroup <span class="string">&quot;Performance Monitor Users&quot;</span> jonmon /add</span><br></pre></td></tr></table></figure>
+
+<p>确认：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net user jonmon</span><br></pre></td></tr></table></figure>
+
+<p>应能看到它属于：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Administrators</span><br><span class="line">Distributed COM Users</span><br><span class="line">Performance Log Users</span><br><span class="line">Performance Monitor Users</span><br><span class="line">Users</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x05-在虚拟机上运行准备脚本"><a href="#0x05-在虚拟机上运行准备脚本" class="headerlink" title="0x05 在虚拟机上运行准备脚本"></a>0x05 在虚拟机上运行准备脚本</h2><p>先确保虚拟机能访问主机共享。因为主机共享可能需要认证，可以在虚拟机管理员 PowerShell 中挂载：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net use \\<span class="number">192.168</span>.<span class="number">59.1</span>\JonMonDrop /user:CHANGMEN\jonmon &lt;YourStrongPassword&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如果主机没有 <code>jonmon</code>，可以在主机也创建同名同密码账号。这样后续虚拟机上的 <code>DESKTOP-TC0RGKO\jonmon</code> 写主机共享时更容易通过认证。</p>
+<p>虚拟机中运行：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="literal">-ExecutionPolicy</span> Bypass <span class="operator">-File</span> \\<span class="number">192.168</span>.<span class="number">59.1</span>\JonMonDrop\setup<span class="literal">-vm-prereqs</span>.ps1 `</span><br><span class="line">  <span class="literal">-HostIp</span> <span class="string">&quot;192.168.59.1&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>成功标志：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">VM prerequisites are ready.</span><br><span class="line">Allowed host IP: 192.168.59.1</span><br><span class="line">Service pla:     Running</span><br></pre></td></tr></table></figure>
+
+<p>如果脚本报 <code>HKLM</code> 注册表权限不足，说明 PowerShell 不是管理员权限。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">param</span>(</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$HostIp</span> = <span class="string">&quot;192.168.59.1&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="variable">$ErrorActionPreference</span> = <span class="string">&quot;Stop&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Assert-Admin</span></span> &#123;</span><br><span class="line">    <span class="variable">$identity</span> = [<span class="type">Security.Principal.WindowsIdentity</span>]::GetCurrent()</span><br><span class="line">    <span class="variable">$principal</span> = [<span class="type">Security.Principal.WindowsPrincipal</span>]::new(<span class="variable">$identity</span>)</span><br><span class="line">    <span class="keyword">if</span> (<span class="operator">-not</span> <span class="variable">$principal</span>.IsInRole([<span class="type">Security.Principal.WindowsBuiltInRole</span>]::Administrator)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="string">&quot;Run this script in an elevated PowerShell window.&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Ensure-FirewallRule</span></span> &#123;</span><br><span class="line">    <span class="keyword">param</span>(</span><br><span class="line">        [<span class="built_in">string</span>]<span class="variable">$Name</span>,</span><br><span class="line">        [<span class="built_in">string</span>]<span class="variable">$DisplayName</span>,</span><br><span class="line">        [<span class="built_in">hashtable</span>]<span class="variable">$Rule</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="variable">$existing</span> = <span class="built_in">Get-NetFirewallRule</span> <span class="literal">-Name</span> <span class="variable">$Name</span> <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$existing</span>) &#123;</span><br><span class="line">        <span class="built_in">Set-NetFirewallRule</span> <span class="literal">-Name</span> <span class="variable">$Name</span> <span class="literal">-Enabled</span> True <span class="literal">-Action</span> Allow <span class="literal">-Direction</span> Inbound</span><br><span class="line">        <span class="built_in">Set-NetFirewallAddressFilter</span> <span class="literal">-AssociatedNetFirewallRule</span> <span class="variable">$existing</span> <span class="literal">-RemoteAddress</span> <span class="variable">$Rule</span>.RemoteAddress</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">New-NetFirewallRule</span> @Rule <span class="literal">-Name</span> <span class="variable">$Name</span> <span class="literal">-DisplayName</span> <span class="variable">$DisplayName</span> | <span class="built_in">Out-Null</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Assert-Admin</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Set-Service</span> <span class="literal">-Name</span> pla <span class="literal">-StartupType</span> Manual</span><br><span class="line"><span class="built_in">Start-Service</span> <span class="literal">-Name</span> pla <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line"></span><br><span class="line"><span class="built_in">New-Item</span> <span class="literal">-Path</span> <span class="string">&quot;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System&quot;</span> <span class="literal">-Force</span> | <span class="built_in">Out-Null</span></span><br><span class="line"><span class="built_in">New-ItemProperty</span> `</span><br><span class="line">    <span class="literal">-Path</span> <span class="string">&quot;HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System&quot;</span> `</span><br><span class="line">    <span class="literal">-Name</span> <span class="string">&quot;LocalAccountTokenFilterPolicy&quot;</span> `</span><br><span class="line">    <span class="literal">-PropertyType</span> DWord `</span><br><span class="line">    <span class="literal">-Value</span> <span class="number">1</span> `</span><br><span class="line">    <span class="literal">-Force</span> | <span class="built_in">Out-Null</span></span><br><span class="line"></span><br><span class="line">Ensure<span class="literal">-FirewallRule</span> `</span><br><span class="line">    <span class="literal">-Name</span> <span class="string">&quot;JonMon-ICMP-From-Host&quot;</span> `</span><br><span class="line">    <span class="literal">-DisplayName</span> <span class="string">&quot;JonMon ICMP from host&quot;</span> `</span><br><span class="line">    <span class="literal">-Rule</span> <span class="selector-tag">@</span>&#123;</span><br><span class="line">        Direction = <span class="string">&quot;Inbound&quot;</span></span><br><span class="line">        Action = <span class="string">&quot;Allow&quot;</span></span><br><span class="line">        Protocol = <span class="string">&quot;ICMPv4&quot;</span></span><br><span class="line">        IcmpType = <span class="number">8</span></span><br><span class="line">        RemoteAddress = <span class="variable">$HostIp</span></span><br><span class="line">        Profile = <span class="string">&quot;Any&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">Ensure<span class="literal">-FirewallRule</span> `</span><br><span class="line">    <span class="literal">-Name</span> <span class="string">&quot;JonMon-DCOM135-From-Host&quot;</span> `</span><br><span class="line">    <span class="literal">-DisplayName</span> <span class="string">&quot;JonMon DCOM 135 from host&quot;</span> `</span><br><span class="line">    <span class="literal">-Rule</span> <span class="selector-tag">@</span>&#123;</span><br><span class="line">        Direction = <span class="string">&quot;Inbound&quot;</span></span><br><span class="line">        Action = <span class="string">&quot;Allow&quot;</span></span><br><span class="line">        Protocol = <span class="string">&quot;TCP&quot;</span></span><br><span class="line">        LocalPort = <span class="number">135</span></span><br><span class="line">        RemoteAddress = <span class="variable">$HostIp</span></span><br><span class="line">        Profile = <span class="string">&quot;Any&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">Ensure<span class="literal">-FirewallRule</span> `</span><br><span class="line">    <span class="literal">-Name</span> <span class="string">&quot;JonMon-PLA-From-Host&quot;</span> `</span><br><span class="line">    <span class="literal">-DisplayName</span> <span class="string">&quot;JonMon PLA service from host&quot;</span> `</span><br><span class="line">    <span class="literal">-Rule</span> <span class="selector-tag">@</span>&#123;</span><br><span class="line">        Direction = <span class="string">&quot;Inbound&quot;</span></span><br><span class="line">        Action = <span class="string">&quot;Allow&quot;</span></span><br><span class="line">        Protocol = <span class="string">&quot;TCP&quot;</span></span><br><span class="line">        Program = <span class="string">&quot;<span class="variable">$env:SystemRoot</span>\System32\plasrv.exe&quot;</span></span><br><span class="line">        RemoteAddress = <span class="variable">$HostIp</span></span><br><span class="line">        Profile = <span class="string">&quot;Any&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;VM prerequisites are ready.&quot;</span></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;Allowed host IP: <span class="variable">$HostIp</span>&quot;</span></span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">&quot;Service pla:     <span class="variable">$</span>((Get-Service pla).Status)&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x06-关键点：使用-runas-netonly-启动主机-PowerShell"><a href="#0x06-关键点：使用-runas-netonly-启动主机-PowerShell" class="headerlink" title="0x06 关键点：使用 runas &#x2F;netonly 启动主机 PowerShell"></a>0x06 关键点：使用 runas &#x2F;netonly 启动主机 PowerShell</h2><p>这是本次实验最关键的点。</p>
+<p>直接在主机当前用户下运行 JonMon-Lite，可能会出现：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pDataCollectorSet-&gt;Commit failed with 0x80070035</span><br></pre></td></tr></table></figure>
+
+<p>或：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pDataCollectorSet-&gt;Commit failed with 0x80070005</span><br></pre></td></tr></table></figure>
+
+<p>原因是远程 PLA&#x2F;DCOM 的网络身份没有正确使用虚拟机管理员账号。</p>
+<p>正确做法是在主机管理员 PowerShell 中打开一个 <code>/netonly</code> 窗口：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">runas /netonly /user:DESKTOP<span class="literal">-TC0RGKO</span>\jonmon powershell</span><br></pre></td></tr></table></figure>
+
+<p>输入虚拟机 <code>jonmon</code> 的密码。</p>
+<p>新窗口里执行：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whoami</span><br></pre></td></tr></table></figure>
+
+<p>可能仍显示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">changmen\20174</span><br></pre></td></tr></table></figure>
+
+<p>这是正常的。<code>/netonly</code> 的特点是本地身份不变，但访问远程资源时使用指定的网络凭据。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260605181104732.png" title="image-20260605181104732" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260605181104732.png" alt="image-20260605181104732"></a></p>
+<h2 id="0x07-验证远程-PLA-是否打通"><a href="#0x07-验证远程-PLA-是否打通" class="headerlink" title="0x07 验证远程 PLA 是否打通"></a>0x07 验证远程 PLA 是否打通</h2><p>不要一上来就跑 JonMon-Lite。先用 Windows 原生命令确认远程 Data Collector Set 创建能力。</p>
+<p>在 <code>/netonly</code> 窗口中：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logman query <span class="literal">-s</span> DESKTOP<span class="literal">-TC0RGKO</span></span><br></pre></td></tr></table></figure>
+
+<p>成功输出类似：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">数据收集器集                         类型                          状态</span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">命令成功结束。</span><br></pre></td></tr></table></figure>
+
+<p>然后测试最小远程 trace 创建：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">logman create trace JonMonTest <span class="literal">-s</span> DESKTOP<span class="literal">-TC0RGKO</span> `</span><br><span class="line">  <span class="literal">-o</span> C:\JonMonDrop\JonMonTest.etl `</span><br><span class="line">  <span class="literal">-p</span> Microsoft<span class="literal">-Windows-Kernel-Process</span> <span class="number">0</span>x10 <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<p>查询：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logman query <span class="literal">-s</span> DESKTOP<span class="literal">-TC0RGKO</span></span><br></pre></td></tr></table></figure>
+
+<p>应看到：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JonMonTest                              跟踪                            已停止</span><br></pre></td></tr></table></figure>
+
+<p>清理：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logman delete JonMonTest <span class="literal">-s</span> DESKTOP<span class="literal">-TC0RGKO</span></span><br></pre></td></tr></table></figure>
+
+<p>只有这一步成功，JonMon-Lite 的远程核心才具备运行条件。</p>
+<h2 id="0x08-启动-JonMon-Lite"><a href="#0x08-启动-JonMon-Lite" class="headerlink" title="0x08 启动 JonMon-Lite"></a>0x08 启动 JonMon-Lite</h2><p>仍然在同一个 <code>/netonly</code> 主机窗口中执行：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> F:\SEC\github\JonMon<span class="literal">-Lite-main</span>\JonMon<span class="literal">-Lite-main</span></span><br></pre></td></tr></table></figure>
+
+<p>启动 JonMon-Lite：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">powershell <span class="literal">-ExecutionPolicy</span> Bypass <span class="operator">-File</span> .\scripts\run<span class="literal">-jonmon-remote</span>.ps1 `</span><br><span class="line">  <span class="literal">-ReleaseDir</span> <span class="string">&quot;F:\SEC\github\JonMon-Lite-main\JonMon-Lite-main\JonMon-Lite\x64\Release&quot;</span> `</span><br><span class="line">  <span class="literal">-VmName</span> <span class="string">&quot;DESKTOP-TC0RGKO&quot;</span> `</span><br><span class="line">  <span class="literal">-VmUser</span> <span class="string">&quot;DESKTOP-TC0RGKO\jonmon&quot;</span> `</span><br><span class="line">  <span class="literal">-EtlFilePath</span> <span class="string">&quot;C:\JonMonDrop\&quot;</span> `</span><br><span class="line">  <span class="literal">-RootPath</span> <span class="string">&quot;\\192.168.59.1\JonMonDrop\&quot;</span> `</span><br><span class="line">  <span class="literal">-TraceName</span> <span class="string">&quot;JonMon-Lite&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>参数含义：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ReleaseDir   JonMon-Lite.exe、XML、manifest、provider dll 所在目录</span><br><span class="line">VmName       远程虚拟机主机名</span><br><span class="line">VmUser       虚拟机上用于运行 Data Collector Set 的管理员账号</span><br><span class="line">EtlFilePath  主机本地读取 ETL 的目录</span><br><span class="line">RootPath     虚拟机 Data Collector Set 写 ETL 的目录</span><br><span class="line">TraceName    Data Collector Set 名称</span><br></pre></td></tr></table></figure>
+
+<p>成功标志：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Credentials set successfully.</span><br><span class="line">pDataCollectorSet-&gt;put_RootPath was set successfully</span><br><span class="line">pDataCollectorSet-&gt;SetXml was set successfully</span><br><span class="line">Collector set &#x27;JonMon-Lite&#x27; has been created/updated successfully.</span><br><span class="line">Collector set &#x27;JonMon-Lite&#x27; started successfully.</span><br></pre></td></tr></table></figure>
+
+<p>如果启动初期出现：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ETL file not found: C:\JonMonDrop\DESKTOP-TC0RGKO_\JonMon-Lite.etl, waiting 4 seconds...</span><br></pre></td></tr></table></figure>
+
+<p>不一定是失败。处理线程可能比远程采集器启动更快。只要后面出现 <code>Collector set ... started successfully</code>，核心链路已经起来了。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260605180953058.png" title="image-20260605180953058" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260605180953058.png" alt="image-20260605180953058"></a></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">param</span>(</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$ReleaseDir</span> = <span class="string">&quot;F:\SEC\github\JonMon-Lite-main\JonMon-Lite-main\JonMon-Lite\x64\Release&quot;</span>,</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$VmName</span> = <span class="string">&quot;DESKTOP-TC0RGKO&quot;</span>,</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$VmUser</span> = <span class="string">&quot;DESKTOP-TC0RGKO\20174&quot;</span>,</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$EtlFilePath</span> = <span class="string">&quot;C:\JonMonDrop\&quot;</span>,</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$RootPath</span> = <span class="string">&quot;\\192.168.59.1\JonMonDrop\&quot;</span>,</span><br><span class="line">    [<span class="built_in">string</span>]<span class="variable">$TraceName</span> = <span class="string">&quot;JonMon-Lite&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="variable">$ErrorActionPreference</span> = <span class="string">&quot;Stop&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Assert-Admin</span></span> &#123;</span><br><span class="line">    <span class="variable">$identity</span> = [<span class="type">Security.Principal.WindowsIdentity</span>]::GetCurrent()</span><br><span class="line">    <span class="variable">$principal</span> = [<span class="type">Security.Principal.WindowsPrincipal</span>]::new(<span class="variable">$identity</span>)</span><br><span class="line">    <span class="keyword">if</span> (<span class="operator">-not</span> <span class="variable">$principal</span>.IsInRole([<span class="type">Security.Principal.WindowsBuiltInRole</span>]::Administrator)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="string">&quot;Run this script in an elevated PowerShell window.&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ConvertTo-PlainText</span></span> &#123;</span><br><span class="line">    <span class="keyword">param</span>([<span class="type">securestring</span>]<span class="variable">$SecureString</span>)</span><br><span class="line"></span><br><span class="line">    <span class="variable">$bstr</span> = [<span class="type">Runtime.InteropServices.Marshal</span>]::SecureStringToBSTR(<span class="variable">$SecureString</span>)</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        [<span class="type">Runtime.InteropServices.Marshal</span>]::PtrToStringBSTR(<span class="variable">$bstr</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">finally</span> &#123;</span><br><span class="line">        [<span class="type">Runtime.InteropServices.Marshal</span>]::ZeroFreeBSTR(<span class="variable">$bstr</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Assert-Admin</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$ReleaseDir</span> = (<span class="built_in">Resolve-Path</span> <span class="variable">$ReleaseDir</span>).Path</span><br><span class="line"><span class="variable">$exe</span> = <span class="built_in">Join-Path</span> <span class="variable">$ReleaseDir</span> <span class="string">&quot;JonMon-Lite.exe&quot;</span></span><br><span class="line"><span class="variable">$xml</span> = <span class="built_in">Join-Path</span> <span class="variable">$ReleaseDir</span> <span class="string">&quot;JonMon-Lite.xml&quot;</span></span><br><span class="line"><span class="variable">$manifest</span> = <span class="built_in">Join-Path</span> <span class="variable">$ReleaseDir</span> <span class="string">&quot;JonMon-Lite-Provider.man&quot;</span></span><br><span class="line"><span class="variable">$providerDll</span> = <span class="built_in">Join-Path</span> <span class="variable">$ReleaseDir</span> <span class="string">&quot;JonMon-Lite-Provider.dll&quot;</span></span><br><span class="line"><span class="variable">$runtimeConfig</span> = <span class="built_in">Join-Path</span> <span class="variable">$ReleaseDir</span> <span class="string">&quot;JonMon-Lite.runtime.json&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$path</span> <span class="keyword">in</span> <span class="selector-tag">@</span>(<span class="variable">$exe</span>, <span class="variable">$xml</span>, <span class="variable">$manifest</span>, <span class="variable">$providerDll</span>)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="operator">-not</span> (<span class="built_in">Test-Path</span> <span class="variable">$path</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="string">&quot;Missing required file: <span class="variable">$path</span>&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">New-Item</span> <span class="literal">-Path</span> <span class="variable">$EtlFilePath</span> <span class="literal">-ItemType</span> Directory <span class="literal">-Force</span> | <span class="built_in">Out-Null</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$securePassword</span> = <span class="built_in">Read-Host</span> <span class="string">&quot;Enter password for <span class="variable">$VmUser</span>&quot;</span> <span class="literal">-AsSecureString</span></span><br><span class="line"><span class="variable">$plainPassword</span> = <span class="built_in">ConvertTo-PlainText</span> <span class="literal">-SecureString</span> <span class="variable">$securePassword</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$config</span> = [<span class="type">ordered</span>]<span class="selector-tag">@</span>&#123;</span><br><span class="line">    XMLFilePath = <span class="variable">$xml</span></span><br><span class="line">    ETLFilePath = <span class="variable">$EtlFilePath</span></span><br><span class="line">    RootPath = <span class="variable">$RootPath</span></span><br><span class="line">    TraceName = <span class="variable">$TraceName</span></span><br><span class="line">    WorkstationName = <span class="selector-tag">@</span>(<span class="variable">$VmName</span>)</span><br><span class="line">    User = <span class="variable">$VmUser</span></span><br><span class="line">    Password = <span class="variable">$plainPassword</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="variable">$config</span> | <span class="built_in">ConvertTo-Json</span> <span class="literal">-Depth</span> <span class="number">4</span> | <span class="built_in">Set-Content</span> <span class="literal">-Path</span> <span class="variable">$runtimeConfig</span> <span class="literal">-Encoding</span> ASCII</span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;Starting JonMon-Lite. Type &#x27;exit&#x27; in its console to stop collection.&quot;</span></span><br><span class="line">    <span class="built_in">Push-Location</span> <span class="variable">$ReleaseDir</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        &amp; <span class="variable">$exe</span> <span class="variable">$runtimeConfig</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="built_in">Pop-Location</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="built_in">Remove-Item</span> <span class="variable">$runtimeConfig</span> <span class="literal">-Force</span> <span class="literal">-ErrorAction</span> SilentlyContinue</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="0x09-产生测试事件"><a href="#0x09-产生测试事件" class="headerlink" title="0x09 产生测试事件"></a>0x09 产生测试事件</h2><p>在虚拟机中产生一些行为：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">notepad.exe</span><br><span class="line"><span class="built_in">New-Item</span> C:\Users\Public\demo.ps1 <span class="literal">-ItemType</span> File <span class="literal">-Force</span></span><br><span class="line"><span class="built_in">Start-Process</span> powershell <span class="literal">-ArgumentList</span> <span class="string">&quot;-NoProfile -Command whoami&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>JonMon-Lite 默认关注的事件包括：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Process Creation</span><br><span class="line">File Creation</span><br><span class="line">DotNetLoad</span><br><span class="line">WMIEventFilter</span><br><span class="line">RPCClientCall</span><br><span class="line">RPCServerCall</span><br><span class="line">CryptUnprotectData</span><br><span class="line">AMSI</span><br><span class="line">NetworkConnection</span><br><span class="line">ServiceCreation</span><br><span class="line">RegistryCreateKey</span><br></pre></td></tr></table></figure>
+
+<p>文件创建事件默认会过滤扩展名，比较关注：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.exe .sys .dll .js .vbs .ps1 .bat .cmd .hta .msi</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x0A-查看事件"><a href="#0x0A-查看事件" class="headerlink" title="0x0A 查看事件"></a>0x0A 查看事件</h2><p>在主机打开事件查看器：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eventvwr.msc</span><br></pre></td></tr></table></figure>
+
+<p>路径：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">应用程序和服务日志</span><br><span class="line">  -&gt; JonMon-Lite</span><br><span class="line">  -&gt; Operational</span><br></pre></td></tr></table></figure>
+
+<p>英文系统：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Applications and Services Logs</span><br><span class="line">  -&gt; JonMon-Lite</span><br><span class="line">  -&gt; Operational</span><br></pre></td></tr></table></figure>
+
+<p>也可以用 PowerShell 查看：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-WinEvent</span> <span class="literal">-LogName</span> <span class="string">&quot;JonMon-Lite/Operational&quot;</span> <span class="literal">-MaxEvents</span> <span class="number">20</span> |</span><br><span class="line">  <span class="built_in">Format-Table</span> TimeCreated, Id, ProviderName, Message <span class="literal">-Auto</span></span><br></pre></td></tr></table></figure>
+
+<p>确认 ETL 是否生成：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dir</span> C:\JonMonDrop\DESKTOP<span class="literal">-TC0RGKO_</span></span><br></pre></td></tr></table></figure>
+
+<p>正常应有：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JonMon-Lite.etl</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260605180914521.png" title="image-20260605180914521" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20260605180914521.png" alt="image-20260605180914521"></a></p>
+<h2 id="0x0B-停止采集"><a href="#0x0B-停止采集" class="headerlink" title="0x0B 停止采集"></a>0x0B 停止采集</h2><p>回到 JonMon-Lite 控制台，输入：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<p>或：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stop</span><br></pre></td></tr></table></figure>
+
+<p>程序会设置退出事件，停止远程 Data Collector Set，并清理 JonMon-Lite manifest。</p>
+<h2 id="0x0C-常见问题和排错"><a href="#0x0C-常见问题和排错" class="headerlink" title="0x0C 常见问题和排错"></a>0x0C 常见问题和排错</h2><h3 id="1-logman-query-s-DESKTOP-TC0RGKO-找不到网络路径"><a href="#1-logman-query-s-DESKTOP-TC0RGKO-找不到网络路径" class="headerlink" title="1. logman query -s DESKTOP-TC0RGKO 找不到网络路径"></a>1. <code>logman query -s DESKTOP-TC0RGKO</code> 找不到网络路径</h3><p>常见原因：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">主机名解析到了 IPv6 link-local</span><br><span class="line">远程 PLA/DCOM 没打通</span><br><span class="line">没有使用 /netonly 网络身份</span><br><span class="line">虚拟机防火墙没有开放远程管理</span><br></pre></td></tr></table></figure>
+
+<p>先确认：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Test-NetConnection</span> DESKTOP<span class="literal">-TC0RGKO</span> <span class="literal">-Port</span> <span class="number">135</span></span><br><span class="line"><span class="built_in">Test-NetConnection</span> DESKTOP<span class="literal">-TC0RGKO</span> <span class="literal">-Port</span> <span class="number">445</span></span><br></pre></td></tr></table></figure>
+
+<p>如有必要，在主机 hosts 中添加：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.59.168 DESKTOP-TC0RGKO</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-logman-query-s-DESKTOP-TC0RGKO-拒绝访问"><a href="#2-logman-query-s-DESKTOP-TC0RGKO-拒绝访问" class="headerlink" title="2. logman query -s DESKTOP-TC0RGKO 拒绝访问"></a>2. <code>logman query -s DESKTOP-TC0RGKO</code> 拒绝访问</h3><p>如果普通 PowerShell 拒绝访问，使用：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">runas /netonly /user:DESKTOP<span class="literal">-TC0RGKO</span>\jonmon powershell</span><br></pre></td></tr></table></figure>
+
+<p>然后在新窗口里重试：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logman query <span class="literal">-s</span> DESKTOP<span class="literal">-TC0RGKO</span></span><br></pre></td></tr></table></figure>
+
+<p>如果仍失败，检查虚拟机上的用户组：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net user jonmon</span><br></pre></td></tr></table></figure>
+
+<p>至少应包含：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Administrators</span><br><span class="line">Distributed COM Users</span><br><span class="line">Performance Log Users</span><br><span class="line">Performance Monitor Users</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-WMI-拒绝访问"><a href="#3-WMI-拒绝访问" class="headerlink" title="3. WMI 拒绝访问"></a>3. WMI 拒绝访问</h3><p>主机测试：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$cred</span> = <span class="built_in">Get-Credential</span> DESKTOP<span class="literal">-TC0RGKO</span>\jonmon</span><br><span class="line"><span class="built_in">Get-WmiObject</span> Win32_OperatingSystem <span class="literal">-ComputerName</span> DESKTOP<span class="literal">-TC0RGKO</span> `</span><br><span class="line">  <span class="literal">-Credential</span> <span class="variable">$cred</span> `</span><br><span class="line">  <span class="literal">-Authentication</span> PacketPrivacy</span><br></pre></td></tr></table></figure>
+
+<p>如果 WMI 不通，需要检查虚拟机 WMI&#x2F;DCOM 权限和防火墙。</p>
+<p>虚拟机中可执行：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Enable-NetFirewallRule</span> <span class="literal">-DisplayGroup</span> <span class="string">&quot;Windows Management Instrumentation (WMI)&quot;</span></span><br><span class="line"><span class="built_in">Enable-NetFirewallRule</span> <span class="literal">-DisplayGroup</span> <span class="string">&quot;远程服务管理&quot;</span></span><br><span class="line"><span class="built_in">Enable-NetFirewallRule</span> <span class="literal">-DisplayGroup</span> <span class="string">&quot;文件和打印机共享&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>英文系统则使用：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Enable-NetFirewallRule</span> <span class="literal">-DisplayGroup</span> <span class="string">&quot;Windows Management Instrumentation (WMI)&quot;</span></span><br><span class="line"><span class="built_in">Enable-NetFirewallRule</span> <span class="literal">-DisplayGroup</span> <span class="string">&quot;Remote Service Management&quot;</span></span><br><span class="line"><span class="built_in">Enable-NetFirewallRule</span> <span class="literal">-DisplayGroup</span> <span class="string">&quot;File and Printer Sharing&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-pDataCollectorSet-Commit-failed-with-0x80070035"><a href="#4-pDataCollectorSet-Commit-failed-with-0x80070035" class="headerlink" title="4. pDataCollectorSet-&gt;Commit failed with 0x80070035"></a>4. <code>pDataCollectorSet-&gt;Commit failed with 0x80070035</code></h3><p>这是“找不到网络路径”。在本次实验中，根因是主机没有用正确网络身份远程调用虚拟机 PLA。</p>
+<p>解决关键：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">runas /netonly /user:DESKTOP<span class="literal">-TC0RGKO</span>\jonmon powershell</span><br></pre></td></tr></table></figure>
+
+<p>并先确认：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logman query <span class="literal">-s</span> DESKTOP<span class="literal">-TC0RGKO</span></span><br></pre></td></tr></table></figure>
+
+<p>成功后再跑 JonMon-Lite。</p>
+<h3 id="5-pDataCollectorSet-Commit-failed-with-0x80070005"><a href="#5-pDataCollectorSet-Commit-failed-with-0x80070005" class="headerlink" title="5. pDataCollectorSet-&gt;Commit failed with 0x80070005"></a>5. <code>pDataCollectorSet-&gt;Commit failed with 0x80070005</code></h3><p>这是“拒绝访问”。常见原因：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">远程 PLA 权限不足</span><br><span class="line">jonmon 不在 Performance Log Users 等组</span><br><span class="line">RootPath 指向主机共享，但远程采集器身份无法写入</span><br></pre></td></tr></table></figure>
+
+<p>可以先用虚拟机本地 RootPath 验证远程创建：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">-RootPath</span> <span class="string">&quot;C:\JonMonDrop\&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果本地 RootPath 成功，共享 RootPath 失败，问题就在主机共享写入权限。</p>
+<h3 id="6-ETL-file-not-found"><a href="#6-ETL-file-not-found" class="headerlink" title="6. ETL file not found"></a>6. ETL file not found</h3><p>启动初期看到：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ETL file not found: C:\JonMonDrop\DESKTOP-TC0RGKO_\JonMon-Lite.etl</span><br></pre></td></tr></table></figure>
+
+<p>不一定失败。因为 JonMon-Lite 的处理线程可能先于远程 Data Collector Set 创建 ETL 文件。</p>
+<p>重点看后续有没有：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Collector set &#x27;JonMon-Lite&#x27; started successfully.</span><br></pre></td></tr></table></figure>
+
+<p>然后确认：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dir</span> C:\JonMonDrop\DESKTOP<span class="literal">-TC0RGKO_</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="0x0D-安全注意事项"><a href="#0x0D-安全注意事项" class="headerlink" title="0x0D 安全注意事项"></a>0x0D 安全注意事项</h2><p>这套实验会涉及：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">管理员账号</span><br><span class="line">SMB 共享</span><br><span class="line">DCOM/WMI 远程权限</span><br><span class="line">Performance Logs and Alerts</span><br><span class="line">Event Log Provider 注册</span><br></pre></td></tr></table></figure>
+
+<p>因此建议只在实验环境使用。不要在生产环境直接使用弱密码或 Everyone Full Control。</p>
+<p>实验结束后建议：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net user jonmon /delete</span><br></pre></td></tr></table></figure>
+
+<p>或至少修改密码。</p>
+<p>如果主机上也创建了同名账号，也应清理：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net user jonmon /delete</span><br></pre></td></tr></table></figure>
+
+<p>同时删除临时共享：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net share JonMonDrop /delete</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x0E-总结"><a href="#0x0E-总结" class="headerlink" title="0x0E 总结"></a>0x0E 总结</h2><p>JonMon-Lite 的核心价值在于它演示了一个很有意思的思路：不用在目标机器上部署长期 Agent，而是通过 Windows 原生 PLA&#x2F;DCOM 远程创建 ETW Trace Session，再把 ETL 回写到主机，由主机解析并转写成自定义 Event Log。</p>
+<p>本次实验真正的关键不是编译，也不是 ETW 本身，而是远程 Windows 管理链路：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SMB 能写</span><br><span class="line">WMI/DCOM 能远程认证</span><br><span class="line">logman -s 能查询和创建</span><br><span class="line">runas /netonly 提供正确网络身份</span><br><span class="line">RootPath 能被虚拟机上的采集器写入</span><br></pre></td></tr></table></figure>
+
+<p>只要 <code>logman create trace ... -s DESKTOP-TC0RGKO</code> 能成功，JonMon-Lite 的远程核心基本就有了运行基础。最终成功标志是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Collector set &#x27;JonMon-Lite&#x27; has been created/updated successfully.</span><br><span class="line">Collector set &#x27;JonMon-Lite&#x27; started successfully.</span><br></pre></td></tr></table></figure>
+
+<p>然后在主机事件查看器中查看：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Applications and Services Logs</span><br><span class="line">  -&gt; JonMon-Lite</span><br><span class="line">  -&gt; Operational</span><br></pre></td></tr></table></figure>
+
+<p>这就是一次完整的 JonMon-Lite remote agentless EDR 实验链路。</p>
+<h2 id="九、总结"><a href="#九、总结" class="headerlink" title="九、总结"></a>九、总结</h2><p>PLA DCOM 接口并非新技术，它一直以来都是 Windows 的原生能力，只是从未被安全社区系统审视过。其核心价值在于：</p>
+<ul>
+<li><strong>无 Agent 的 ETW 采集</strong>：在不对目标机器产生任何落地影响的前提下，获取与本地 EDR 同等质量的遥测数据</li>
+<li><strong>覆盖 EDR 盲区</strong>：对不适合部署 Agent 的服务器、网络设备提供监控能力</li>
+<li><strong>攻击面意识</strong>：防御方需意识到，攻击者同样可以利用这套接口进行隐蔽侦察和防御干扰</li>
+</ul>
+<p>这一发现的方法论同样值得关注：对成熟工具（logman）进行逆向分析，往往能在已知功能的背面发现未被关注的安全盲区。</p>
+<hr>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://jonny-johnson.medium.com/no-agent-no-problem-discovering-remote-edr-8ca60596559f">Jonathan Johnson 原文</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jonny-jhnson/JonMon-Lite/tree/main">JonMon-Lite GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jonny-jhnson/ETWInspector/tree/main">EtwInspector GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/api/pla/">Microsoft PLA API 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/api/pla/nf-pla-idatacollectorset-commit">IDataCollectorSet::Commit</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/api/pla/nn-pla-iconfigurationdatacollector">IConfigurationDataCollector</a></li>
+</ul>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-06-04</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/edr%E5%BC%80%E5%8F%91/'>
+                            edr开发
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+                    <span>上一篇：<a href='/2026/06/04/JonMon-Lite%20%E8%BF%9C%E7%A8%8B%E6%97%A0%20Agent%20EDR%20%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95%EF%BC%9A%E4%BB%8E%E5%8E%9F%E7%90%86%E5%88%B0%E8%B7%91%E9%80%9A_fu/'></a></span>
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/05/23/EDR%E4%B8%AD%E7%9A%84%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86%E4%B8%8EATT-CK%E7%9F%A9%E9%98%B5%E6%98%A0%E5%B0%84/">EDR中的日志采集与ATT&amp;CK矩阵映射</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
