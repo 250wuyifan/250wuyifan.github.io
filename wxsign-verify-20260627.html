@@ -1,0 +1,30 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Bilibili Manga WxSign Scope Probe</title>
+<h1>WxSign Scope Probe</h1>
+<pre id="out"></pre>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+<script>
+const evidence = {
+  "signedUrl": "https://250wuyifan.github.io/wxsign-verify-20260627.html",
+  "signature": {
+    "appid": "wxdbea2a988c61c02a",
+    "timestamp": "1782500741",
+    "noncestr": "rufzlGotNfzWXuI",
+    "signature": "078bfb9a8aa3419ff856c6bee8bc378ecc98a840"
+  }
+};
+document.getElementById("out").textContent = JSON.stringify(evidence, null, 2);
+if (window.wx && evidence.signature && evidence.signature.appid) {
+  wx.config({
+    debug: true,
+    appId: evidence.signature.appid,
+    timestamp: evidence.signature.timestamp,
+    nonceStr: evidence.signature.noncestr,
+    signature: evidence.signature.signature,
+    jsApiList: ["updateAppMessageShareData", "updateTimelineShareData"]
+  });
+  wx.ready(() => document.getElementById("out").textContent += "\nwx.ready fired");
+  wx.error(err => document.getElementById("out").textContent += "\nwx.error: " + JSON.stringify(err));
+}
+</script>
