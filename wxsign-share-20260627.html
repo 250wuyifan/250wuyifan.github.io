@@ -1,0 +1,64 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Bilibili Manga WxSign Share Probe</title>
+<h1>WxSign Share Probe</h1>
+<pre id="out"></pre>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+<script>
+const evidence = {
+  signedUrl: "https://250wuyifan.github.io/wxsign-share-20260627.html",
+  signature: {
+    appid: "wxdbea2a988c61c02a",
+    timestamp: "1782501033",
+    noncestr: "XnPSyEjjOWWdziJ",
+    signature: "4858e28703f92aeeb935833c2e3a86deb36813b7"
+  }
+};
+
+const out = document.getElementById("out");
+function log(label, value) {
+  const line = `[${new Date().toISOString()}] ${label}: ${typeof value === "string" ? value : JSON.stringify(value)}`;
+  out.textContent += line + "\n";
+}
+
+out.textContent = "";
+log("evidence", evidence);
+log("userAgent", navigator.userAgent);
+log("location.href", location.href);
+
+if (!window.wx) {
+  log("wx", "missing");
+} else {
+  wx.config({
+    debug: true,
+    appId: evidence.signature.appid,
+    timestamp: evidence.signature.timestamp,
+    nonceStr: evidence.signature.noncestr,
+    signature: evidence.signature.signature,
+    jsApiList: ["updateAppMessageShareData", "updateTimelineShareData"]
+  });
+
+  wx.error(err => log("wx.error", err));
+
+  wx.ready(() => {
+    log("wx.ready", "fired");
+    wx.updateAppMessageShareData({
+      title: "WxSign Probe AppMessage",
+      desc: "Bilibili Manga WxSign share API probe",
+      link: evidence.signedUrl,
+      imgUrl: "https://250wuyifan.github.io/favicon.ico",
+      success: res => log("updateAppMessageShareData.success", res || "ok"),
+      fail: err => log("updateAppMessageShareData.fail", err),
+      complete: res => log("updateAppMessageShareData.complete", res || "complete")
+    });
+    wx.updateTimelineShareData({
+      title: "WxSign Probe Timeline",
+      link: evidence.signedUrl,
+      imgUrl: "https://250wuyifan.github.io/favicon.ico",
+      success: res => log("updateTimelineShareData.success", res || "ok"),
+      fail: err => log("updateTimelineShareData.fail", err),
+      complete: res => log("updateTimelineShareData.complete", res || "complete")
+    });
+  });
+}
+</script>
