@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Helvetica, Tahoma, Arial,   "notoserifsc-medium", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif !important;
+
+        }
+    </style>
+
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="SilentMoonwalk 堆栈欺骗原理分析" />
+    <meta name="hexo-theme-A4" content="v2.0.1" />
+    <link rel="alternate icon" type="image/webp" href="/null">
+    <title>CHANGMEN&#39;s Blog | Network Security Professional</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+
+         <!--注意：首页既不是post也不是page-->
+        
+
+        
+<link rel="stylesheet" href="/css/ui.css">
+
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+
+    
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+    
+
+    <!-- <link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/lxgwwenkai/dist/LXGWWenKai-Regular/result.css" /> -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css' /> 
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+    
+    
+        <style>
+            .index-main{
+                max-width:  880px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    <style>
+        .archive-main a:hover {
+            text-decoration: none; 
+        }
+    </style>
+
+    
+    
+
+
+    <body>
+        
+        <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.80/darkreader.min.js"></script>
+        <script>
+            const drOptions = {
+                brightness: 100,
+                contrast: 95,
+                sepia: 10,
+                darkSchemeTextColor: '#e0e0e0',  // 粉笔白文字
+                darkSchemeBackgroundColor: '#1e1e1e', // 黑板灰背景
+                scrollbarStyle: 'native'
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                DarkReader.enable(drOptions);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const btn = document.createElement('button');
+                btn.innerText = '🌓';
+                // 按钮样式：仿照你之前的布局，放在右下角
+                btn.style.cssText = `
+                    position: fixed; 
+                    bottom: 40px; 
+                    left: 42px; 
+                    z-index: 9999;
+                    width: 44px; 
+                    height: 44px; 
+                    border-radius: 50%; 
+                    border: 1px solid #ccc;
+                    background: #f7f5ed; 
+                    color: #000;
+                    font-size: 22px; 
+                    cursor: pointer;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+                    transition: transform 0.2s, background-color 0.3s;
+                `;
+                // 根据当前状态初始化按钮颜色
+                if (DarkReader.isEnabled()) {
+                    btn.style.backgroundColor = '#1e1e1e';
+                    btn.style.color = '#fff';
+                }
+                btn.onmouseover = () => btn.style.transform = 'scale(1.1)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                document.body.appendChild(btn);
+                // 点击切换逻辑
+                btn.addEventListener('click', () => {
+                    if (DarkReader.isEnabled()) {
+                        DarkReader.disable();
+                        localStorage.setItem('theme', 'light');
+                        btn.style.backgroundColor = '#f7f5ed';
+                        btn.style.color = '#000';
+                    } else {
+                        DarkReader.enable(drOptions);
+                        localStorage.setItem('theme', 'dark');
+                        btn.style.backgroundColor = '#1e1e1e';
+                        btn.style.color = '#fff';
+                    }
+                });
+            });
+        </script>
+        
+        
+            
+                <div class="left-toc-container">
+                    <nav id="toc" class="bs-docs-sidebar"></nav>
+                </div>
+            
+        
+        <div class="paper">
+
+            
+
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        
+        <div class="header-content">
+            <a class="logo" href="/">CHANGMEN&#39;s Blog</a> 
+            <span class="description">CHANGMEN的个人博客，专注于网络安全领域。</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+    </ul>
+</div>
+
+                    
+                    
+
+                    
+                    
+
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    SilentMoonwalk 堆栈欺骗原理分析
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2026-10-07</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：2.6k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：9分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+                <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E6%95%85%E4%BA%8B%E7%9A%84%E5%8F%91%E5%B1%95"><span class="post-toc-text">故事的发展</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Windows-x64-%E8%B0%83%E7%94%A8%E7%BA%A6%E5%AE%9A"><span class="post-toc-text">Windows x64 调用约定</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E5%90%84%E7%A7%8D%E4%B8%8D%E5%90%8C%E8%B0%83%E7%94%A8%E7%9A%84%E6%A0%88%E5%AF%B9%E6%AF%94"><span class="post-toc-text">各种不同调用的栈对比</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E6%A0%88%E5%9B%9E%E6%BA%AF%E6%80%8E%E4%B9%88%E5%81%9A%E5%88%B0%E7%9A%84"><span class="post-toc-text">栈回溯怎么做到的</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E7%9C%9F%E6%AD%A3unwind"><span class="post-toc-text">真正unwind</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#%E7%83%A7%E8%84%91%E7%9A%84%E5%8D%9A%E5%BC%88"><span class="post-toc-text">烧脑的博弈</span></a></li></ol>
+            
+        
+        <div class=".article-gallery"><h1 id="故事的发展"><a href="#故事的发展" class="headerlink" title="故事的发展"></a>故事的发展</h1><p>在准备恶意软件分析中反调试课程内容，提到了使用直接系统调用，绕过hook函数，这个在软件保护的方向是ok的，不需要考虑栈的样子，但是想到在恶意软件方向，就是一个指标，现在edr都会监控栈的数据，使用unwind展开栈，然后判断栈是否合理，下面是我随便截的一张。为了解决这个问题的话，堆栈欺骗是一个很有趣的一个技术，建议学习，可以对栈有一个充分的认识，在学习之前有一些基础知识要学习，比如栈的定义用途，push和ret的一些对栈的操作，直接调用和间接调用的理解，还有Windows x64 调用约定的理解。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007010723538.png" title="image-20261007010723538" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007010723538.png" alt="image-20261007010723538"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007013030623.png" title="image-20261007013030623" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007013030623.png" alt="image-20261007013030623"></a></p>
+<p>此文章我首先分析SilentMoonwalk的原理，研究他怎么做到的堆栈欺骗，该<a target="_blank" rel="noopener" href="https://github.com/klezVirus/SilentMoonwalk%E4%BD%9C%E8%80%85%E8%AF%B4%E4%BD%BF%E7%94%A8%E4%BA%86%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F%EF%BC%8C%E4%B8%80%E7%A7%8D%E6%98%AF%E5%90%88%E6%88%90%E5%A0%86%E6%A0%88%EF%BC%8C%E4%B8%80%E7%A7%8D%E6%98%AF%E5%90%8C%E6%AD%A5%E5%A0%86%E6%A0%88%E4%B9%9F%E5%B0%B1%E6%98%AF%E5%AE%9E%E6%97%B6%E7%9A%84%EF%BC%8C%E4%BD%9C%E8%80%85%E8%AF%B4%E6%AD%A3%E8%A7%A3%E6%98%AF%E5%90%8C%E6%AD%A5%E5%A0%86%E6%A0%88%E7%9A%84%E8%AF%9D%E9%82%A3%E5%B0%B1%E5%8F%AA%E7%9C%8B%E5%90%8C%E6%AD%A5%E5%A0%86%E6%A0%88%E3%80%82">https://github.com/klezVirus/SilentMoonwalk作者说使用了两种模式，一种是合成堆栈，一种是同步堆栈也就是实时的，作者说正解是同步堆栈的话那就只看同步堆栈。</a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007012039416.png" title="image-20261007012039416" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007012039416.png" alt="image-20261007012039416"></a></p>
+<p>在准备分析之前，我使用agent简单的学习了一下，然后在搜集文章的时候，发现关于该项目没有好的中文文章，甚至关于栈方面的我也只看到了几篇翻译的外文文章，估计是我信息收集能力不行，于是打算动手做实验，记录一下对该项目的研究，供给各位终端安全爱好者，希望能帮助大家更好的理解栈，未来做出更精彩的技术对抗。</p>
+<p>接下来我会先拆解几个小部分循序渐进的学习。</p>
+<h1 id="Windows-x64-调用约定"><a href="#Windows-x64-调用约定" class="headerlink" title="Windows x64 调用约定"></a>Windows x64 调用约定</h1><p>比如下图是一个简单的系统调用，这个大家是一定能看懂的。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/bd3b7a808a9cc171fc4eba46d0e1a228.png" title="bd3b7a808a9cc171fc4eba46d0e1a228" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/bd3b7a808a9cc171fc4eba46d0e1a228.png" alt="bd3b7a808a9cc171fc4eba46d0e1a228"></a></p>
+<p>在反汇编中，调用函数使用call指令，如下图所示在call之前做了一些给寄存器赋值和给栈赋值的一些操作，那么这个就引出了下下图的概念，前四个参数给了寄存器，之后的参数放在栈上。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/800a97e5473d751450d9584dc01ca128.png" title="800a97e5473d751450d9584dc01ca128" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/800a97e5473d751450d9584dc01ca128.png" alt="800a97e5473d751450d9584dc01ca128"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007013354941.png" title="image-20261007013354941" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007013354941.png" alt="image-20261007013354941"></a></p>
+<p>此外， <code>call</code> 指令把下一条指令地址压栈，之后进入函数执行之后结束的地方ret 指令稍后会检索这个保存的地址，以便程序可以返回到上次执行的位置，如下图下一条就是18D9，在ret是做了一个pop，直接rip变为当前rsp的值。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/d8c032531f989338751f722f766f5949.png" title="d8c032531f989338751f722f766f5949" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/d8c032531f989338751f722f766f5949.png" alt="d8c032531f989338751f722f766f5949"></a></p>
+<p>这是一个函数我们对他的理解，那么函数里面嵌套一个函数呢，也是同样继续call和ret打配合，但最终都是堆栈平衡的，这部分的话，在学习滴水逆向课程的时候，通过画图能更好的理解，2018年的课程，但是依旧强推。</p>
+<h1 id="各种不同调用的栈对比"><a href="#各种不同调用的栈对比" class="headerlink" title="各种不同调用的栈对比"></a>各种不同调用的栈对比</h1><p>一个正常调用函数时</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/6dce488e5a899a8ca4c450fb722e4c2a.png" title="6dce488e5a899a8ca4c450fb722e4c2a" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/6dce488e5a899a8ca4c450fb722e4c2a.png" alt="6dce488e5a899a8ca4c450fb722e4c2a"></a></p>
+<p>我们使用直接调用，直接使用asm文件，里面写好eax，然后直接syscall过去（这边补一下系统调用的原理，X64使用syscall调用参数rax值的函数，路线就是kernelbase-&gt;ntdll，然后找对应的mov eax,xx syscall，建议调试一遍即可明白），此时栈的情况</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/74bfb3ac6a68362bdfae1fb668e1fe59.png" title="74bfb3ac6a68362bdfae1fb668e1fe59" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/74bfb3ac6a68362bdfae1fb668e1fe59.png" alt="74bfb3ac6a68362bdfae1fb668e1fe59"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/65d51c8ac46f18b7c3aa17f112368143.png" title="65d51c8ac46f18b7c3aa17f112368143" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/65d51c8ac46f18b7c3aa17f112368143.png" alt="65d51c8ac46f18b7c3aa17f112368143"></a></p>
+<p>jmp到ntdll地址里面进行执行syscall</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/16fda6c8f78fb54c6d4a3a5a980d92e5.png" title="16fda6c8f78fb54c6d4a3a5a980d92e5" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/16fda6c8f78fb54c6d4a3a5a980d92e5.png" alt="16fda6c8f78fb54c6d4a3a5a980d92e5"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/f15faaafc123533f3af0eba0c4979d41.png" title="f15faaafc123533f3af0eba0c4979d41" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/f15faaafc123533f3af0eba0c4979d41.png" alt="f15faaafc123533f3af0eba0c4979d41"></a></p>
+<p>使用AI分析<a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007020001336.png" title="image-20261007020001336" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007020001336.png" alt="image-20261007020001336"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007020258307.png" title="image-20261007020258307" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007020258307.png" alt="image-20261007020258307"></a></p>
+<p>那么这里其实引出痛点，如何绕过hook的监控，并且堆栈也是正常的呢，也引出需要学习的东西</p>
+<p>1.这个栈回溯到底是什么</p>
+<p>2.edr如何做到监控到syscall执行的</p>
+<h1 id="栈回溯怎么做到的"><a href="#栈回溯怎么做到的" class="headerlink" title="栈回溯怎么做到的"></a>栈回溯怎么做到的</h1><p>简单说一下，其实这部分也是我学习的见解，可能也有一点问题，我输出自己的看法，首先就是离我们之前介绍调用约定，提到了子函数，其实就是继续调用别的函数，这样的话，流程是一样的，继续call，然后下一个rip地址压栈，然后进入函数时候sub栈，就是从高地址往低地址越来越高的栈，那么在这里我们可以看到，返回地址在哪里放着，是不是就是在sub rsp的时候，返回地址&#x3D;&#x3D;rsp，如果sub rsp,0x20,那么返回地址&#x3D;&#x3D;sub后rsp+0x20</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007022318889.png" title="image-20261007022318889" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/image-20261007022318889.png" alt="image-20261007022318889"></a></p>
+<p>那么这是在函数中的情况，也就是说这个message使用的栈的size就是0x38，如果现在有一个东西，我本来就提前知道message函数需要的栈的size是0x38，然后我还可以根据当前状态跟上下文作比较，比如上图rip在sub rsp,0x38下面，那么我就知道该函数对栈产生了变化，要知道返回地址的话，就要把sub删除的补回来，也就是要补0x38就拿到返回地址。</p>
+<p>这里留一个问题，如果是我们当前rip之前还有一个push rax,的操作呢。如果push压栈了，rsp又小一行，为了保证返回地址，那么是不是还要加一个0x8。</p>
+<h1 id="真正unwind"><a href="#真正unwind" class="headerlink" title="真正unwind"></a>真正unwind</h1><p>那么上面引出了这个东西，windows系统里面有吗，我们不想自己做啊，有的兄弟有的。AI说明如下</p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wind（缠绕）= 函数调用的正过程：每进一层函数，push 这 push 那、sub rsp——把栈一层层缠起来。 unwind（解开）= 倒放电影：从当前停留的这层出发，按说明书算出“返回地址在哪、上一层从哪开始”，跳到上一层，再查上一层的说明书，继续解……直到栈底。</span><br><span class="line"></span><br><span class="line">每层“说明书”就是编译器为每个函数生成的 unwind 元数据（PE 文件 .pdata/.xdata 节，记录“我 push 了哪些寄存器、sub 了多少、返回地址在帧内哪个偏移”）。Windows 官方函数 RtlVirtualUnwind 就是“解一层”的现成工具：喂它 RIP+RSP，它查元数据，吐出这层的返回地址和上一层的 RSP</span><br></pre></td></tr></table></figure>
+
+<p>实际写个简单脚本进行unwind的话，然后加一些说明，我在简单说一下，意思就是pdata&#x2F;xdata里面已经给我们存好了一些基础信息了，比如反汇编中的push，sub等等各种命令，都有记录，图中所说的序言就是存放在异常目录中的数据，然后根据地址做比对，看是否执行了这些会影响栈的动作，然后该补就补，图中所说是撤销，就这么一直回溯就完事了，是不是这么说还挺简单的。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/dcb5dbe804fe1ea5a5a815a9496052d4.jpg" title="dcb5dbe804fe1ea5a5a815a9496052d4" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/dcb5dbe804fe1ea5a5a815a9496052d4.jpg" alt="dcb5dbe804fe1ea5a5a815a9496052d4"></a></p>
+<h1 id="烧脑的博弈"><a href="#烧脑的博弈" class="headerlink" title="烧脑的博弈"></a>烧脑的博弈</h1><p>基础其实我们学的差不多了，到了真正对抗博弈的时候了，moonwalk怎么利用这些东西玩的这么花的，一句话说就是moonwalk在汇编执行代码的时候，就已经开辟一个大栈，里面存放很多很多东西，精准的构造了一个完美的rop链，并且比较考验数学计算工地，人工构造的话我时常算错，更恐怖的是这位大佬使用动态填写信息让构造栈达到恐怖的平衡，真正数学高手，利用这些基础原理，搞出这么有趣的东西，当我看到的时候其实想狠狠深入他的大脑皮层了。</p>
+<p>这里我们可以先说出他使用的关键手法</p>
+<p>1.利用栈回溯的时候，遇到如下两种这种类型的，会对RBP做手脚，一个是直接把当前栈的值给了rbp，另一个就会使用rbp去反推RSP的值，那么就是一个可控的变量，我们如果在栈上构造，让展开器首先进去设置rbp的地方，然后他计算出返回值，然后进入使用RBP计算出的RSP的栈，这样就合理了，然后让展开器使用这个rsp进行计算出的返回值为main进程所在线程返回值，然后就进入到开头的线程初始化栈的那些函数，栈就完整了。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/940f5f644e15527442ed57df90d2915f.jpg" title="940f5f644e15527442ed57df90d2915f" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/940f5f644e15527442ed57df90d2915f.jpg" alt="940f5f644e15527442ed57df90d2915f"></a></p>
+<p>2.如何确定RBP的值，并且RBP应该放在哪里。最终计算出返回地址肯定是要在main函数的返回地址槽，那么在F1的话，就是要进行set fpreg的这个阶段，展开器计算的时刚开始是，rsp&#x3D;rbp-0x20,然后补了很多其他杂七杂八的，那么最后就是返回地址&#x3D;rbp-0x20+0xF8,那么想要返回地址等于main函数返回地址，那么rbp就要等于（main函数返回地址-0xD8），这样RSP&#x3D;&#x3D;main函数返回地址了。RBP应该放在哪里呢，是应该放在set fpreg这个阶段上面那个阶段，就是push nonyol那个阶段，也就是F2，我们看到F2是在栈底的时候才进行了Push RBP，那么就是这个栈上的地址给了RBP，也就是刚进入F2的时候，计算返回地址&#x3D;rsp+0x148,然后直接进入F1的，然后F1拿着RBP就进行使用了，所以要保证F2的PUSH RBP是最后被展开器进行直接把栈上数据装进RBP，那么就是在F2的时候RSP+0x140.</p>
+<p>3,为什么控制流和展开器不一样。罪魁之首JMP RBX，正常执行这个的时候，是直接跳走了啊，但是展开器，看到这个，首先确认你在哪个模块中的哪个函数，找了半天pdata&#x2F;xdata数据，然后计算返回值，就被我们栈上的一些诱导过去走向rop链条了。</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/3237cfc8a386be8f9cd3994b4e7103fd.jpg" title="3237cfc8a386be8f9cd3994b4e7103fd" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/3237cfc8a386be8f9cd3994b4e7103fd.jpg" alt="3237cfc8a386be8f9cd3994b4e7103fd"></a></p>
+<p>4.如何做到动态堆栈加密的。每次启动都会去find这些可以用的链条，然后把需要用的一些参数给到结构体，然后汇编调用结构体里面的数据，进行使用，RCX就是结构体。然后看这些结构体参数都是有用的，G1和G2好理解一些，就是进行ADD或者JMP的，只有F1和F2，在RBP上做了手脚，把RBP放到了固定的位置，然后就是栈帧大小的话，我觉得这个无所谓，不需要在意，因为我们是在最外层函数的话，这些图中的函数肯定该运行的都运行完了，不用在意里面栈有什么变化要计算，所以直接理解为制作一个假栈，但是这些函数地址用的是真的函数地址</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/1d511a635d3309e565d02c17a4300075.jpg" title="1d511a635d3309e565d02c17a4300075" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/1d511a635d3309e565d02c17a4300075.jpg" alt="1d511a635d3309e565d02c17a4300075"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/8d42307d780481c6964eab8664ad75c6.png" title="8d42307d780481c6964eab8664ad75c6" class="gallery-item" style="box-shadow: none;"> <img src="https://cdn.jsdelivr.net/gh/250wuyifan/WaiLian250/img/8d42307d780481c6964eab8664ad75c6.png" alt="8d42307d780481c6964eab8664ad75c6"></a></p>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2026-10-07</span>
+            
+                <span>该篇文章被 CHANGMEN</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E5%85%8D%E6%9D%80/'>
+                            免杀
+                        </a>
+                    
+                        <a href='/tags/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/'>
+                            逆向分析
+                        </a>
+                    
+                </span>
+             
+             
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2026/09/29/phishing-series-02-apc-injection-xor-phishing-analysis/">钓鱼分析系列 #02 早期 APC 注入 + 双层异或定向钓鱼投递样本分析</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+
+                    
+
+                    <div class="footer">
+    
+        <span> 
+            © 2024 CHANGMEN | Network Security Enthusiast 
+
+            
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>🌊看过大海的人不会忘记海的广阔🌊</span>
+            
+                <span class="footer-last-span-right"><i>本站由<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/index.html">Hexo</a>驱动｜使用<a target="_blank" rel="noopener" href="https://github.com/HiNinoJay/hexo-theme-A4">Hexo-theme-A4</a>主题</i></span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
+<script src="/js/emojiHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        wrapEmojis('.paper');
+    });
+</script>
